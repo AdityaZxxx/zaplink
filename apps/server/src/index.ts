@@ -1,12 +1,13 @@
-import "dotenv/config";
-import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { createContext } from "@zaplink/api/context";
 import { appRouter } from "@zaplink/api/routers/index";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { auth } from "@zaplink/auth";
+import "dotenv/config";
+import { Elysia } from "elysia";
 
-const app = new Elysia()
+// @ts-expect-error
+const _app = new Elysia()
 	.use(
 		cors({
 			origin: process.env.CORS_ORIGIN || "",

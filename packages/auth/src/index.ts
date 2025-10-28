@@ -1,7 +1,7 @@
-import { betterAuth, type BetterAuthOptions } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@zaplink/db";
 import * as schema from "@zaplink/db/schema/auth";
+import { type BetterAuthOptions, betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 export const auth = betterAuth<BetterAuthOptions>({
 	database: drizzleAdapter(db, {

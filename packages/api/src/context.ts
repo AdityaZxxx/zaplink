@@ -1,5 +1,5 @@
-import type { Context as ElysiaContext } from "elysia";
 import { auth } from "@zaplink/auth";
+import type { Context as ElysiaContext } from "elysia";
 
 export type CreateContextOptions = {
 	context: ElysiaContext;
