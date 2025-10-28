@@ -4,29 +4,17 @@ import { ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
 
 export default function Header() {
-	const links = [
-		{ to: "/", label: "Home" },
-		{ to: "/dashboard", label: "Dashboard" },
-	] as const;
-
 	return (
-		<div>
-			<div className="flex flex-row items-center justify-between px-2 py-1">
-				<nav className="flex gap-4 text-lg">
-					{links.map(({ to, label }) => {
-						return (
-							<Link key={to} href={to}>
-								{label}
-							</Link>
-						);
-					})}
-				</nav>
-				<div className="flex items-center gap-2">
-					<ModeToggle />
-					<UserMenu />
-				</div>
+		<nav className="container mx-auto flex h-16 max-w-5xl flex-row items-center justify-between border-b px-2 py-1">
+			<div className="flex items-center">
+				<Link href="/" className="flex items-center">
+					<span className="font-bold text-2xl tracking-tight">Zaplink</span>
+				</Link>
 			</div>
-			<hr />
-		</div>
+			<div className="flex items-center gap-4">
+				<ModeToggle />
+				<UserMenu />
+			</div>
+		</nav>
 	);
 }
