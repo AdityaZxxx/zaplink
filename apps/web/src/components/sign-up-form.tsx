@@ -55,8 +55,11 @@ export default function SignUpForm({
 
 	return (
 		<div className="mx-auto mt-10 w-full max-w-md p-6">
-			<h1 className="mb-6 text-center font-bold text-3xl">Create Account</h1>
-
+			<h1 className="mb-2 text-center font-bold text-3xl">Join Zaplink</h1>
+			<p className="mb-6 text-center text-muted-foreground text-sm">
+				Sign up to create your personalized link page in seconds. Your brand,
+				your identity.
+			</p>
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
