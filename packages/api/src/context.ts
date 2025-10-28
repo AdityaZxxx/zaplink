@@ -1,4 +1,5 @@
 import { auth } from "@zaplink/auth";
+import { db } from "@zaplink/db";
 import type { Context as ElysiaContext } from "elysia";
 
 export type CreateContextOptions = {
@@ -11,6 +12,7 @@ export async function createContext({ context }: CreateContextOptions) {
 	});
 	return {
 		session,
+		db,
 	};
 }
 
