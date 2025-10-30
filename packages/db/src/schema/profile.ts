@@ -6,8 +6,8 @@ export const profiles = pgTable("profiles", {
 	userId: text("user_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
-	username: varchar("username", { length: 50 }).notNull().unique(),
-	displayName: varchar("display_name", { length: 100 }),
+	username: varchar("username", { length: 30 }).notNull().unique(),
+	displayName: varchar("display_name", { length: 30 }),
 	bio: text("bio"),
 	avatarUrl: text("avatar_url"),
 	bannerUrl: text("banner_url"),
