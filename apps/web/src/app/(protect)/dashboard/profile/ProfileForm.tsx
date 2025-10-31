@@ -20,16 +20,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import type { links, profiles } from "@zaplink/db";
-import {
-	CameraIcon,
-	Edit3,
-	GripVertical,
-	LinkIcon,
-	Plus,
-	Trash2,
-	User2Icon,
-} from "lucide-react";
-import Image from "next/image";
+import { Edit3, GripVertical, LinkIcon, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -48,7 +39,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import SUPPORT_PLATFORMS from "../../../../lib/constants/SUPPORT_PLATFORMS";
-import { UploadButton } from "../../../../utils/uploadthing";
+import { UserAvatar } from "./components/UserAvatar";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect;
@@ -674,41 +665,6 @@ const SocialLinks = ({ links }: { links: Link[] }) => {
 				onClose={closeAddLinkTypeModal}
 				onSelectLinkType={handleSelectLinkType}
 			/>
-		</div>
-	);
-};
-
-const UserAvatar = ({ avatarUrl }: { avatarUrl: string }) => {
-	const router = useRouter();
-	return (
-		<div className="group relative h-20 w-20 rounded-full">
-			{avatarUrl ? (
-				<Image
-					src={avatarUrl}
-					alt="avatar"
-					width={80}
-					height={80}
-					className="rounded-full object-cover"
-				/>
-			) : (
-				<div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-100 to-blue-100">
-					<User2Icon className="h-8 w-8 text-muted-foreground" />
-				</div>
-			)}
-			<div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-all group-hover:opacity-100">
-				<CameraIcon className="h-5 w-5" />
-				<UploadButton
-					endpoint="avatarUploader"
-					onClientUploadComplete={() => {
-						toast.success("Profile picture updated");
-						router.refresh();
-					}}
-					onUploadError={(error: Error) => {
-						toast.error(`Upload failed: ${error.message}`);
-					}}
-					className="absolute inset-0 z-10 ut-allowed-content:hidden h-full ut-button:h-full ut-button:w-full w-full ut-button:cursor-pointer ut-button:bg-transparent ut-button:p-0 ut-button:text-transparent ut-button:ring-0 ut-button:focus-within:ring-0"
-				/>
-			</div>
 		</div>
 	);
 };
