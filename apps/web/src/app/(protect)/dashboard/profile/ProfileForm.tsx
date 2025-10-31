@@ -137,6 +137,7 @@ const LinkEditModal = ({
 	link,
 	onClose,
 }: LinkModalState & { onClose: () => void }) => {
+	const router = useRouter();
 	const isCustom = !platform;
 
 	const form = useForm({
@@ -167,6 +168,7 @@ const LinkEditModal = ({
 		toast.success(message);
 		onClose();
 		queryClient.invalidateQueries(trpc.links.getAllLinks.queryFilter());
+		router.refresh();
 	};
 
 	const onError = (error: { message: string }) => {
@@ -213,6 +215,7 @@ const LinkEditModal = ({
 	const handleDelete = () => {
 		if (link) {
 			deleteLink({ id: link.id });
+			router.refresh();
 		}
 	};
 
