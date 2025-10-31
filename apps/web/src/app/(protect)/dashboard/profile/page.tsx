@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
 import { trpcServer } from "../../../../utils/trpc/server";
-import { ProfileForm } from "./ProfileForm";
+import ProfileForm from "./ProfileForm";
 
 export default async function ProfilePage() {
 	const api = await trpcServer();
 	const profile = await api.profile.getProfile();
+	const links = await api.links.getAllLinks();
 
 	if (!profile) {
 		redirect("/onboarding/create-username");
@@ -13,7 +14,7 @@ export default async function ProfilePage() {
 	return (
 		<main className="container mx-auto max-w-5xl px-4 py-8">
 			<h1 className="mb-8 font-bold text-3xl">Profile</h1>
-			<ProfileForm profile={profile} />
+			<ProfileForm profile={profile} links={links} />
 		</main>
 	);
 }
