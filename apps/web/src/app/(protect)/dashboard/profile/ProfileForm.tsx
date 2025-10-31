@@ -25,8 +25,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import SUPPORT_PLATFORMS from "../../../../lib/constants/SUPPORT_PLATFORMS";
-import { AddLinkTypeModal, LinkEditModal } from "./components/AddLinkTypeModal";
 import { CustomLinkCard } from "./components/CustomLinkCard";
+import { AddLinkTypeModal, LinkEditModal } from "./components/LinkModal";
 import { ProfileEditor } from "./components/ProfileEditor";
 import { SocialPlatformCard } from "./components/SocialPlatformCard";
 
