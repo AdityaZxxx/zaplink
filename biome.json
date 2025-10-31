@@ -38,7 +38,8 @@
 		"rules": {
 			"recommended": true,
 			"correctness": {
-				"useExhaustiveDependencies": "info"
+				"useExhaustiveDependencies": "info",
+				"noChildrenProp": "off"
 			},
 			"suspicious": {
 				"noArrayIndexKey": "warn"
