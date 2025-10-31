@@ -20,7 +20,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import type { links, profiles } from "@zaplink/db";
-import { Edit3, GripVertical, LinkIcon, Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -37,7 +37,10 @@ import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import SUPPORT_PLATFORMS from "../../../../lib/constants/SUPPORT_PLATFORMS";
+import { AddLinkTypeModal } from "./components/AddLinkTypeModal";
+import { CustomLinkCard } from "./components/CustomLinkCard";
 import { ProfileEditor } from "./components/ProfileEditor";
+import { SocialPlatformCard } from "./components/SocialPlatformCard";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect;
@@ -52,71 +55,6 @@ type LinkModalState = {
 
 type AddLinkTypeModalState = {
 	isOpen: boolean;
-};
-
-const AddLinkTypeModal = ({
-	isOpen,
-	onClose,
-	onSelectLinkType,
-}: AddLinkTypeModalState & {
-	onClose: () => void;
-	onSelectLinkType: (type: "custom" | SupportedPlatform) => void;
-}) => {
-	return (
-		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent className="sm:max-w-md">
-				<DialogHeader>
-					<DialogTitle>Add New Link</DialogTitle>
-					<DialogDescription>
-						Choose the type of link you want to add.
-					</DialogDescription>
-				</DialogHeader>
-
-				<div className="space-y-3 py-4">
-					<Button
-						variant="outline"
-						className="w-full justify-start gap-3"
-						onClick={() => onSelectLinkType("custom")}
-					>
-						<LinkIcon className="h-5 w-5" />
-						<span>Custom Link</span>
-					</Button>
-
-					<div className="border-t pt-2">
-						<p className="mb-2 text-muted-foreground text-sm">
-							Social Platforms
-						</p>
-						<div className="space-y-2">
-							{Object.entries(SUPPORT_PLATFORMS).map(
-								([platform, platformInfo]) => {
-									const Icon = platformInfo.icon;
-									return (
-										<Button
-											key={platform}
-											variant="outline"
-											className="w-full justify-start gap-3"
-											onClick={() =>
-												onSelectLinkType(platform as SupportedPlatform)
-											}
-										>
-											<Icon className="h-5 w-5" />
-											<span>{platformInfo.name}</span>
-										</Button>
-									);
-								},
-							)}
-						</div>
-					</div>
-				</div>
-
-				<DialogFooter>
-					<Button type="button" variant="outline" onClick={onClose}>
-						Cancel
-					</Button>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
-	);
 };
 
 const LinkEditModal = ({
@@ -380,117 +318,6 @@ const LinkEditModal = ({
 				) : null}
 			</DialogContent>
 		</Dialog>
-	);
-};
-
-const CustomLinkCard = ({
-	link,
-	onClick,
-	dragHandleAttributes,
-	dragHandleListeners,
-}: {
-	link: Link;
-	onClick: () => void;
-	// biome-ignore lint: false positive
-	dragHandleAttributes: any;
-	// biome-ignore lint: false positive
-	dragHandleListeners: any;
-}) => {
-	return (
-		<div className="flex items-center gap-3 rounded-xl border bg-card p-2.5">
-			<div
-				{...dragHandleAttributes}
-				{...dragHandleListeners}
-				className="cursor-grab touch-none p-2"
-			>
-				<GripVertical className="h-5 w-5 text-muted-foreground" />
-			</div>
-			<button
-				type="button"
-				onClick={onClick}
-				className="flex min-w-0 flex-1 items-center gap-3 text-left"
-			>
-				<div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-					<LinkIcon className="h-6 w-6 text-muted-foreground" />
-				</div>
-				<div className="min-w-0 flex-1">
-					<div className="truncate font-medium">{link.title}</div>
-					<div className="truncate text-muted-foreground text-sm">
-						{link.url}
-					</div>
-				</div>
-				<div className="rounded-full p-1 text-muted-foreground">
-					<Edit3 className="h-4 w-4" />
-				</div>
-			</button>
-		</div>
-	);
-};
-
-const SocialPlatformCard = ({
-	platform,
-	existingLink,
-	onClick,
-	dragHandleAttributes,
-	dragHandleListeners,
-}: {
-	platform: SupportedPlatform;
-	existingLink?: Link;
-	onClick: () => void;
-	// biome-ignore lint: false positive
-	dragHandleAttributes: any;
-	// biome-ignore lint: false positive
-	dragHandleListeners: any;
-}) => {
-	const platformInfo = SUPPORT_PLATFORMS[platform];
-	const Icon = platformInfo.icon;
-
-	return (
-		<div
-			className={`flex items-center gap-3 rounded-xl border p-2.5 ${
-				!existingLink && "opacity-50"
-			}`}
-		>
-			<div
-				{...dragHandleAttributes}
-				{...dragHandleListeners}
-				className="cursor-grab touch-none p-2"
-			>
-				<GripVertical className="h-5 w-5 text-muted-foreground" />
-			</div>
-			<button
-				type="button"
-				onClick={onClick}
-				className="flex min-w-0 flex-1 items-center gap-3 text-left"
-			>
-				<div
-					className={`flex h-12 w-12 items-center justify-center rounded-full ${
-						existingLink ? "bg-primary/10" : "bg-muted"
-					}`}
-				>
-					<Icon
-						className={`h-6 w-6 ${
-							existingLink ? "text-primary" : "text-muted-foreground"
-						}`}
-					/>
-				</div>
-				<div className="min-w-0 flex-1">
-					<div className="font-medium">{platformInfo.name}</div>
-					<div className="truncate text-muted-foreground text-sm">
-						{existingLink
-							? existingLink.url.replace(platformInfo.baseUrl, "")
-							: "Not connected"}
-					</div>
-				</div>
-				<div
-					className={`rounded-full p-1 ${
-						existingLink ? "text-primary" : "text-muted-foreground"
-					}`}
-				>
-					<Edit3 className="h-4 w-4" />
-				</div>
-			</button>
-		</div>
 	);
 };
 
