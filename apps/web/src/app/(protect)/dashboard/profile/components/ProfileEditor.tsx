@@ -5,6 +5,7 @@ import { Edit3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -41,12 +42,27 @@ export const ProfileEditor = ({ profile }: { profile: Profile }) => {
 		}),
 	);
 
+	const DISPLAY_NAME_MAX_LENGTH = 30;
+	const BIO_MAX_LENGTH = 160;
+
 	const form = useForm({
 		defaultValues: {
 			displayName: profile.displayName ?? "",
 			bio: profile.bio ?? "",
 		},
 		onSubmit: async ({ value }) => {
+			if (value.displayName.length > DISPLAY_NAME_MAX_LENGTH) {
+				toast.error(
+					`Display name must be at most ${DISPLAY_NAME_MAX_LENGTH} characters`,
+				);
+				return;
+			}
+
+			if (value.bio.length > BIO_MAX_LENGTH) {
+				toast.error(`Bio must be at most ${BIO_MAX_LENGTH} characters`);
+				return;
+			}
+
 			mutate({
 				displayName: value.displayName,
 				bio: value.bio,
@@ -67,12 +83,12 @@ export const ProfileEditor = ({ profile }: { profile: Profile }) => {
 							</h1>
 							<Edit3 className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
 						</div>
-						<p className="line-clamp-2 text-muted-foreground text-sm">
+						<p className="line-clamp-2 break-words text-muted-foreground text-sm">
 							{profile.bio || "Add a bio to describe yourself..."}
 						</p>
 					</div>
 				</DialogTrigger>
-				<DialogContent className="sm:max-w-md">
+				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Edit Profile</DialogTitle>
 						<DialogDescription>
@@ -91,12 +107,22 @@ export const ProfileEditor = ({ profile }: { profile: Profile }) => {
 							name="displayName"
 							children={(field) => (
 								<Field>
-									<FieldLabel>Display Name</FieldLabel>
+									<FieldLabel className="flex items-center justify-between">
+										<span>Display Name</span>
+										<Badge variant="outline" className="text-xs">
+											{field.state.value.length}/{DISPLAY_NAME_MAX_LENGTH}
+										</Badge>
+									</FieldLabel>
 									<FieldContent>
 										<Input
 											placeholder="Enter your name"
 											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
+											onChange={(e) => {
+												if (e.target.value.length <= DISPLAY_NAME_MAX_LENGTH) {
+													field.handleChange(e.target.value);
+												}
+											}}
+											maxLength={DISPLAY_NAME_MAX_LENGTH}
 										/>
 									</FieldContent>
 								</Field>
@@ -107,13 +133,23 @@ export const ProfileEditor = ({ profile }: { profile: Profile }) => {
 							name="bio"
 							children={(field) => (
 								<Field>
-									<FieldLabel>Bio</FieldLabel>
+									<FieldLabel className="flex items-center justify-between">
+										<span>Bio</span>
+										<Badge variant="outline" className="text-xs">
+											{field.state.value.length}/{BIO_MAX_LENGTH}
+										</Badge>
+									</FieldLabel>
 									<FieldContent>
 										<Textarea
 											placeholder="Tell people about yourself..."
 											value={field.state.value}
-											onChange={(e) => field.handleChange(e.target.value)}
+											onChange={(e) => {
+												if (e.target.value.length <= BIO_MAX_LENGTH) {
+													field.handleChange(e.target.value);
+												}
+											}}
 											rows={3}
+											maxLength={BIO_MAX_LENGTH}
 										/>
 									</FieldContent>
 								</Field>
