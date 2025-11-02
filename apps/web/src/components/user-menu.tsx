@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Monitor, Moon, Sun } from "lucide-react";
+import { LogOut, Monitor, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -53,7 +53,7 @@ export default function UserMenu() {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" className="relative h-9 w-9 rounded-full">
-					<Avatar className="h-9 w-9">
+					<Avatar className="h-9 w-9 cursor-pointer">
 						<AvatarImage
 							src={userData.avatarUrl || ""}
 							alt={userData.displayName || ""}
@@ -79,7 +79,7 @@ export default function UserMenu() {
 						<span className="truncate font-semibold">
 							{userData.displayName}
 						</span>
-						<span className="truncate text-muted-foreground text-xs">
+						<span className="truncate text-muted-foreground text-sm">
 							@{userData.username}
 						</span>
 					</div>
@@ -128,7 +128,7 @@ export default function UserMenu() {
 
 				<DropdownMenuItem asChild>
 					<Button
-						variant="destructive"
+						variant="secondary"
 						className="w-full"
 						onClick={() => {
 							authClient.signOut({
@@ -140,7 +140,8 @@ export default function UserMenu() {
 							});
 						}}
 					>
-						Sign Out
+						<LogOut className="h-4 w-4" />
+						Logout
 					</Button>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
