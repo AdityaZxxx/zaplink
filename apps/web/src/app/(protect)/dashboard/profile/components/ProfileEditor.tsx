@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import { UserAvatar } from "./UserAvatar";
+import { UserBanner } from "./UserBanner";
 
 type Profile = typeof profiles.$inferSelect;
 
@@ -71,103 +72,113 @@ export const ProfileEditor = ({ profile }: { profile: Profile }) => {
 	});
 
 	return (
-		<div className="group flex cursor-pointer items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:bg-muted/50">
-			<UserAvatar avatarUrl={profile.avatarUrl ?? ""} />
+		<div className="rounded-xl border bg-card">
+			<div className="relative h-32 w-full overflow-hidden rounded-t-xl">
+				<UserBanner bannerUrl={profile.bannerUrl ?? ""} />
+			</div>
 
-			<Dialog open={isOpen} onOpenChange={setIsOpen}>
-				<DialogTrigger asChild>
-					<div className="min-w-0 flex-1">
-						<div className="flex items-center gap-2">
-							<h1 className="truncate font-semibold text-lg">
-								{profile.displayName || "Your Name"}
-							</h1>
-							<Edit3 className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-						</div>
-						<p className="line-clamp-3 max-w-md break-words text-muted-foreground text-sm">
-							{profile.bio || "Add a bio to describe yourself..."}
-						</p>
-					</div>
-				</DialogTrigger>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Edit Profile</DialogTitle>
-						<DialogDescription>
-							Update your display name and bio
-						</DialogDescription>
-					</DialogHeader>
+			<div className="p-4">
+				<div className="-mt-8 relative z-10 flex cursor-pointer items-start gap-4">
+					<UserAvatar avatarUrl={profile.avatarUrl ?? ""} />
 
-					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							form.handleSubmit();
-						}}
-						className="space-y-4"
-					>
-						<form.Field
-							name="displayName"
-							children={(field) => (
-								<Field>
-									<FieldLabel className="flex items-center justify-between">
-										<span>Display Name</span>
-										<Badge variant="outline" className="text-xs">
-											{field.state.value.length}/{DISPLAY_NAME_MAX_LENGTH}
-										</Badge>
-									</FieldLabel>
-									<FieldContent>
-										<Input
-											placeholder="Enter your name"
-											value={field.state.value}
-											onChange={(e) => {
-												if (e.target.value.length <= DISPLAY_NAME_MAX_LENGTH) {
-													field.handleChange(e.target.value);
-												}
-											}}
-											maxLength={DISPLAY_NAME_MAX_LENGTH}
-										/>
-									</FieldContent>
-								</Field>
-							)}
-						/>
+					<Dialog open={isOpen} onOpenChange={setIsOpen}>
+						<DialogTrigger asChild>
+							<div className="group min-w-0 flex-1 pt-4">
+								<div className="flex items-center gap-2">
+									<h1 className="truncate font-semibold text-lg">
+										{profile.displayName || "Your Name"}
+									</h1>
+									<Edit3 className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+								</div>
+								<p className="line-clamp-3 max-w-md break-words text-muted-foreground text-sm">
+									{profile.bio || "Add a bio to describe yourself..."}
+								</p>
+							</div>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Edit Profile</DialogTitle>
+								<DialogDescription>
+									Update your display name and bio
+								</DialogDescription>
+							</DialogHeader>
 
-						<form.Field
-							name="bio"
-							children={(field) => (
-								<Field>
-									<FieldLabel className="flex items-center justify-between">
-										<span>Bio</span>
-										<Badge variant="outline" className="text-xs">
-											{field.state.value.length}/{BIO_MAX_LENGTH}
-										</Badge>
-									</FieldLabel>
-									<FieldContent>
-										<Textarea
-											placeholder="Tell people about yourself..."
-											value={field.state.value}
-											onChange={(e) => {
-												if (e.target.value.length <= BIO_MAX_LENGTH) {
-													field.handleChange(e.target.value);
-												}
-											}}
-											rows={3}
-											maxLength={BIO_MAX_LENGTH}
-										/>
-									</FieldContent>
-								</Field>
-							)}
-						/>
-
-						<DialogFooter>
-							<Button
-								type="submit"
-								disabled={isPending}
-								className="w-full gap-2"
+							<form
+								onSubmit={(e) => {
+									e.preventDefault();
+									form.handleSubmit();
+								}}
+								className="space-y-4"
 							>
-								{isPending ? "Saving..." : "Save Changes"}
-							</Button>
-						</DialogFooter>
-					</form>
-				</DialogContent>
-			</Dialog>
+								<form.Field
+									name="displayName"
+									children={(field) => (
+										<Field>
+											<FieldLabel className="flex items-center justify-between">
+												<span>Display Name</span>
+												<Badge variant="outline" className="text-xs">
+													{field.state.value.length}/{DISPLAY_NAME_MAX_LENGTH}
+												</Badge>
+											</FieldLabel>
+											<FieldContent>
+												<Input
+													placeholder="Enter your name"
+													value={field.state.value}
+													onChange={(e) => {
+														if (
+															e.target.value.length <= DISPLAY_NAME_MAX_LENGTH
+														) {
+															field.handleChange(e.target.value);
+														}
+													}}
+													maxLength={DISPLAY_NAME_MAX_LENGTH}
+												/>
+											</FieldContent>
+										</Field>
+									)}
+								/>
+
+								<form.Field
+									name="bio"
+									children={(field) => (
+										<Field>
+											<FieldLabel className="flex items-center justify-between">
+												<span>Bio</span>
+												<Badge variant="outline" className="text-xs">
+													{field.state.value.length}/{BIO_MAX_LENGTH}
+												</Badge>
+											</FieldLabel>
+											<FieldContent>
+												<Textarea
+													placeholder="Tell people about yourself..."
+													value={field.state.value}
+													onChange={(e) => {
+														if (e.target.value.length <= BIO_MAX_LENGTH) {
+															field.handleChange(e.target.value);
+														}
+													}}
+													rows={3}
+													maxLength={BIO_MAX_LENGTH}
+												/>
+											</FieldContent>
+										</Field>
+									)}
+								/>
+
+								<DialogFooter>
+									<Button
+										type="submit"
+										disabled={isPending}
+										className="w-full gap-2"
+									>
+										{isPending ? "Saving..." : "Save Changes"}
+									</Button>
+								</DialogFooter>
+							</form>
+						</DialogContent>
+					</Dialog>
+				</div>
+			</div>
 		</div>
 	);
 };
