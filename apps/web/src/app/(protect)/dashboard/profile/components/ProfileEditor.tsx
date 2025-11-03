@@ -157,7 +157,7 @@ export const ProfileEditor = ({ profile }: { profile: Profile }) => {
 															field.handleChange(e.target.value);
 														}
 													}}
-													rows={3}
+													rows={4}
 													maxLength={BIO_MAX_LENGTH}
 												/>
 											</FieldContent>
