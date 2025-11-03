@@ -15,7 +15,7 @@ export default {
 	youtube: {
 		name: "YouTube",
 		icon: FaYoutube,
-		baseUrl: "https://youtube.com/",
+		baseUrl: "https://youtube.com/@",
 	},
 	spotify: {
 		name: "Spotify",
