@@ -62,11 +62,6 @@ export const SocialPlatformCard = ({
 		return existingLink.url.replace(platformInfo.baseUrl, "");
 	};
 
-	const getStatusText = () => {
-		if (!existingLink) return "Not connected";
-		return existingLink.isHidden ? "Hidden from profile" : "Visible on profile";
-	};
-
 	return (
 		<div className="flex items-center gap-3 rounded-xl border bg-card p-2.5">
 			<div
@@ -100,8 +95,6 @@ export const SocialPlatformCard = ({
 						>
 							{getDisplayUrl()}
 						</a>
-						<span className="text-muted-foreground/70 text-xs">•</span>
-						<p className="text-muted-foreground text-xs">{getStatusText()}</p>
 					</div>
 				</div>
 				<div className="flex items-center gap-1">
