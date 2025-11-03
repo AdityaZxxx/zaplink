@@ -92,9 +92,14 @@ export const SocialPlatformCard = ({
 						)}
 					</div>
 					<div className="flex items-center gap-2">
-						<p className="truncate text-muted-foreground text-sm">
+						<a
+							href={existingLink?.url}
+							target="_blank"
+							rel="noreferrer"
+							className="truncate text-muted-foreground text-sm"
+						>
 							{getDisplayUrl()}
-						</p>
+						</a>
 						<span className="text-muted-foreground/70 text-xs">•</span>
 						<p className="text-muted-foreground text-xs">{getStatusText()}</p>
 					</div>
