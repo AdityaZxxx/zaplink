@@ -1,4 +1,5 @@
 import {
+	boolean,
 	index,
 	integer,
 	pgTable,
@@ -22,6 +23,7 @@ export const links = pgTable(
 		platform: text("platform").default("custom"),
 		order: integer("order").default(0).notNull(),
 		clicks: integer("clicks").default(0),
+		isHidden: boolean("is_hidden").default(false),
 		createdAt: timestamp("created_at").notNull().defaultNow(),
 		updatedAt: timestamp("updated_at").notNull().defaultNow(),
 	},
