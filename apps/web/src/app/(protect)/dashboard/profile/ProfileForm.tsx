@@ -79,7 +79,7 @@ const SortableItem = ({
 				/>
 			) : (
 				<CustomLinkCard
-					link={link}
+					existingLink={link}
 					onClick={() => openModal("edit", undefined, link)}
 					dragHandleListeners={listeners}
 					dragHandleAttributes={attributes}
@@ -196,7 +196,7 @@ const SocialLinks = ({ links }: { links: Link[] }) => {
 					items={orderedLinks.map((link) => link.id)}
 					strategy={verticalListSortingStrategy}
 				>
-					<div className="grid gap-3">
+					<div className="space-y-3">
 						{orderedLinks.map((link) => (
 							<SortableItem
 								key={link.id}
