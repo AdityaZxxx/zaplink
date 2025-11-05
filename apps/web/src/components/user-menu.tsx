@@ -29,13 +29,7 @@ export default function UserMenu() {
 		}),
 	);
 
-	const isPending = isSessionPending || isProfilePending;
-
-	if (isPending) {
-		return <Skeleton className="h-9 w-9 rounded-full" />;
-	}
-
-	if (!session) {
+	if (!session || !profile) {
 		return (
 			<Button variant="outline" asChild>
 				<Link href="/login">Sign In</Link>
@@ -43,44 +37,36 @@ export default function UserMenu() {
 		);
 	}
 
-	const userData = profile || {
-		displayName: session.user.name,
-		username: session.user.email?.split("@")[0] || "user",
-		avatarUrl: session.user.image,
-	};
+	const isPending = isSessionPending || isProfilePending;
+
+	if (isPending) {
+		return <Skeleton className="h-9 w-9 rounded-full" />;
+	}
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" className="relative h-9 w-9 rounded-full">
 					<Avatar className="h-9 w-9 cursor-pointer">
-						<AvatarImage
-							src={userData.avatarUrl || ""}
-							alt={userData.displayName || ""}
-						/>
-						<AvatarFallback>
-							{userData.displayName?.charAt(0) || "U"}
-						</AvatarFallback>
+						{/* biome-ignore lint: lint/style/noNonNullAssertion */}
+						<AvatarImage src={profile.avatarUrl!} alt={profile.displayName!} />
+						<AvatarFallback>{profile.displayName?.charAt(0)}</AvatarFallback>
 					</Avatar>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent className="w-64 bg-card" align="end">
 				<div className="flex items-center gap-3 p-2">
 					<Avatar className="h-12 w-12">
-						<AvatarImage
-							src={userData.avatarUrl || ""}
-							alt={userData.displayName || ""}
-						/>
-						<AvatarFallback>
-							{userData.displayName?.charAt(0) || "U"}
-						</AvatarFallback>
+						{/* biome-ignore lint: lint/style/noNonNullAssertion */}
+						<AvatarImage src={profile.avatarUrl!} alt={profile.displayName!} />
+						<AvatarFallback>{profile.displayName?.charAt(0)}</AvatarFallback>
 					</Avatar>
 					<div className="grid flex-1 text-left text-sm leading-tight">
 						<span className="truncate font-semibold">
-							{userData.displayName}
+							{profile.displayName}
 						</span>
 						<span className="truncate text-muted-foreground text-sm">
-							@{userData.username}
+							@{profile.username}
 						</span>
 					</div>
 				</div>
