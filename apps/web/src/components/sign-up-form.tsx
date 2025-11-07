@@ -31,7 +31,7 @@ export default function SignUpForm({
 				},
 				{
 					onSuccess: () => {
-						router.push("/onboarding/create-username");
+						router.push("/onboarding");
 						toast.success("Sign up successful");
 					},
 					onError: (error) => {
