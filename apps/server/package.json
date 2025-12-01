@@ -10,20 +10,20 @@
 		"start": "bun run dist/index.js"
 	},
 	"dependencies": {
-		"elysia": "catalog:",
+		"elysia": "^1.3.21",
 		"@elysiajs/cors": "^1.3.3",
-		"@trpc/server": "catalog:",
+		"@trpc/server": "^11.5.0",
 		"@elysiajs/trpc": "^1.1.0",
-		"better-auth": "catalog:",
-		"dotenv": "catalog:",
-		"zod": "catalog:",
+		"better-auth": "^1.3.28",
+		"dotenv": "^17.2.2",
+		"zod": "^4.1.11",
 		"@zaplink/api": "workspace:*",
 		"@zaplink/auth": "workspace:*",
 		"@zaplink/db": "workspace:*"
 	},
 	"devDependencies": {
-		"typescript": "catalog:",
+		"typescript": "^5.8.2",
 		"@types/bun": "^1.2.6",
-		"tsdown": "catalog:"
+		"tsdown": "^0.15.5"
 	}
 }
