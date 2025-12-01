@@ -6,8 +6,9 @@ import { auth } from "@zaplink/auth";
 import "dotenv/config";
 import { Elysia } from "elysia";
 
-// @ts-expect-error
-const _app = new Elysia()
+const PORT = process.env.PORT || 3000;
+
+const app = new Elysia()
 	.use(
 		cors({
 			origin: process.env.CORS_ORIGIN || "",
@@ -33,6 +34,8 @@ const _app = new Elysia()
 		return res;
 	})
 	.get("/", () => "OK")
-	.listen(3000, () => {
-		console.log("Server is running on http://localhost:3000");
+	.listen(PORT, () => {
+		console.log(`Server is running on ${PORT}`);
 	});
+
+export default app;
