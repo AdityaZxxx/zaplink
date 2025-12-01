@@ -121,10 +121,10 @@ export const LinkEditModal = ({
 				} else if (link) {
 					updateLink({ id: link.id, title: value.title, url: value.url });
 				}
-			} else if (platformInfo) {
+			} else if (platform && platformInfo) {
 				const fullUrl = `${platformInfo.baseUrl}${value.username}`;
 				if (mode === "add") {
-					createLink({ title: platform, url: fullUrl });
+					createLink({ title: platform, url: fullUrl, platform: platform });
 				} else if (link) {
 					updateLink({ id: link.id, url: fullUrl });
 				}
