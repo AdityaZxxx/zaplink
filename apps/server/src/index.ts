@@ -6,7 +6,7 @@ import { auth } from "@zaplink/auth";
 import "dotenv/config";
 import { Elysia } from "elysia";
 
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 
 const app = new Elysia()
 	.use(
