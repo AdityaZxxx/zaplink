@@ -33,9 +33,9 @@ const app = new Elysia()
 		});
 		return res;
 	})
-	.get("/", () => "OK")
-	.listen(PORT, () => {
-		console.log(`Server is running on ${PORT}`);
-	});
+	.get("/", () => "OK");
+// .listen(PORT, () => {
+// 	console.log(`Server is running on ${PORT}`);
+// });
 
 export default app;
