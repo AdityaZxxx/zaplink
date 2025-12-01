@@ -33,10 +33,8 @@ export default async function PublicProfilePage({
 	}
 
 	return (
-		<div className="min-h-screen bg-background">
-			<div className="px-4 py-8 md:container md:mx-auto md:px-4">
-				<ProfileCard profile={profile} links={userLinks} />
-			</div>
+		<div className="w-full bg-none md:container md:mx-auto md:block md:px-4 md:py-6">
+			<ProfileCard profile={profile} links={userLinks} />
 		</div>
 	);
 }
