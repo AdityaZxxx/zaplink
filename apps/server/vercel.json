@@ -6,6 +6,5 @@
 			"source": "/(.*)",
 			"destination": "/src/index.ts"
 		}
-	],
-	"outputDirectory": "api"
+	]
 }
