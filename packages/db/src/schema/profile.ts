@@ -11,6 +11,7 @@ export const profiles = pgTable("profiles", {
 	bio: text("bio"),
 	avatarUrl: text("avatar_url"),
 	bannerUrl: text("banner_url"),
+	onboardingCompletedAt: timestamp("onboarding_completed_at"),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
