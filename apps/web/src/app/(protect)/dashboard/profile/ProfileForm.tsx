@@ -99,11 +99,11 @@ const SocialLinks = ({ links }: { links: Link[] }) => {
 			isOpen: false,
 		});
 	const [orderedLinks, setOrderedLinks] = useState<Link[]>(() =>
-		[...links].sort((a, b) => a.order - b.order),
+		[...links].sort((a, b) => a.sortOrder - b.sortOrder),
 	);
 
 	useEffect(() => {
-		setOrderedLinks([...links].sort((a, b) => a.order - b.order));
+		setOrderedLinks([...links].sort((a, b) => a.sortOrder - b.sortOrder));
 	}, [links]);
 
 	const { mutate: updateOrder } = useMutation(
@@ -212,6 +212,7 @@ const SocialLinks = ({ links }: { links: Link[] }) => {
 			<AddLinkTypeModal
 				{...addLinkTypeModalState}
 				onClose={closeAddLinkTypeModal}
+				// @ts-expect-error
 				onSelectLinkType={handleSelectLinkType}
 			/>
 		</div>
