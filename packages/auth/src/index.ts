@@ -9,7 +9,7 @@ export const auth = betterAuth<BetterAuthOptions>({
 
 		schema: schema,
 	}),
-	trustedOrigins: [process.env.CORS_ORIGIN || ""],
+	trustedOrigins: [process.env.NEXT_PUBLIC_URL || ""],
 	emailAndPassword: {
 		enabled: true,
 	},
