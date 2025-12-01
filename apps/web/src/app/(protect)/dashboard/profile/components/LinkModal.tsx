@@ -124,8 +124,8 @@ export const LinkEditModal = ({
 			} else if (platform && platformInfo) {
 				const fullUrl = `${platformInfo.baseUrl}${value.username}`;
 				if (mode === "add") {
-					// @ts-expect-error
-					createLink({ title: platform, url: fullUrl, platform: platform });
+					console.log("skibidi");
+					// createLink({ title: platform, url: fullUrl, platform: platform });
 				} else if (link) {
 					updateLink({ id: link.id, url: fullUrl });
 				}
