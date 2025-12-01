@@ -7,12 +7,7 @@ export async function trpcServer() {
 	const headerMap = new Headers(await nextHeaders);
 
 	const ctx = await createContext({
-		context: {
-			// @ts-expect-error
-			request: {
-				headers: headerMap,
-			},
-		},
+		headers: headerMap,
 	});
 
 	return appRouter.createCaller(ctx);
