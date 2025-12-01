@@ -15,7 +15,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
-import SUPPORT_PLATFORMS from "@/lib/constants/SUPPORT_PLATFORMS";
+import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 import { Input } from "../../../../../components/ui/input";
 import { queryClient, trpc } from "../../../../../utils/trpc/client";
 
@@ -65,7 +65,7 @@ export const AddLinkTypeModal = ({
 						<p className="mb-2 text-muted-foreground text-sm">
 							Social Platforms
 						</p>
-						<div className="space-y-2">
+						{/* <div className="space-y-2">
 							{Object.entries(SUPPORT_PLATFORMS).map(
 								([platform, platformInfo]) => {
 									const Icon = platformInfo.icon;
@@ -84,7 +84,7 @@ export const AddLinkTypeModal = ({
 									);
 								},
 							)}
-						</div>
+						</div> */}
 					</div>
 				</div>
 
@@ -124,6 +124,7 @@ export const LinkEditModal = ({
 			} else if (platform && platformInfo) {
 				const fullUrl = `${platformInfo.baseUrl}${value.username}`;
 				if (mode === "add") {
+					// @ts-expect-error
 					createLink({ title: platform, url: fullUrl, platform: platform });
 				} else if (link) {
 					updateLink({ id: link.id, url: fullUrl });
