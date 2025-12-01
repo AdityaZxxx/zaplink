@@ -4,15 +4,18 @@ import type { links, profiles } from "@zaplink/db";
 import { Link2, User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { APP_NAME } from "@/lib/constants/NAMING";
-import SUPPORT_PLATFORMS from "@/lib/constants/SUPPORT_PLATFORMS";
+import { APP_NAME } from "@/lib/constants/BRANDS";
+import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect;
 
+import { cn } from "@/lib/utils";
+
 interface ProfileCardProps {
 	profile: Profile;
 	links: Link[];
+	className?: string;
 }
 
 const getPlatform = (url: string) => {
@@ -23,7 +26,11 @@ const getPlatform = (url: string) => {
 	return null;
 };
 
-export default function ProfileCard({ profile, links }: ProfileCardProps) {
+export default function ProfileCard({
+	profile,
+	links,
+	className,
+}: ProfileCardProps) {
 	const scrollRef = useRef<HTMLDivElement | null>(null);
 	const [scrollY, setScrollY] = useState(0);
 
@@ -41,7 +48,12 @@ export default function ProfileCard({ profile, links }: ProfileCardProps) {
 	const showHeader = scrollY > 120;
 
 	return (
-		<div className="relative mx-auto flex h-[calc(100vh-4rem)] w-full max-w-md flex-col overflow-hidden rounded-3xl bg-background text-foreground shadow-2xl ring-1 ring-border">
+		<div
+			className={cn(
+				"relative mx-auto flex h-[calc(100vh-4rem)] w-full max-w-md flex-col overflow-hidden bg-background text-foreground md:rounded-3xl md:shadow-2xl md:ring-1 md:ring-border",
+				className,
+			)}
+		>
 			<div
 				className="absolute top-0 left-0 z-0 h-64 w-full will-change-transform"
 				style={{ transform: bannerOffset, opacity: bannerOpacity }}
@@ -55,9 +67,9 @@ export default function ProfileCard({ profile, links }: ProfileCardProps) {
 						priority
 					/>
 				) : (
-					<div className="h-full w-full bg-gradient-to-br from-primary/20 via-card to-background" />
+					<div className="h-full w-full bg-linear-to-br from-primary/20 via-card to-background" />
 				)}
-				<div className="absolute inset-0 bg-gradient-to-t from-card/80 via-card/40 to-transparent" />
+				<div className="absolute inset-0 bg-linear-to-t from-card/80 via-card/40 to-transparent" />
 			</div>
 
 			<div
@@ -94,7 +106,7 @@ export default function ProfileCard({ profile, links }: ProfileCardProps) {
 								className="rounded-full"
 							/>
 						) : (
-							<div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-transparent">
+							<div className="flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-primary/20 to-transparent">
 								<User className="h-10 w-10 text-primary" />
 							</div>
 						)}
