@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import { SUPPORT_PLATFORMS } from "../../../../lib/constants/SUPPORT_PLATFORMS";
 import { CustomLinkCard } from "./components/CustomLinkCard";
-import { AddLinkTypeModal, LinkEditModal } from "./components/LinkModal";
+import { LinkEditModal } from "./components/LinkModal";
 import { ProfileEditor } from "./components/ProfileEditor";
 import { SocialPlatformCard } from "./components/SocialPlatformCard";
 
@@ -209,12 +209,12 @@ const SocialLinks = ({ links }: { links: Link[] }) => {
 			</DndContext>
 
 			<LinkEditModal {...linkModalState} onClose={closeLinkModal} />
-			<AddLinkTypeModal
+			{/* <AddLinkTypeModal
 				{...addLinkTypeModalState}
 				onClose={closeAddLinkTypeModal}
-				// @ts-expect-error
+
 				onSelectLinkType={handleSelectLinkType}
-			/>
+			/> */}
 		</div>
 	);
 };
