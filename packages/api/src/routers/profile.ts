@@ -31,7 +31,7 @@ export const profileRouter = router({
 				.select()
 				.from(links)
 				.where(eq(links.profileId, profile[0].id))
-				.orderBy(asc(links.order));
+				.orderBy(asc(links.sortOrder));
 
 			return {
 				...profile[0],
