@@ -32,7 +32,13 @@ export default function LinksPage() {
 	// Sync local state with fetched links
 	useEffect(() => {
 		if (fetchedLinks) {
-			setLocalLinks(fetchedLinks as Link[]);
+			setLocalLinks(
+				fetchedLinks.map((link) => ({
+					...link,
+					createdAt: new Date(link.createdAt),
+					updatedAt: new Date(link.updatedAt),
+				})) as Link[],
+			);
 		}
 	}, [fetchedLinks]);
 
@@ -45,7 +51,14 @@ export default function LinksPage() {
 	const createLinkMutation = useMutation(
 		trpc.links.createLink.mutationOptions({
 			onSuccess: (newLink) => {
-				setLocalLinks((prev) => [...prev, newLink as Link]);
+				setLocalLinks((prev) => [
+					...prev,
+					{
+						...newLink,
+						createdAt: new Date(newLink.createdAt),
+						updatedAt: new Date(newLink.updatedAt),
+					} as Link,
+				]);
 				setIsAddOpen(false);
 				toast.success("Link created");
 				queryClient.invalidateQueries({
