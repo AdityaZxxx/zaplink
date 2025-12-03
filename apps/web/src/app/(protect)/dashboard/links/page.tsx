@@ -1,3 +1,3 @@
-export default function LinksPage() {
-	return <div>LinksPage</div>;
-}
+import LinksPage from "@/features/dashboard/links/page";
+
+export default LinksPage;
