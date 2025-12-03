@@ -11,12 +11,5 @@ export default async function ProfilePage() {
 		redirect("/onboarding");
 	}
 
-	return (
-		<ProfilePageClient
-			// @ts-expect-error - Date vs string mismatch from API
-			initialProfile={profile}
-			// @ts-expect-error - Date vs string mismatch from API
-			initialLinks={links}
-		/>
-	);
+	return <ProfilePageClient initialProfile={profile} initialLinks={links} />;
 }
