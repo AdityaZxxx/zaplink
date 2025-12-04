@@ -1,6 +1,12 @@
 "use client";
 
-import type { links, profiles } from "@zaplink/db";
+import type {
+	linkContacts,
+	linkCustoms,
+	linkPlatforms,
+	links,
+	profiles,
+} from "@zaplink/db";
 import { Link2, User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +19,11 @@ import { SocialIconsRow } from "./profile-card/SocialIconsRow";
 import { StandardLink } from "./profile-card/StandardLink";
 
 type Profile = typeof profiles.$inferSelect;
-type Link = typeof links.$inferSelect;
+type Link = typeof links.$inferSelect & {
+	platform?: typeof linkPlatforms.$inferSelect | null;
+	custom?: typeof linkCustoms.$inferSelect | null;
+	contact?: typeof linkContacts.$inferSelect | null;
+};
 
 interface ProfileCardProps {
 	profile: Profile;
