@@ -5,7 +5,8 @@ import {
 	DndContext,
 	type DragEndEvent,
 	KeyboardSensor,
-	PointerSensor,
+	MouseSensor,
+	TouchSensor,
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
@@ -110,9 +111,15 @@ export function SocialsManager({
 	onDelete,
 }: SocialsManagerProps) {
 	const sensors = useSensors(
-		useSensor(PointerSensor, {
+		useSensor(MouseSensor, {
 			activationConstraint: {
-				distance: 8,
+				distance: 10,
+			},
+		}),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 250,
+				tolerance: 5,
 			},
 		}),
 		useSensor(KeyboardSensor),
