@@ -15,14 +15,14 @@ import {
 	useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { links } from "@zaplink/db";
+import type { linkPlatforms, links } from "@zaplink/db";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 import { cn } from "@/lib/utils";
 
 type Link = typeof links.$inferSelect & {
-	platform?: { name: string; iconUrl: string | null } | null;
+	platform?: typeof linkPlatforms.$inferSelect | null;
 };
 
 interface SocialsManagerProps {
