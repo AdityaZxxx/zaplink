@@ -1,12 +1,16 @@
 "use client";
 
 import type { links, profiles } from "@zaplink/db";
-import { ExternalLink, Link2, User } from "lucide-react";
+import { Link2, User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
-import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 import { cn } from "@/lib/utils";
+import { ContactActionBar } from "./profile-card/ContactActionBar";
+import { FeaturedLink } from "./profile-card/FeaturedLink";
+import { GridLink } from "./profile-card/GridLink";
+import { SocialIconsRow } from "./profile-card/SocialIconsRow";
+import { StandardLink } from "./profile-card/StandardLink";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect;
@@ -17,14 +21,6 @@ interface ProfileCardProps {
 	className?: string;
 	onLinkClick?: (linkId: number) => void;
 }
-
-const getPlatform = (url: string) => {
-	for (const key in SUPPORT_PLATFORMS) {
-		const p = SUPPORT_PLATFORMS[key as keyof typeof SUPPORT_PLATFORMS];
-		if (url.startsWith(p.baseUrl)) return p;
-	}
-	return null;
-};
 
 export default function ProfileCard({
 	profile,
@@ -45,6 +41,26 @@ export default function ProfileCard({
 
 	const bannerOffset = `translateY(${scrollY * 0.4}px)`;
 	const showHeader = scrollY > 180;
+
+	// Group Links
+	const socialLinks = links.filter(
+		(l) => l.type === "platform" && l.platform?.category === "social",
+	);
+	const contactLinks = links.filter((l) => l.type === "contact");
+	const otherLinks = links.filter(
+		(l) => !socialLinks.includes(l) && !contactLinks.includes(l),
+	);
+
+	const featuredLinks = otherLinks.filter(
+		(l) => l.custom?.displayMode === "featured",
+	);
+	const gridLinks = otherLinks.filter((l) => l.custom?.displayMode === "grid");
+	const standardLinks = otherLinks.filter(
+		(l) =>
+			l.custom?.displayMode === "standard" ||
+			!l.custom?.displayMode || // Default to standard
+			(l.type === "platform" && l.platform?.category !== "social"), // Non-social platforms are standard for now
+	);
 
 	return (
 		<div
@@ -113,7 +129,7 @@ export default function ProfileCard({
 				{/* Profile Info */}
 				<div className="relative px-6 pb-8">
 					<div className="-mt-16 mb-6 flex flex-col items-center">
-						<div className="relative h-32 w-32 rounded-full p-1.5 shadow-2xl ring-4 ring-background">
+						<div className="relative h-32 w-32 rounded-full p-1.5">
 							<div className="relative h-full w-full overflow-hidden rounded-full bg-muted">
 								{profile.avatarUrl ? (
 									<Image
@@ -145,49 +161,47 @@ export default function ProfileCard({
 								{profile.bio}
 							</p>
 						)}
+
+						{/* Social Icons Row */}
+						<div className="mt-4 w-full">
+							<SocialIconsRow links={socialLinks} onLinkClick={onLinkClick} />
+						</div>
 					</div>
 
 					{/* Links List */}
-					<div className="space-y-3 pb-24">
-						{links.length > 0 ? (
-							links.map((link) => {
-								const p = getPlatform(link.url);
-								const Icon = p?.icon || Link2;
-								return (
-									<a
+					<div className="space-y-4 pb-18">
+						{/* Featured Links */}
+						{featuredLinks.map((link) => (
+							<FeaturedLink
+								key={link.id}
+								link={link}
+								onClick={() => onLinkClick?.(link.id)}
+							/>
+						))}
+
+						{/* Grid Links */}
+						{gridLinks.length > 0 && (
+							<div className="grid grid-cols-2 gap-3">
+								{gridLinks.map((link) => (
+									<GridLink
 										key={link.id}
-										href={link.url}
-										target="_blank"
-										rel="noopener noreferrer"
+										link={link}
 										onClick={() => onLinkClick?.(link.id)}
-										className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-border/50 bg-secondary/30 p-1.5 pr-4 transition-all duration-300 hover:scale-[1.02] hover:bg-secondary/50 hover:shadow-lg hover:shadow-primary/5 active:scale-[0.98]"
-									>
-										<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-background shadow-sm ring-1 ring-border/50 transition-colors group-hover:border-primary/20 group-hover:text-primary">
-											<Icon
-												className={cn(
-													"h-5 w-5 transition-colors",
-													p ? "text-foreground" : "text-muted-foreground",
-													"group-hover:text-primary",
-												)}
-											/>
-										</div>
+									/>
+								))}
+							</div>
+						)}
 
-										<div className="flex min-w-0 flex-1 flex-col justify-center">
-											<span className="truncate font-semibold text-foreground/90 text-sm transition-colors group-hover:text-primary">
-												{p ? p.name : link.title}
-											</span>
-											{!p && (
-												<span className="truncate text-[10px] text-muted-foreground/70">
-													{link.url.replace(/^https?:\/\//, "")}
-												</span>
-											)}
-										</div>
+						{/* Standard Links */}
+						{standardLinks.map((link) => (
+							<StandardLink
+								key={link.id}
+								link={link}
+								onClick={() => onLinkClick?.(link.id)}
+							/>
+						))}
 
-										<ExternalLink className="h-4 w-4 text-muted-foreground/30 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-primary/50" />
-									</a>
-								);
-							})
-						) : (
+						{links.length === 0 && (
 							<div className="flex flex-col items-center justify-center py-12 text-center opacity-50">
 								<div className="mb-3 rounded-full bg-muted/50 p-4">
 									<Link2 className="h-6 w-6" />
@@ -196,17 +210,20 @@ export default function ProfileCard({
 							</div>
 						)}
 					</div>
-				</div>
 
-				{/* Footer */}
-				<div className="absolute right-0 bottom-6 left-0 flex justify-center opacity-40 transition-opacity hover:opacity-100">
-					<a
-						href="/"
-						className="flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 font-medium text-[10px] backdrop-blur-sm transition-colors hover:bg-background"
-					>
-						<span>Powered by</span>
-						<span className="font-bold">{APP_NAME}</span>
-					</a>
+					{/* Contact Action Bar */}
+					<ContactActionBar links={contactLinks} onLinkClick={onLinkClick} />
+
+					{/* Footer */}
+					<div className="flex justify-center pt-4 opacity-40 transition-opacity hover:opacity-100">
+						<a
+							href="/"
+							className="flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 font-medium text-[10px] backdrop-blur-sm transition-colors hover:bg-background"
+						>
+							<span>Powered by</span>
+							<span className="font-bold">{APP_NAME}</span>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
