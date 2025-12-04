@@ -1,0 +1,149 @@
+"use client";
+
+import {
+	closestCenter,
+	DndContext,
+	type DragEndEvent,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import {
+	horizontalListSortingStrategy,
+	SortableContext,
+	useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { links } from "@zaplink/db";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
+import { cn } from "@/lib/utils";
+
+type Link = typeof links.$inferSelect & {
+	platform?: { name: string; iconUrl: string | null } | null;
+};
+
+interface SocialsManagerProps {
+	links: Link[];
+	onDragEnd: (event: DragEndEvent) => void;
+	onAdd: () => void;
+	onEdit: (link: Link) => void;
+	onDelete: (id: number) => void;
+}
+
+function SocialItem({
+	link,
+	onEdit,
+	onDelete,
+}: {
+	link: Link;
+	onEdit: () => void;
+	onDelete: (id: number) => void;
+}) {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id: link.id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		zIndex: isDragging ? 50 : "auto",
+	};
+
+	const platform = Object.values(SUPPORT_PLATFORMS).find(
+		(p) => p.name === link.platform?.name,
+	);
+	const Icon = platform?.icon;
+
+	return (
+		<Button
+			ref={setNodeRef}
+			style={style}
+			className={cn(
+				"group relative flex h-14 w-14 flex-col items-center justify-center rounded-xl border bg-zinc-900/50 transition-all hover:border-zinc-700 hover:bg-zinc-900",
+				isDragging && "scale-110 border-primary bg-zinc-900 shadow-xl",
+			)}
+			{...attributes}
+			{...listeners}
+			onClick={onEdit}
+		>
+			{Icon && (
+				<Icon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-white" />
+			)}
+
+			{/* Delete Badge (visible on hover) */}
+			<Button
+				onClick={(e) => {
+					e.stopPropagation();
+					onDelete(link.id);
+				}}
+				className="-top-2 -right-2 absolute hidden h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-sm hover:bg-red-600 group-hover:flex"
+			>
+				<span className="font-bold text-[10px]">×</span>
+			</Button>
+		</Button>
+	);
+}
+
+export function SocialsManager({
+	links,
+	onDragEnd,
+	onAdd,
+	onEdit,
+	onDelete,
+}: SocialsManagerProps) {
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor),
+	);
+
+	return (
+		<div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+			<div className="mb-4 flex items-center justify-between">
+				<div>
+					<h3 className="font-semibold text-lg text-white">Social Icons</h3>
+					<p className="text-sm text-zinc-500">
+						Displayed in the header of your profile.
+					</p>
+				</div>
+				<Button onClick={onAdd} size="sm" variant="outline" className="gap-2">
+					<Plus className="h-4 w-4" /> Add Social
+				</Button>
+			</div>
+
+			<DndContext
+				sensors={sensors}
+				collisionDetection={closestCenter}
+				onDragEnd={onDragEnd}
+			>
+				<SortableContext
+					items={links.map((l) => l.id)}
+					strategy={horizontalListSortingStrategy}
+				>
+					<div className="flex flex-wrap gap-3">
+						{links.map((link) => (
+							<SocialItem
+								key={link.id}
+								link={link}
+								onEdit={() => onEdit(link)}
+								onDelete={onDelete}
+							/>
+						))}
+						{links.length === 0 && (
+							<div className="flex h-14 w-full items-center justify-center rounded-xl border border-zinc-800 border-dashed text-sm text-zinc-600">
+								No social icons added
+							</div>
+						)}
+					</div>
+				</SortableContext>
+			</DndContext>
+		</div>
+	);
+}
