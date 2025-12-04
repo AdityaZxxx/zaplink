@@ -100,7 +100,7 @@ export default function LinkItem({
 
 	return (
 		<div ref={setNodeRef} style={style} className={cn("group relative mb-3")}>
-			<Button
+			<div
 				className={cn(
 					"flex items-center gap-0 overflow-hidden rounded-xl border bg-zinc-900/50 text-card-foreground shadow-sm transition-all hover:border-zinc-700 hover:bg-zinc-900",
 					isDragging &&
@@ -122,12 +122,12 @@ export default function LinkItem({
 				</div>
 
 				{/* Icon/Thumbnail Section */}
-				<Button
-					className="flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center border-zinc-800 border-r bg-zinc-900/20 p-2 transition-colors hover:bg-zinc-900/40"
+				<button
+					type="button"
+					className="flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center border-zinc-800 border-r bg-zinc-900/20 p-2 transition-colors hover:bg-zinc-900/40 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset"
 					onClick={onEdit}
 					onKeyDown={handleKeyDown}
-					role="button"
-					tabIndex={0}
+					aria-label="Edit link thumbnail"
 				>
 					{link.custom?.thumbnailUrl ? (
 						<div className="relative h-full w-full overflow-hidden rounded-lg">
@@ -143,15 +143,15 @@ export default function LinkItem({
 							{getLinkIcon()}
 						</div>
 					)}
-				</Button>
+				</button>
 
 				{/* Content */}
-				<Button
-					className="flex flex-1 cursor-pointer flex-col justify-center gap-1 p-4"
+				<button
+					type="button"
+					className="flex flex-1 cursor-pointer flex-col justify-center gap-1 p-4 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset"
 					onClick={onEdit}
 					onKeyDown={handleKeyDown}
-					role="button"
-					tabIndex={0}
+					aria-label="Edit link details"
 				>
 					<div className="flex items-center gap-2">
 						<span className="truncate font-semibold text-lg text-zinc-200">
@@ -171,10 +171,10 @@ export default function LinkItem({
 					<span className="max-w-[300px] truncate text-sm text-zinc-500">
 						{link.url}
 					</span>
-				</Button>
+				</button>
 
 				{/* Actions */}
-				<Button className="flex items-center gap-2 border-zinc-800 border-l pr-4 pl-4">
+				<div className="flex items-center gap-2 border-zinc-800 border-l pr-4 pl-4">
 					<Switch
 						checked={!link.isHidden}
 						onCheckedChange={handleVisibilityChange}
@@ -186,6 +186,7 @@ export default function LinkItem({
 						size="icon"
 						onClick={onEdit}
 						className="h-8 w-8 text-zinc-500 hover:bg-zinc-800 hover:text-white"
+						aria-label="Edit link"
 					>
 						<Pencil className="h-4 w-4" />
 					</Button>
@@ -194,11 +195,12 @@ export default function LinkItem({
 						size="icon"
 						onClick={() => onDelete(link.id)}
 						className="h-8 w-8 text-zinc-500 hover:bg-red-500/10 hover:text-red-500"
+						aria-label="Delete link"
 					>
 						<Trash2 className="h-4 w-4" />
 					</Button>
-				</Button>
-			</Button>
+				</div>
+			</div>
 		</div>
 	);
 }
