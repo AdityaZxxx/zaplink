@@ -63,7 +63,7 @@ export function ContactManager({
 				</Button>
 			</div>
 
-			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+			<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 				{links.map((link) => {
 					const Icon = getIcon(link.contact?.type || "other");
 					return (
@@ -82,7 +82,7 @@ export function ContactManager({
 									{link.contact?.value}
 								</p>
 							</div>
-							<div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+							<div className="flex gap-1">
 								<Button
 									size="icon"
 									variant="ghost"
