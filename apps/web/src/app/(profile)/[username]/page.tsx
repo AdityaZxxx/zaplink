@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import ProfileCard from "@/components/ProfileCard";
+import PublicProfileClient from "@/features/profile/components/PublicProfileClient";
 import { trpcServer } from "@/utils/trpc/server";
 
 type PublicProfilePageProps = {
@@ -34,7 +34,12 @@ export default async function PublicProfilePage({
 
 	return (
 		<div className="w-full bg-none md:container md:mx-auto md:block md:px-4 md:py-6">
-			<ProfileCard profile={profile} links={userLinks} />
+			<PublicProfileClient
+				// @ts-expect-error - Date vs string mismatch
+				profile={profile}
+				// @ts-expect-error - Date vs string mismatch
+				links={userLinks}
+			/>
 		</div>
 	);
 }
