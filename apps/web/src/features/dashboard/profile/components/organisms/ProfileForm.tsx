@@ -1,7 +1,9 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
 import type { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ProfileImageUploader } from "@/features/onboarding/components/ProfileImageUploader";
+import { useUploadThing } from "@/utils/uploadthing";
 
 const profileSchema = z.object({
 	displayName: z.string().min(1, "Display name is required").max(50),
@@ -35,11 +38,73 @@ interface ProfileFormProps {
 export default function ProfileForm({
 	form,
 	onSubmit,
-	isSubmitting,
+	isSubmitting: parentIsSubmitting,
 }: ProfileFormProps) {
+	const [avatarFile, setAvatarFile] = useState<File | null>(null);
+	const [bannerFile, setBannerFile] = useState<File | null>(null);
+	const [isUploading, setIsUploading] = useState(false);
+
+	const { startUpload: uploadAvatar } = useUploadThing("avatarUploader");
+	const { startUpload: uploadBanner } = useUploadThing("bannerUploader");
+
+	const handleFormSubmit = async (values: ProfileFormValues) => {
+		try {
+			setIsUploading(true);
+			let finalAvatarUrl = values.avatarUrl;
+			let finalBannerUrl = values.bannerUrl;
+
+			// Upload avatar if changed
+			if (avatarFile) {
+				const res = await uploadAvatar([avatarFile]);
+				if (res?.[0]) {
+					finalAvatarUrl = res[0].url;
+				} else {
+					throw new Error("Failed to upload avatar");
+				}
+			}
+
+			// Upload banner if changed
+			if (bannerFile) {
+				const res = await uploadBanner([bannerFile]);
+				if (res?.[0]) {
+					finalBannerUrl = res[0].url;
+				} else {
+					throw new Error("Failed to upload banner");
+				}
+			}
+
+			// Safety check: NEVER submit a blob URL
+			if (finalAvatarUrl?.startsWith("blob:")) {
+				throw new Error("Invalid avatar URL. Please try uploading again.");
+			}
+			if (finalBannerUrl?.startsWith("blob:")) {
+				throw new Error("Invalid banner URL. Please try uploading again.");
+			}
+
+			// Submit with final URLs
+			onSubmit({
+				...values,
+				avatarUrl: finalAvatarUrl,
+				bannerUrl: finalBannerUrl,
+			});
+		} catch (error) {
+			console.error("Upload failed:", error);
+			toast.error(
+				error instanceof Error ? error.message : "Failed to update profile",
+			);
+		} finally {
+			setIsUploading(false);
+		}
+	};
+
+	const isSubmitting = parentIsSubmitting || isUploading;
+
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+			<form
+				onSubmit={form.handleSubmit(handleFormSubmit)}
+				className="space-y-8"
+			>
 				{/* Avatar & Banner Section */}
 				<div className="space-y-4 rounded-xl border p-6">
 					<h3 className="font-semibold text-lg">Appearance</h3>
@@ -54,6 +119,7 @@ export default function ProfileForm({
 										<ProfileImageUploader
 											imageUrl={field.value || null}
 											onImageChange={field.onChange}
+											onFileChange={setAvatarFile}
 											label="Avatar"
 											endpoint="avatarUploader"
 											sizeClass="h-24 w-24 rounded-full"
@@ -73,6 +139,7 @@ export default function ProfileForm({
 										<ProfileImageUploader
 											imageUrl={field.value || null}
 											onImageChange={field.onChange}
+											onFileChange={setBannerFile}
 											label="Banner"
 											endpoint="bannerUploader"
 											sizeClass="h-24 w-full rounded-lg aspect-video"
