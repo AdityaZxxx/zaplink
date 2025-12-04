@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
 	boolean,
 	integer,
@@ -71,3 +72,39 @@ export const linkContacts = pgTable("link_contacts", {
 	type: text("type").notNull(), // phone/email/website
 	value: text("value").notNull(),
 });
+
+export const linksRelations = relations(links, ({ one }) => ({
+	platform: one(linkPlatforms, {
+		fields: [links.id],
+		references: [linkPlatforms.linkId],
+	}),
+	custom: one(linkCustoms, {
+		fields: [links.id],
+		references: [linkCustoms.linkId],
+	}),
+	contact: one(linkContacts, {
+		fields: [links.id],
+		references: [linkContacts.linkId],
+	}),
+}));
+
+export const linkPlatformsRelations = relations(linkPlatforms, ({ one }) => ({
+	link: one(links, {
+		fields: [linkPlatforms.linkId],
+		references: [links.id],
+	}),
+}));
+
+export const linkCustomsRelations = relations(linkCustoms, ({ one }) => ({
+	link: one(links, {
+		fields: [linkCustoms.linkId],
+		references: [links.id],
+	}),
+}));
+
+export const linkContactsRelations = relations(linkContacts, ({ one }) => ({
+	link: one(links, {
+		fields: [linkContacts.linkId],
+		references: [links.id],
+	}),
+}));
