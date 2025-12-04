@@ -14,13 +14,22 @@ import {
 	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { links } from "@zaplink/db";
+import type {
+	linkContacts,
+	linkCustoms,
+	linkPlatforms,
+	links,
+} from "@zaplink/db";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyLinksState } from "../molecules/EmptyLinksState";
 import LinkItem from "../molecules/LinkItem";
 
-type Link = typeof links.$inferSelect;
+type Link = typeof links.$inferSelect & {
+	platform?: typeof linkPlatforms.$inferSelect | null;
+	custom?: typeof linkCustoms.$inferSelect | null;
+	contact?: typeof linkContacts.$inferSelect | null;
+};
 
 interface ContentLinksManagerProps {
 	links: Link[];
