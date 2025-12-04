@@ -3,7 +3,12 @@
 import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { links } from "@zaplink/db";
+import type {
+	linkContacts,
+	linkCustoms,
+	linkPlatforms,
+	links,
+} from "@zaplink/db";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,7 +22,11 @@ import { ContentLinksManager } from "./components/organisms/ContentLinksManager"
 import { EditLinkSheet } from "./components/organisms/EditLinkSheet";
 import { SocialsManager } from "./components/organisms/SocialsManager";
 
-type Link = typeof links.$inferSelect;
+type Link = typeof links.$inferSelect & {
+	platform?: typeof linkPlatforms.$inferSelect | null;
+	custom?: typeof linkCustoms.$inferSelect | null;
+	contact?: typeof linkContacts.$inferSelect | null;
+};
 
 export default function LinksPage() {
 	const router = useRouter();
@@ -58,6 +67,7 @@ export default function LinksPage() {
 	const createLinkMutation = useMutation(
 		trpc.links.createLink.mutationOptions({
 			onSuccess: (newLink) => {
+				if (!newLink) return;
 				setLocalLinks((prev) => [
 					...prev,
 					{
