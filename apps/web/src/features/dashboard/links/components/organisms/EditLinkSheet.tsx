@@ -100,7 +100,9 @@ export function EditLinkSheet({
 
 			// Upload thumbnail if file exists
 			if (thumbnailFile) {
-				const res = await startUpload([thumbnailFile]);
+				const res = await startUpload([thumbnailFile], {
+					linkId: link.id,
+				});
 				if (res?.[0]) {
 					finalThumbnailUrl = res[0].ufsUrl;
 				} else {
