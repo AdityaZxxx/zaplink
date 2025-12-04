@@ -79,15 +79,25 @@ function SocialItem({
 			)}
 
 			{/* Delete Badge (visible on hover) */}
-			<Button
+			{/* Delete Badge */}
+			<button
+				type="button"
+				tabIndex={0}
 				onClick={(e) => {
 					e.stopPropagation();
 					onDelete(link.id);
 				}}
-				className="-top-2 -right-2 absolute hidden h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-sm hover:bg-red-600 group-hover:flex"
+				onKeyDown={(e) => {
+					if (e.key === "Enter" || e.key === " ") {
+						e.stopPropagation();
+						onDelete(link.id);
+					}
+				}}
+				className="-top-2 -right-2 absolute flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-zinc-800 text-zinc-400 shadow-sm transition-colors hover:bg-red-500 hover:text-white"
+				aria-label="Delete social link"
 			>
-				<span className="font-bold text-[10px]">×</span>
-			</Button>
+				<span className="font-bold text-xs">×</span>
+			</button>
 		</Button>
 	);
 }
@@ -100,7 +110,11 @@ export function SocialsManager({
 	onDelete,
 }: SocialsManagerProps) {
 	const sensors = useSensors(
-		useSensor(PointerSensor),
+		useSensor(PointerSensor, {
+			activationConstraint: {
+				distance: 8,
+			},
+		}),
 		useSensor(KeyboardSensor),
 	);
 
