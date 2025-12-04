@@ -23,17 +23,6 @@ export const ourFileRouter = {
 
 			const prev = result[0];
 
-			const newFileName = `avatar-${metadata.userId}`;
-
-			try {
-				await utapi.renameFiles({
-					fileKey: file.key,
-					newName: newFileName,
-				});
-			} catch (err) {
-				console.error("Failed to rename file:", err);
-			}
-
 			await db
 				.update(profiles)
 				.set({ avatarUrl: file.ufsUrl, updatedAt: new Date() })
@@ -52,7 +41,7 @@ export const ourFileRouter = {
 		}),
 
 	bannerUploader: f({
-		image: { maxFileSize: "8MB", maxFileCount: 1 },
+		image: { maxFileSize: "4MB", maxFileCount: 1 },
 	})
 		.middleware(async () => {
 			const session = await getSession();
@@ -66,17 +55,6 @@ export const ourFileRouter = {
 				.where(eq(profiles.userId, metadata.userId));
 
 			const prev = result[0];
-
-			const newFileName = `banner-${metadata.userId}`;
-
-			try {
-				await utapi.renameFiles({
-					fileKey: file.key,
-					newName: newFileName,
-				});
-			} catch (err) {
-				console.error("Failed to rename banner file:", err);
-			}
 
 			await db
 				.update(profiles)
@@ -92,6 +70,18 @@ export const ourFileRouter = {
 				}
 			}
 
+			return { uploadedBy: metadata.userId };
+		}),
+
+	linkThumbnailUploader: f({
+		image: { maxFileSize: "4MB", maxFileCount: 1 },
+	})
+		.middleware(async () => {
+			const session = await getSession();
+			if (!session?.user) throw new UploadThingError("Unauthorized");
+			return { userId: session.user.id };
+		})
+		.onUploadComplete(async ({ metadata }) => {
 			return { uploadedBy: metadata.userId };
 		}),
 } satisfies FileRouter;
