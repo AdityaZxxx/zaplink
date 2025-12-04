@@ -9,10 +9,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ProfileCard from "@/components/ProfileCard";
-import PageWithPreview from "@/features/dashboard/components/PageWithPreview";
 import { queryClient, trpc } from "@/utils/trpc/client";
+import PageWithPreview from "../components/PageWithPreview";
 import { AddLinkDialog } from "./components/organisms/AddLinkDialog";
-import { LinksList } from "./components/organisms/LinksList";
+import { ContactManager } from "./components/organisms/ContactManager";
+import { ContentLinksManager } from "./components/organisms/ContentLinksManager";
+import { EditLinkSheet } from "./components/organisms/EditLinkSheet";
+import { SocialsManager } from "./components/organisms/SocialsManager";
 
 type Link = typeof links.$inferSelect;
 
@@ -20,6 +23,10 @@ export default function LinksPage() {
 	const router = useRouter();
 	const [localLinks, setLocalLinks] = useState<Link[]>([]);
 	const [isAddOpen, setIsAddOpen] = useState(false);
+	const [editingLink, setEditingLink] = useState<Link | null>(null);
+	const [addLinkType, setAddLinkType] = useState<
+		"custom" | "platform" | "contact"
+	>("custom");
 
 	const { data: profile, isLoading: isLoadingProfile } = useQuery(
 		trpc.profile.getProfile.queryOptions(),
@@ -61,9 +68,7 @@ export default function LinksPage() {
 				]);
 				setIsAddOpen(false);
 				toast.success("Link created");
-				queryClient.invalidateQueries({
-					queryKey: ["links"],
-				});
+				queryClient.invalidateQueries(trpc.links.getAllLinks.queryOptions());
 			},
 		}),
 	);
@@ -71,9 +76,7 @@ export default function LinksPage() {
 	const updateLinkMutation = useMutation(
 		trpc.links.updateLink.mutationOptions({
 			onSuccess: () => {
-				queryClient.invalidateQueries({
-					queryKey: ["links"],
-				});
+				queryClient.invalidateQueries(trpc.links.getAllLinks.queryOptions());
 			},
 		}),
 	);
@@ -83,9 +86,7 @@ export default function LinksPage() {
 			onSuccess: (deletedLink) => {
 				setLocalLinks((prev) => prev.filter((l) => l.id !== deletedLink.id));
 				toast.success("Link deleted");
-				queryClient.invalidateQueries({
-					queryKey: ["links"],
-				});
+				queryClient.invalidateQueries(trpc.links.getAllLinks.queryOptions());
 			},
 		}),
 	);
@@ -99,21 +100,25 @@ export default function LinksPage() {
 	);
 
 	// Handlers
-	const handleDragEnd = (event: DragEndEvent) => {
+	const handleDragEnd = (event: DragEndEvent, items: Link[]) => {
 		const { active, over } = event;
 
 		if (over && active.id !== over.id) {
-			setLocalLinks((items) => {
-				const oldIndex = items.findIndex((item) => item.id === active.id);
-				const newIndex = items.findIndex((item) => item.id === over.id);
-				const newItems = arrayMove(items, oldIndex, newIndex);
+			const oldIndex = items.findIndex((item) => item.id === active.id);
+			const newIndex = items.findIndex((item) => item.id === over.id);
+			const newOrderedItems = arrayMove(items, oldIndex, newIndex);
 
-				// Sync with server
-				reorderLinksMutation.mutate({
-					orderedIds: newItems.map((item) => item.id),
-				});
+			// Update local state
+			setLocalLinks((prev) => {
+				const otherLinks = prev.filter(
+					(l) => !items.find((i) => i.id === l.id),
+				);
+				return [...otherLinks, ...newOrderedItems];
+			});
 
-				return newItems;
+			// Sync with server (only for this zone)
+			reorderLinksMutation.mutate({
+				orderedIds: newOrderedItems.map((item) => item.id),
 			});
 		}
 	};
@@ -130,13 +135,32 @@ export default function LinksPage() {
 		deleteLinkMutation.mutate({ id });
 	};
 
-	const handleAddLink = (title: string, url: string) => {
+	const handleAddLink = (data: any) => {
 		createLinkMutation.mutate({
-			title,
-			url,
-			type: "custom",
-		});
+			title: data.title,
+			url: data.url,
+			type: data.type,
+			platformName: data.platformName,
+			displayMode: data.displayMode,
+			thumbnailUrl: data.thumbnailUrl,
+			contactType: data.contactType,
+			contactValue: data.contactValue,
+		} as any);
 	};
+
+	const openAddDialog = (type: "custom" | "platform" | "contact") => {
+		setAddLinkType(type);
+		setIsAddOpen(true);
+	};
+
+	// Filter Links for Zones
+	const socialLinks = localLinks.filter(
+		(l) => l.type === "platform" && l.platform?.category === "social",
+	);
+	const contactLinks = localLinks.filter((l) => l.type === "contact");
+	const contentLinks = localLinks.filter(
+		(l) => !socialLinks.includes(l) && !contactLinks.includes(l),
+	);
 
 	if (isLoadingProfile || isLoadingLinks) {
 		return (
@@ -158,25 +182,52 @@ export default function LinksPage() {
 				/>
 			}
 		>
-			<div className="space-y-6">
-				<div className="flex items-center justify-between">
-					<div>
-						<h1 className="font-bold text-3xl tracking-tight">Links</h1>
-						<p className="text-muted-foreground">Add and manage your links.</p>
-					</div>
-					<AddLinkDialog
-						isOpen={isAddOpen}
-						onOpenChange={setIsAddOpen}
-						onAddLink={handleAddLink}
-						isSubmitting={createLinkMutation.isPending}
-					/>
+			<div className="space-y-8 pb-20">
+				<div>
+					<h1 className="font-bold text-3xl tracking-tight">Links</h1>
+					<p className="text-muted-foreground">Manage your profile content.</p>
 				</div>
 
-				<LinksList
-					links={localLinks}
-					onDragEnd={handleDragEnd}
+				{/* Zone A: Header (Socials) */}
+				<SocialsManager
+					links={socialLinks}
+					onDragEnd={(e) => handleDragEnd(e, socialLinks)}
+					onAdd={() => openAddDialog("platform")}
+					onEdit={(link) => setEditingLink(link)}
+					onDelete={handleDelete}
+				/>
+
+				{/* Zone B: Body (Content) */}
+				<ContentLinksManager
+					links={contentLinks}
+					onDragEnd={(e) => handleDragEnd(e, contentLinks)}
+					onAdd={() => openAddDialog("custom")}
+					onEdit={(link) => setEditingLink(link)}
 					onUpdate={handleUpdate}
 					onDelete={handleDelete}
+				/>
+
+				{/* Zone C: Footer (Contact) */}
+				<ContactManager
+					links={contactLinks}
+					onAdd={() => openAddDialog("contact")}
+					onEdit={(link) => setEditingLink(link)}
+					onDelete={handleDelete}
+				/>
+
+				<AddLinkDialog
+					isOpen={isAddOpen}
+					onOpenChange={setIsAddOpen}
+					onAddLink={handleAddLink}
+					isSubmitting={createLinkMutation.isPending}
+					initialTab={addLinkType}
+				/>
+
+				<EditLinkSheet
+					link={editingLink}
+					isOpen={!!editingLink}
+					onOpenChange={(open) => !open && setEditingLink(null)}
+					onUpdate={handleUpdate}
 				/>
 			</div>
 		</PageWithPreview>
