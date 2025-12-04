@@ -14,7 +14,6 @@ import {
 	GripVertical,
 	Link as LinkIcon,
 	Mail,
-	Pencil,
 	Phone,
 	Smartphone,
 	Star,
@@ -102,7 +101,7 @@ export default function LinkItem({
 		<div ref={setNodeRef} style={style} className={cn("group relative mb-3")}>
 			<div
 				className={cn(
-					"flex items-center gap-0 overflow-hidden rounded-xl border bg-zinc-900/50 text-card-foreground shadow-sm transition-all hover:border-zinc-700 hover:bg-zinc-900",
+					"flex flex-col items-stretch gap-0 overflow-hidden rounded-xl border bg-zinc-900/50 text-card-foreground shadow-sm transition-all hover:border-zinc-700 hover:bg-zinc-900 md:flex-row md:items-center",
 					isDragging &&
 						"z-50 scale-105 bg-zinc-900 opacity-90 shadow-xl ring-2 ring-primary/20",
 					link.isHidden &&
@@ -112,84 +111,79 @@ export default function LinkItem({
 						"border-l-4 border-l-yellow-500 bg-zinc-900/80",
 				)}
 			>
-				{/* Drag Handle */}
-				<div
-					{...attributes}
-					{...listeners}
-					className="flex h-24 w-10 shrink-0 cursor-grab touch-none items-center justify-center border-zinc-800 border-r bg-zinc-900/30 text-zinc-600 transition-colors hover:bg-zinc-800 hover:text-zinc-400 active:cursor-grabbing"
-				>
-					<GripVertical className="h-5 w-5" />
+				<div className="flex flex-1 items-stretch">
+					{/* Drag Handle */}
+					<div
+						{...attributes}
+						{...listeners}
+						className="flex w-8 shrink-0 cursor-grab touch-none items-center justify-center border-zinc-800 border-r bg-zinc-900/30 text-zinc-600 transition-colors hover:bg-zinc-800 hover:text-zinc-400 active:cursor-grabbing md:w-10"
+					>
+						<GripVertical className="h-4 w-4 md:h-5 md:w-5" />
+					</div>
+
+					{/* Icon/Thumbnail Section */}
+					<button
+						type="button"
+						className="flex h-20 w-20 shrink-0 cursor-pointer items-center justify-center border-zinc-800 border-r bg-zinc-900/20 p-2 transition-colors hover:bg-zinc-900/40 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset md:h-24 md:w-24"
+						onClick={onEdit}
+						onKeyDown={handleKeyDown}
+						aria-label="Edit link thumbnail"
+					>
+						{link.custom?.thumbnailUrl ? (
+							<div className="relative h-full w-full overflow-hidden rounded-lg">
+								<Image
+									src={link.custom.thumbnailUrl}
+									alt="Thumbnail"
+									fill
+									className="object-cover"
+								/>
+							</div>
+						) : (
+							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 md:h-12 md:w-12">
+								{getLinkIcon()}
+							</div>
+						)}
+					</button>
+
+					{/* Content */}
+					<button
+						type="button"
+						className="flex min-w-0 flex-1 cursor-pointer flex-col justify-center gap-1 p-3 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset md:p-4"
+						onClick={onEdit}
+						onKeyDown={handleKeyDown}
+						aria-label="Edit link details"
+					>
+						<div className="flex items-center gap-2">
+							<span className="truncate font-semibold text-base text-zinc-200 md:text-lg">
+								{link.title}
+							</span>
+							{link.custom?.displayMode === "featured" && (
+								<span className="flex shrink-0 items-center gap-1 rounded-full bg-yellow-500/10 px-1.5 py-0.5 font-medium text-[9px] text-yellow-500 uppercase tracking-wider md:px-2 md:text-[10px]">
+									<Star className="h-2.5 w-2.5 md:h-3 md:w-3" />{" "}
+									<span className="hidden sm:inline">Featured</span>
+								</span>
+							)}
+							{link.custom?.displayMode === "grid" && (
+								<span className="flex shrink-0 items-center gap-1 rounded-full bg-blue-500/10 px-1.5 py-0.5 font-medium text-[9px] text-blue-500 uppercase tracking-wider md:px-2 md:text-[10px]">
+									<Grid className="h-2.5 w-2.5 md:h-3 md:w-3" />{" "}
+									<span className="hidden sm:inline">Grid</span>
+								</span>
+							)}
+						</div>
+						<span className="max-w-[150px] truncate text-xs text-zinc-500 sm:max-w-[300px] md:text-sm">
+							{link.url}
+						</span>
+					</button>
 				</div>
 
-				{/* Icon/Thumbnail Section */}
-				<button
-					type="button"
-					className="flex h-24 w-24 shrink-0 cursor-pointer items-center justify-center border-zinc-800 border-r bg-zinc-900/20 p-2 transition-colors hover:bg-zinc-900/40 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset"
-					onClick={onEdit}
-					onKeyDown={handleKeyDown}
-					aria-label="Edit link thumbnail"
-				>
-					{link.custom?.thumbnailUrl ? (
-						<div className="relative h-full w-full overflow-hidden rounded-lg">
-							<Image
-								src={link.custom.thumbnailUrl}
-								alt="Thumbnail"
-								fill
-								className="object-cover"
-							/>
-						</div>
-					) : (
-						<div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800">
-							{getLinkIcon()}
-						</div>
-					)}
-				</button>
-
-				{/* Content */}
-				<button
-					type="button"
-					className="flex flex-1 cursor-pointer flex-col justify-center gap-1 p-4 text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset"
-					onClick={onEdit}
-					onKeyDown={handleKeyDown}
-					aria-label="Edit link details"
-				>
-					<div className="flex items-center gap-2">
-						<span className="truncate font-semibold text-lg text-zinc-200">
-							{link.title}
-						</span>
-						{link.custom?.displayMode === "featured" && (
-							<span className="flex items-center gap-1 rounded-full bg-yellow-500/10 px-2 py-0.5 font-medium text-[10px] text-yellow-500 uppercase tracking-wider">
-								<Star className="h-3 w-3" /> Featured
-							</span>
-						)}
-						{link.custom?.displayMode === "grid" && (
-							<span className="flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 font-medium text-[10px] text-blue-500 uppercase tracking-wider">
-								<Grid className="h-3 w-3" /> Grid
-							</span>
-						)}
-					</div>
-					<span className="max-w-[300px] truncate text-sm text-zinc-500">
-						{link.url}
-					</span>
-				</button>
-
 				{/* Actions */}
-				<div className="flex items-center gap-2 border-zinc-800 border-l pr-4 pl-4">
+				<div className="flex w-full items-center justify-end border-zinc-800 border-t bg-zinc-900/20 px-4 py-2 md:w-auto md:justify-start md:border-t-0 md:border-l md:bg-transparent md:p-0 md:px-4">
 					<Switch
 						checked={!link.isHidden}
 						onCheckedChange={handleVisibilityChange}
 						aria-label="Toggle visibility"
-						className="data-[state=checked]:bg-green-500"
+						className="mr-2 scale-90 cursor-pointer data-[state=checked]:bg-green-500 md:scale-100"
 					/>
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={onEdit}
-						className="h-8 w-8 text-zinc-500 hover:bg-zinc-800 hover:text-white"
-						aria-label="Edit link"
-					>
-						<Pencil className="h-4 w-4" />
-					</Button>
 					<Button
 						variant="ghost"
 						size="icon"
