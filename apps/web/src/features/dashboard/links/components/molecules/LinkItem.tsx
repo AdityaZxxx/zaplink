@@ -2,7 +2,12 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { links } from "@zaplink/db";
+import type {
+	linkContacts,
+	linkCustoms,
+	linkPlatforms,
+	links,
+} from "@zaplink/db";
 import {
 	Contact,
 	Grid,
@@ -23,18 +28,9 @@ import { cn } from "@/lib/utils";
 
 // Extended Link type to include relations
 type Link = typeof links.$inferSelect & {
-	platform?: {
-		name: string;
-		category: string | null;
-		iconUrl: string | null;
-	} | null;
-	custom?: {
-		displayMode: "standard" | "featured" | "grid" | null;
-		title: string | null;
-		iconUrl: string | null;
-		thumbnailUrl: string | null;
-	} | null;
-	contact?: { type: string; value: string } | null;
+	platform?: typeof linkPlatforms.$inferSelect | null;
+	custom?: typeof linkCustoms.$inferSelect | null;
+	contact?: typeof linkContacts.$inferSelect | null;
 };
 
 interface LinkItemProps {
