@@ -34,12 +34,7 @@ export default async function PublicProfilePage({
 
 	return (
 		<div className="w-full bg-none md:container md:mx-auto md:block md:px-4 md:py-6">
-			<PublicProfileClient
-				// @ts-expect-error - Date vs string mismatch
-				profile={profile}
-				// @ts-expect-error - Date vs string mismatch
-				links={userLinks}
-			/>
+			<PublicProfileClient profile={profile} links={userLinks} />
 		</div>
 	);
 }
