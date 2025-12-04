@@ -1,6 +1,11 @@
 "use client";
 
-import type { links } from "@zaplink/db";
+import type {
+	linkContacts,
+	linkCustoms,
+	linkPlatforms,
+	links,
+} from "@zaplink/db";
 import {
 	Contact,
 	Mail,
@@ -13,7 +18,9 @@ import {
 import { Button } from "@/components/ui/button";
 
 type Link = typeof links.$inferSelect & {
-	contact?: { type: string; value: string } | null;
+	platform?: typeof linkPlatforms.$inferSelect | null;
+	custom?: typeof linkCustoms.$inferSelect | null;
+	contact?: typeof linkContacts.$inferSelect | null;
 };
 
 interface ContactManagerProps {
