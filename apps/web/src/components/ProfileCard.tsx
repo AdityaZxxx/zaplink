@@ -12,7 +12,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
 import { cn } from "@/lib/utils";
-import { ContactActionBar } from "./profile-card/ContactActionBar";
+import { ContactLink } from "./profile-card/ContactLink";
 import { FeaturedLink } from "./profile-card/FeaturedLink";
 import { GridLink } from "./profile-card/GridLink";
 import { SocialIconsRow } from "./profile-card/SocialIconsRow";
@@ -222,18 +222,18 @@ export default function ProfileCard({
 					</div>
 
 					{/* Contact Action Bar */}
-					<ContactActionBar links={contactLinks} onLinkClick={onLinkClick} />
+					<ContactLink links={contactLinks} onLinkClick={onLinkClick} />
+				</div>
 
-					{/* Footer */}
-					<div className="flex justify-center pt-4 opacity-40 transition-opacity hover:opacity-100">
-						<a
-							href="/"
-							className="flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 font-medium text-[10px] backdrop-blur-sm transition-colors hover:bg-background"
-						>
-							<span>Powered by</span>
-							<span className="font-bold">{APP_NAME}</span>
-						</a>
-					</div>
+				{/* Footer */}
+				<div className="flex justify-center opacity-40 transition-opacity hover:opacity-100">
+					<a
+						href="/"
+						className="flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 font-medium text-[10px] backdrop-blur-sm transition-colors hover:bg-background"
+					>
+						<span>Powered by</span>
+						<span className="font-bold">{APP_NAME}</span>
+					</a>
 				</div>
 			</div>
 		</div>
