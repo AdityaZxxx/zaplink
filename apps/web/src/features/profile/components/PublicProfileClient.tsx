@@ -29,8 +29,7 @@ export default function PublicProfileClient({
 		if (profile.username) {
 			trackViewMutation.mutate({ username: profile.username });
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [profile.username]);
+	}, [profile.username, trackViewMutation.mutate]);
 
 	const handleLinkClick = (linkId: number) => {
 		trackClickMutation.mutate({ linkId });
