@@ -69,7 +69,8 @@ export function ContentLinksManager({
 					size="sm"
 					className="gap-2 bg-white text-black hover:bg-zinc-200"
 				>
-					<Plus className="h-4 w-4" /> Add Block
+					<Plus className="h-4 w-4" />{" "}
+					<span className="hidden md:inline">Add Block</span>
 				</Button>
 			</div>
 

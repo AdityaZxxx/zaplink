@@ -59,7 +59,8 @@ export function ContactManager({
 					</p>
 				</div>
 				<Button onClick={onAdd} size="sm" variant="outline" className="gap-2">
-					<Plus className="h-4 w-4" /> Add Contact
+					<Plus className="h-4 w-4" />{" "}
+					<span className="hidden md:inline">Add Contact</span>
 				</Button>
 			</div>
 

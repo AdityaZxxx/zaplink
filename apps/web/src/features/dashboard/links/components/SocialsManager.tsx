@@ -80,7 +80,6 @@ function SocialItem({
 				<Icon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-white" />
 			)}
 
-			{/* Delete Badge (visible on hover) */}
 			{/* Delete Badge */}
 			<button
 				type="button"
@@ -136,7 +135,8 @@ export function SocialsManager({
 					</p>
 				</div>
 				<Button onClick={onAdd} size="sm" variant="outline" className="gap-2">
-					<Plus className="h-4 w-4" /> Add Social
+					<Plus className="h-4 w-4" />{" "}
+					<span className="hidden md:inline">Add Social</span>
 				</Button>
 			</div>
 
