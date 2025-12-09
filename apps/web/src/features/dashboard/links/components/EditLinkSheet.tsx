@@ -128,10 +128,11 @@ export function EditLinkSheet({
 				) {
 					finalUrl = `tel:${contactValue}`;
 				} else if (
-					contactType === "whatsapp" &&
-					!contactValue.startsWith("https://wa.me/")
+					contactType === "website" &&
+					!contactValue.startsWith("http://") &&
+					!contactValue.startsWith("https://")
 				) {
-					finalUrl = `https://wa.me/${contactValue.replace(/[^0-9]/g, "")}`;
+					finalUrl = `https://${contactValue}`;
 				}
 				updates.url = finalUrl;
 			}
@@ -296,7 +297,7 @@ export function EditLinkSheet({
 										<SelectContent className="border-zinc-800 bg-zinc-900">
 											<SelectItem value="email">Email</SelectItem>
 											<SelectItem value="phone">Phone</SelectItem>
-											<SelectItem value="whatsapp">WhatsApp</SelectItem>
+											<SelectItem value="website">Website</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>

@@ -12,12 +12,12 @@ import type {
 import {
 	BarChart3,
 	Contact,
+	Globe,
 	Grid,
 	GripVertical,
 	Link as LinkIcon,
 	Mail,
 	Phone,
-	Smartphone,
 	Star,
 	Trash2,
 } from "lucide-react";
@@ -103,8 +103,8 @@ export default function LinkItem({
 					return <Mail className="h-5 w-5 text-muted-foreground" />;
 				case "phone":
 					return <Phone className="h-5 w-5 text-muted-foreground" />;
-				case "whatsapp":
-					return <Smartphone className="h-5 w-5 text-muted-foreground" />;
+				case "website":
+					return <Globe className="h-5 w-5 text-muted-foreground" />;
 				default:
 					return <Contact className="h-5 w-5 text-muted-foreground" />;
 			}

@@ -6,15 +6,7 @@ import type {
 	linkPlatforms,
 	links,
 } from "@zaplink/db";
-import {
-	Contact,
-	Mail,
-	Pencil,
-	Phone,
-	Plus,
-	Smartphone,
-	Trash2,
-} from "lucide-react";
+import { Contact, Mail, Pencil, Phone, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Link = typeof links.$inferSelect & {
@@ -42,8 +34,8 @@ export function ContactManager({
 				return Mail;
 			case "phone":
 				return Phone;
-			case "whatsapp":
-				return Smartphone;
+			case "website":
+				return Globe;
 			default:
 				return Contact;
 		}

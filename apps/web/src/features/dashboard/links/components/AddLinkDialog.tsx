@@ -4,13 +4,13 @@ import {
 	AlignJustify,
 	ChevronDown,
 	Contact,
+	Globe,
 	Grid,
 	LayoutGrid,
 	Link as LinkIcon,
 	Mail,
 	Phone,
 	Plus,
-	Smartphone,
 	Star,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -153,10 +153,11 @@ export function AddLinkDialog({
 			} else if (contactType === "phone" && !contactValue.startsWith("tel:")) {
 				finalUrl = `tel:${contactValue}`;
 			} else if (
-				contactType === "whatsapp" &&
-				!contactValue.startsWith("https://wa.me/")
+				contactType === "website" &&
+				!contactValue.startsWith("http://") &&
+				!contactValue.startsWith("https://")
 			) {
-				finalUrl = `https://wa.me/${contactValue.replace(/[^0-9]/g, "")}`;
+				finalUrl = `https://${contactValue}`;
 			}
 
 			onAddLink({
@@ -332,9 +333,9 @@ export function AddLinkDialog({
 													<Phone className="h-4 w-4" /> Phone
 												</div>
 											</SelectItem>
-											<SelectItem value="whatsapp">
+											<SelectItem value="website">
 												<div className="flex items-center gap-2">
-													<Smartphone className="h-4 w-4" /> WhatsApp
+													<Globe className="h-4 w-4" /> Website
 												</div>
 											</SelectItem>
 										</SelectContent>
@@ -349,7 +350,7 @@ export function AddLinkDialog({
 												? "hello@example.com"
 												: contactType === "phone"
 													? "+1234567890"
-													: "1234567890"
+													: "example.com"
 										}
 										value={contactValue}
 										onChange={(e) => setContactValue(e.target.value)}
