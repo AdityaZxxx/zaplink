@@ -69,15 +69,15 @@ function SocialItem({
 			ref={setNodeRef}
 			style={style}
 			className={cn(
-				"group relative flex h-14 w-14 flex-col items-center justify-center rounded-xl border bg-zinc-900/50 transition-all hover:border-zinc-700 hover:bg-zinc-900",
-				isDragging && "scale-110 border-primary bg-zinc-900 shadow-xl",
+				"group relative flex h-14 w-14 flex-col items-center justify-center rounded-xl border border-border bg-card/50 transition-all hover:border-border/70 hover:bg-card",
+				isDragging && "scale-110 border-primary bg-card shadow-xl",
 			)}
 			{...attributes}
 			{...listeners}
 			onClick={onEdit}
 		>
 			{Icon && (
-				<Icon className="h-6 w-6 text-zinc-400 transition-colors group-hover:text-white" />
+				<Icon className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-foreground" />
 			)}
 
 			{/* Delete Badge */}
@@ -94,7 +94,7 @@ function SocialItem({
 						onDelete(link.id);
 					}
 				}}
-				className="-top-2 -right-2 absolute flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-zinc-800 text-zinc-400 shadow-sm transition-colors hover:bg-red-500 hover:text-white"
+				className="-top-2 -right-2 absolute flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm transition-colors hover:bg-destructive hover:text-destructive-foreground"
 				aria-label="Delete social link"
 			>
 				<span className="font-bold text-xs">×</span>
@@ -126,11 +126,13 @@ export function SocialsManager({
 	);
 
 	return (
-		<div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+		<div className="rounded-2xl border border-border bg-card/50 p-6">
 			<div className="mb-4 flex items-center justify-between">
 				<div>
-					<h3 className="font-semibold text-lg text-white">Social Icons</h3>
-					<p className="text-sm text-zinc-500">
+					<h3 className="font-semibold text-foreground text-lg">
+						Social Icons
+					</h3>
+					<p className="text-muted-foreground text-sm">
 						Displayed in the header of your profile.
 					</p>
 				</div>
@@ -159,7 +161,7 @@ export function SocialsManager({
 							/>
 						))}
 						{links.length === 0 && (
-							<div className="flex h-14 w-full items-center justify-center rounded-xl border border-zinc-800 border-dashed text-sm text-zinc-600">
+							<div className="flex h-14 w-full items-center justify-center rounded-xl border border-border border-dashed text-muted-foreground text-sm">
 								No social icons added
 							</div>
 						)}

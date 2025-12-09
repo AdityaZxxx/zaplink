@@ -56,18 +56,20 @@ export function ContentLinksManager({
 	);
 
 	return (
-		<div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+		<div className="rounded-2xl border border-border bg-card/50 p-6">
 			<div className="mb-4 flex items-center justify-between">
 				<div>
-					<h3 className="font-semibold text-lg text-white">Content Blocks</h3>
-					<p className="text-sm text-zinc-500">
+					<h3 className="font-semibold text-foreground text-lg">
+						Content Blocks
+					</h3>
+					<p className="text-muted-foreground text-sm">
 						Your main links, grids, and featured items.
 					</p>
 				</div>
 				<Button
 					onClick={onAdd}
 					size="sm"
-					className="gap-2 bg-white text-black hover:bg-zinc-200"
+					className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
 				>
 					<Plus className="h-4 w-4" />{" "}
 					<span className="hidden md:inline">Add Block</span>

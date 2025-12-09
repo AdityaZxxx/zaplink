@@ -93,38 +93,34 @@ export default function LinkItem({
 				(p) => p.name === link.platform?.name,
 			);
 			if (platform) {
-				return <platform.icon className="h-5 w-5 text-zinc-400" />;
+				return <platform.icon className="h-5 w-5 text-muted-foreground" />;
 			}
 		}
 
 		if (link.type === "contact" && link.contact?.type) {
 			switch (link.contact.type) {
 				case "email":
-					return <Mail className="h-5 w-5 text-zinc-400" />;
+					return <Mail className="h-5 w-5 text-muted-foreground" />;
 				case "phone":
-					return <Phone className="h-5 w-5 text-zinc-400" />;
+					return <Phone className="h-5 w-5 text-muted-foreground" />;
 				case "whatsapp":
-					return <Smartphone className="h-5 w-5 text-zinc-400" />;
+					return <Smartphone className="h-5 w-5 text-muted-foreground" />;
 				default:
-					return <Contact className="h-5 w-5 text-zinc-400" />;
+					return <Contact className="h-5 w-5 text-muted-foreground" />;
 			}
 		}
 
-		return <LinkIcon className="h-5 w-5 text-zinc-400" />;
+		return <LinkIcon className="h-5 w-5 text-muted-foreground" />;
 	};
 
 	return (
 		<div ref={setNodeRef} style={style} className={cn("group relative mb-3")}>
 			<div
 				className={cn(
-					"flex flex-col items-stretch gap-0 overflow-hidden rounded-xl border bg-zinc-900/50 text-card-foreground shadow-sm transition-all hover:border-zinc-700 hover:bg-zinc-900 md:flex-row md:items-center",
+					"flex flex-col items-stretch gap-0 overflow-hidden rounded-xl border border-border bg-card/50 text-card-foreground shadow-sm transition-all hover:border-border/70 hover:bg-card md:flex-row md:items-center",
 					isDragging &&
-						"z-50 scale-105 bg-zinc-900 opacity-90 shadow-xl ring-2 ring-primary/20",
-					link.isHidden &&
-						"border-zinc-800 border-dashed bg-zinc-900/30 opacity-75",
-					link.custom?.displayMode === "featured" &&
-						!link.isHidden &&
-						"border-l-4 border-l-yellow-500 bg-zinc-900/80",
+						"z-50 scale-105 bg-card opacity-90 shadow-xl ring-2 ring-primary/20",
+					link.isHidden && "border-border border-dashed bg-card/30 opacity-75",
 				)}
 			>
 				<div className="flex flex-1 items-stretch">
@@ -132,7 +128,7 @@ export default function LinkItem({
 					<div
 						{...attributes}
 						{...listeners}
-						className="flex w-8 shrink-0 cursor-grab touch-none items-center justify-center border-zinc-800 border-r bg-zinc-900/30 text-zinc-600 transition-colors hover:bg-zinc-800 hover:text-zinc-400 active:cursor-grabbing md:w-10"
+						className="flex w-8 shrink-0 cursor-grab touch-none items-center justify-center border-border border-r bg-muted/30 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:cursor-grabbing md:w-10"
 					>
 						<GripVertical className="h-4 w-4 md:h-5 md:w-5" />
 					</div>
@@ -140,7 +136,7 @@ export default function LinkItem({
 					{/* Icon/Thumbnail Section */}
 					<button
 						type="button"
-						className="flex h-20 w-20 shrink-0 cursor-pointer items-center justify-center border-zinc-800 border-r bg-zinc-900/20 p-2 transition-colors hover:bg-zinc-900/40 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset md:h-24 md:w-24"
+						className="flex h-20 w-20 shrink-0 cursor-pointer items-center justify-center border-border border-r bg-muted/20 p-2 transition-colors hover:bg-muted/40 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset md:h-24 md:w-24"
 						onClick={onEdit}
 						onKeyDown={handleKeyDown}
 						aria-label="Edit link thumbnail"
@@ -155,7 +151,7 @@ export default function LinkItem({
 								/>
 							</div>
 						) : (
-							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-800 md:h-12 md:w-12">
+							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted md:h-12 md:w-12">
 								{getLinkIcon()}
 							</div>
 						)}
@@ -170,7 +166,7 @@ export default function LinkItem({
 						aria-label="Edit link details"
 					>
 						<div className="flex items-center gap-2">
-							<span className="truncate font-semibold text-base text-zinc-200 md:text-lg">
+							<span className="truncate font-semibold text-base text-foreground md:text-lg">
 								{link.title}
 							</span>
 							{link.custom?.displayMode === "featured" && (
@@ -186,14 +182,14 @@ export default function LinkItem({
 								</span>
 							)}
 						</div>
-						<span className="max-w-[150px] truncate text-xs text-zinc-500 sm:max-w-[300px] md:text-sm">
+						<span className="max-w-[150px] truncate text-muted-foreground text-xs sm:max-w-[300px] md:text-sm">
 							{link.url}
 						</span>
 					</button>
 				</div>
 
 				{/* Actions */}
-				<div className="flex w-full items-center justify-end gap-4 border-zinc-800 border-t bg-zinc-900/20 px-4 py-2 md:w-auto md:justify-start md:border-t-0 md:border-l md:bg-transparent md:p-0 md:px-4">
+				<div className="flex w-full items-center justify-end gap-4 border-border border-t bg-muted/20 px-4 py-2 md:w-auto md:justify-start md:border-t-0 md:border-l md:bg-transparent md:p-0 md:px-4">
 					{clickData && clickData.clickCount > 0 && (
 						<span className="flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 font-medium text-[9px] text-emerald-500 uppercase tracking-wider md:px-2 md:text-[10px]">
 							<BarChart3 className="h-4 w-4" />{" "}
@@ -210,7 +206,7 @@ export default function LinkItem({
 						variant="ghost"
 						size="icon"
 						onClick={() => onDelete(link.id)}
-						className="h-8 w-8 text-zinc-500 hover:bg-red-500/10 hover:text-red-500"
+						className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
 						aria-label="Delete link"
 					>
 						<Trash2 className="h-4 w-4" />

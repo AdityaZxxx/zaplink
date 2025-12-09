@@ -50,11 +50,13 @@ export function ContactManager({
 	};
 
 	return (
-		<div className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-6">
+		<div className="rounded-2xl border border-border bg-card/50 p-6">
 			<div className="mb-4 flex items-center justify-between">
 				<div>
-					<h3 className="font-semibold text-lg text-white">Contact Info</h3>
-					<p className="text-sm text-zinc-500">
+					<h3 className="font-semibold text-foreground text-lg">
+						Contact Info
+					</h3>
+					<p className="text-muted-foreground text-sm">
 						Sticky buttons for quick actions.
 					</p>
 				</div>
@@ -70,16 +72,16 @@ export function ContactManager({
 					return (
 						<div
 							key={link.id}
-							className="group flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/30 p-3 transition-all hover:border-zinc-700 hover:bg-zinc-900"
+							className="group flex items-center gap-3 rounded-xl border border-border bg-card/30 p-3 transition-all hover:border-border/70 hover:bg-card"
 						>
-							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-zinc-400">
+							<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
 								<Icon className="h-5 w-5" />
 							</div>
 							<div className="min-w-0 flex-1">
-								<p className="truncate font-medium text-sm text-zinc-200">
+								<p className="truncate font-medium text-foreground text-sm">
 									{link.title || link.contact?.value}
 								</p>
-								<p className="truncate text-xs text-zinc-500">
+								<p className="truncate text-muted-foreground text-xs">
 									{link.contact?.value}
 								</p>
 							</div>
@@ -87,7 +89,7 @@ export function ContactManager({
 								<Button
 									size="icon"
 									variant="ghost"
-									className="h-8 w-8 text-zinc-500 hover:text-white"
+									className="h-8 w-8 text-muted-foreground hover:text-foreground"
 									onClick={() => onEdit(link)}
 								>
 									<Pencil className="h-4 w-4" />
@@ -95,7 +97,7 @@ export function ContactManager({
 								<Button
 									size="icon"
 									variant="ghost"
-									className="h-8 w-8 text-zinc-500 hover:text-red-500"
+									className="h-8 w-8 text-muted-foreground hover:text-destructive"
 									onClick={() => onDelete(link.id)}
 								>
 									<Trash2 className="h-4 w-4" />
@@ -105,7 +107,7 @@ export function ContactManager({
 					);
 				})}
 				{links.length === 0 && (
-					<div className="col-span-full flex h-20 items-center justify-center rounded-xl border border-zinc-800 border-dashed text-sm text-zinc-600">
+					<div className="col-span-full flex h-20 items-center justify-center rounded-xl border border-border border-dashed text-muted-foreground text-sm">
 						No contact info added
 					</div>
 				)}
