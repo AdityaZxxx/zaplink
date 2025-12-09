@@ -6,10 +6,10 @@ import type { links, profiles } from "@zaplink/db";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import ProfileCard from "@/components/ProfileCard";
 import PageWithPreview from "@/features/dashboard/components/PageWithPreview";
+import { ProfileCard } from "@/features/profile/components";
 import { queryClient, trpc } from "@/utils/trpc/client";
-import ProfileForm, { type ProfileFormValues } from "./organisms/ProfileForm";
+import ProfileForm, { type ProfileFormValues } from "./ProfileForm";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect;

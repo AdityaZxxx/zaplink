@@ -9,8 +9,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-
-import ProfileCard from "@/components/ProfileCard";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -19,6 +17,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { ProfileCard } from "@/features/profile/components";
 import { trpc } from "@/utils/trpc/client";
 import { useUploadThing } from "@/utils/uploadthing";
 import type { OnboardingData } from "../page";

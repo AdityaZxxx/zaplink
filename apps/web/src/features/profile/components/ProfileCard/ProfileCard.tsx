@@ -12,11 +12,11 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
 import { cn } from "@/lib/utils";
-import { ContactLink } from "./profile-card/ContactLink";
-import { FeaturedLink } from "./profile-card/FeaturedLink";
-import { GridLink } from "./profile-card/GridLink";
-import { SocialIconsRow } from "./profile-card/SocialIconsRow";
-import { StandardLink } from "./profile-card/StandardLink";
+import { ContactLink } from "./ContactLink";
+import { FeaturedLink } from "./FeaturedLink";
+import { GridLink } from "./GridLink";
+import { SocialIconsRow } from "./SocialIconsRow";
+import { StandardLink } from "./StandardLink";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect & {

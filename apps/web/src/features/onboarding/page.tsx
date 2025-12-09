@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import Loader from "@/components/loader";
+import Loader from "@/components/shared/Loader";
 import { authClient } from "@/lib/auth-client";
 import { trpc } from "@/utils/trpc/client";
 import { ConfirmationStep } from "./components/ConfirmationStep";

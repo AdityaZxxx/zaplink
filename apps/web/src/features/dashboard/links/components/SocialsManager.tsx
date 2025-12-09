@@ -64,7 +64,8 @@ function SocialItem({
 	const Icon = platform?.icon;
 
 	return (
-		<Button
+		<button
+			type="button"
 			ref={setNodeRef}
 			style={style}
 			className={cn(
@@ -99,7 +100,7 @@ function SocialItem({
 			>
 				<span className="font-bold text-xs">×</span>
 			</button>
-		</Button>
+		</button>
 	);
 }
 

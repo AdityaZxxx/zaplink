@@ -42,7 +42,7 @@ import {
 	SidebarRail,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import UserMenu from "@/components/user-menu";
+import UserMenu from "@/features/layout/components/UserMenu";
 import { APP_NAME } from "@/lib/constants/BRANDS";
 
 type MenuItem = {

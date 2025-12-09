@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { links, profiles } from "@zaplink/db";
 import { useEffect } from "react";
-import ProfileCard from "@/components/ProfileCard";
+import { ProfileCard } from "@/features/profile/components";
 import { trpc } from "@/utils/trpc/client";
 
 type Profile = typeof profiles.$inferSelect;

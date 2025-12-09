@@ -22,8 +22,8 @@ import type {
 } from "@zaplink/db";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { EmptyLinksState } from "../molecules/EmptyLinksState";
-import LinkItem from "../molecules/LinkItem";
+import { EmptyLinksState } from "./EmptyLinksState";
+import LinkItem from "./LinkItem";
 
 type Link = typeof links.$inferSelect & {
 	platform?: typeof linkPlatforms.$inferSelect | null;
