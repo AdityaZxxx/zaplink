@@ -6,7 +6,15 @@ import type {
 	linkPlatforms,
 	links,
 } from "@zaplink/db";
-import { Contact, Mail, Pencil, Phone, Plus, Trash2 } from "lucide-react";
+import {
+	Contact,
+	Globe,
+	Mail,
+	Pencil,
+	Phone,
+	Plus,
+	Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Link = typeof links.$inferSelect & {
