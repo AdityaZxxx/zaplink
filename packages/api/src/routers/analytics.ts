@@ -265,4 +265,44 @@ export const analyticsRouter = router({
 				topLinks,
 			};
 		}),
+
+	getLinkClickCount: protectedProcedure
+		.input(z.object({ linkId: z.number() }))
+		.query(async ({ ctx, input }) => {
+			// Verify the link belongs to the user's profile
+			const link = await ctx.db.query.links.findFirst({
+				where: eq(links.id, input.linkId),
+			});
+
+			if (!link) {
+				throw new TRPCError({
+					code: "NOT_FOUND",
+					message: "Link not found",
+				});
+			}
+
+			const userProfile = await ctx.db.query.profiles.findFirst({
+				where: eq(profiles.userId, ctx.session.user.id),
+			});
+
+			if (!userProfile || link.profileId !== userProfile.id) {
+				throw new TRPCError({
+					code: "FORBIDDEN",
+					message: "You don't have permission to view this link's analytics",
+				});
+			}
+
+			// Get total click count for this link
+			const [result] = await ctx.db
+				.select({ count: count() })
+				.from(analytics)
+				.where(
+					and(eq(analytics.linkId, input.linkId), eq(analytics.type, "click")),
+				);
+
+			return {
+				linkId: input.linkId,
+				clickCount: result?.count || 0,
+			};
+		}),
 });

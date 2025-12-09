@@ -2,6 +2,7 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useQuery } from "@tanstack/react-query";
 import type {
 	linkContacts,
 	linkCustoms,
@@ -9,6 +10,7 @@ import type {
 	links,
 } from "@zaplink/db";
 import {
+	BarChart3,
 	Contact,
 	Grid,
 	GripVertical,
@@ -24,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 import { cn } from "@/lib/utils";
+import { trpc } from "@/utils/trpc/client";
 
 // Extended Link type to include relations
 type Link = typeof links.$inferSelect & {
@@ -53,6 +56,19 @@ export default function LinkItem({
 		transition,
 		isDragging,
 	} = useSortable({ id: link.id });
+
+	// Fetch click count for this link
+	const { data: clickData } = useQuery(
+		trpc.analytics.getLinkClickCount.queryOptions(
+			{ linkId: link.id },
+			{
+				// Refetch every 30 seconds to keep data fresh
+				refetchInterval: 30000,
+				// Don't show error toast for this query
+				meta: { silent: true },
+			},
+		),
+	);
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
@@ -177,12 +193,18 @@ export default function LinkItem({
 				</div>
 
 				{/* Actions */}
-				<div className="flex w-full items-center justify-end border-zinc-800 border-t bg-zinc-900/20 px-4 py-2 md:w-auto md:justify-start md:border-t-0 md:border-l md:bg-transparent md:p-0 md:px-4">
+				<div className="flex w-full items-center justify-end gap-4 border-zinc-800 border-t bg-zinc-900/20 px-4 py-2 md:w-auto md:justify-start md:border-t-0 md:border-l md:bg-transparent md:p-0 md:px-4">
+					{clickData && clickData.clickCount > 0 && (
+						<span className="flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 font-medium text-[9px] text-emerald-500 uppercase tracking-wider md:px-2 md:text-[10px]">
+							<BarChart3 className="h-4 w-4" />{" "}
+							<span>{clickData.clickCount.toLocaleString()}</span>
+						</span>
+					)}
 					<Switch
 						checked={!link.isHidden}
 						onCheckedChange={handleVisibilityChange}
 						aria-label="Toggle visibility"
-						className="mr-2 scale-90 cursor-pointer data-[state=checked]:bg-green-500 md:scale-100"
+						className="scale-90 cursor-pointer data-[state=checked]:bg-green-500 md:scale-100"
 					/>
 					<Button
 						variant="ghost"
