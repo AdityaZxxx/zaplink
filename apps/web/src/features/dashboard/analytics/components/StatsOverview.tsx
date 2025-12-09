@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, MousePointerClick, TrendingUp } from "lucide-react";
-import { KPICard } from "../molecules/KPICard";
+import { KPICard } from "./KPICard";
 
 interface StatsOverviewProps {
 	totalViews: number;

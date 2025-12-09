@@ -49,9 +49,7 @@ export interface AddLinkData {
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useUploadThing } from "@/utils/uploadthing";
-import { LinkThumbnailUploader } from "../molecules/LinkThumbnailUploader";
-
-// ... (AddLinkData interface)
+import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
 interface AddLinkDialogProps {
 	isOpen: boolean;

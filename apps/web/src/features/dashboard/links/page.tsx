@@ -13,14 +13,14 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import ProfileCard from "@/components/ProfileCard";
+import { ProfileCard } from "@/features/profile/components";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import PageWithPreview from "../components/PageWithPreview";
-import { AddLinkDialog } from "./components/organisms/AddLinkDialog";
-import { ContactManager } from "./components/organisms/ContactManager";
-import { ContentLinksManager } from "./components/organisms/ContentLinksManager";
-import { EditLinkSheet } from "./components/organisms/EditLinkSheet";
-import { SocialsManager } from "./components/organisms/SocialsManager";
+import { AddLinkDialog } from "./components/AddLinkDialog";
+import { ContactManager } from "./components/ContactManager";
+import { ContentLinksManager } from "./components/ContentLinksManager";
+import { EditLinkSheet } from "./components/EditLinkSheet";
+import { SocialsManager } from "./components/SocialsManager";
 
 type Link = typeof links.$inferSelect & {
 	platform?: typeof linkPlatforms.$inferSelect | null;

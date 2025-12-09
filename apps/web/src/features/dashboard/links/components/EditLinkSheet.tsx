@@ -32,7 +32,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 import { cn } from "@/lib/utils";
 import { useUploadThing } from "@/utils/uploadthing";
-import { LinkThumbnailUploader } from "../molecules/LinkThumbnailUploader";
+import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
 // Extended Link type
 type Link = typeof links.$inferSelect & {

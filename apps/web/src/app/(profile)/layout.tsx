@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import ProfileProviders from "@/components/ProfileProvider";
+import ProfileProviders from "@/features/layout/providers/ProfileProvider";
 import "../../index.css";
 
 const geistSans = Geist({

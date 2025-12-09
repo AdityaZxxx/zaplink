@@ -8,10 +8,10 @@ import { trpc } from "@/utils/trpc/client";
 import {
 	type DateRangeOption,
 	DateRangePicker,
-} from "./components/molecules/DateRangePicker";
-import { EngagementChart } from "./components/organisms/EngagementChart";
-import { StatsOverview } from "./components/organisms/StatsOverview";
-import { TopLinksList } from "./components/organisms/TopLinksList";
+} from "./components/DateRangePicker";
+import { EngagementChart } from "./components/EngagementChart";
+import { StatsOverview } from "./components/StatsOverview";
+import { TopLinksList } from "./components/TopLinksList";
 
 export default function AnalyticsPage() {
 	const [range, setRange] = useState<DateRangeOption>("last7");

@@ -16,9 +16,9 @@ import {
 } from "@dnd-kit/sortable";
 import type { links } from "@zaplink/db";
 import { useState } from "react";
-import { EmptyLinksState } from "../molecules/EmptyLinksState";
-import LinkItem from "../molecules/LinkItem";
 import { EditLinkSheet } from "./EditLinkSheet";
+import { EmptyLinksState } from "./EmptyLinksState";
+import LinkItem from "./LinkItem";
 
 type Link = typeof links.$inferSelect;
 
