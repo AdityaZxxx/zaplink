@@ -10,9 +10,25 @@ import {
 	profiles,
 } from "@zaplink/db";
 import { z } from "zod";
-import { protectedProcedure, router } from "..";
+import { protectedProcedure, publicProcedure, router } from "..";
 
 export const onboardingRouter = router({
+	checkUsernameAvailability: publicProcedure
+		.input(
+			z.object({ username: z.string().min(3).max(50).trim().toLowerCase() }),
+		)
+		.query(async ({ ctx, input }) => {
+			const existingProfile = await ctx.db
+				.select({ id: profiles.id })
+				.from(profiles)
+				.where(eq(profiles.username, input.username))
+				.limit(1);
+
+			return {
+				username: input.username,
+				available: existingProfile.length === 0,
+			};
+		}),
 	/**
 	 * Checks the current onboarding status of the user.
 	 */

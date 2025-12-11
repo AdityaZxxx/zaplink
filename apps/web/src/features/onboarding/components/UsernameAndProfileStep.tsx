@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useDebounce } from "@/hooks/use-debounce";
+import { trpc } from "@/utils/trpc/client";
 import type { OnboardingData } from "../page";
 import { ProfileImageUploader } from "./ProfileImageUploader";
 
@@ -45,6 +47,35 @@ export const UsernameAndProfileStep = ({
 			return () => URL.revokeObjectURL(objectUrl);
 		}
 	}, [initialData.avatarFile, initialData.avatarUrl]);
+
+	// Debounced username for availability check
+	const debouncedUsername = useDebounce(username, 500);
+
+	// Check username availability
+	const isUsernameValid =
+		debouncedUsername.length >= 3 && /^[a-zA-Z0-9_]+$/.test(debouncedUsername);
+	const { data: usernameCheck, isFetching: isCheckingUsername } = useQuery(
+		trpc.onboarding.checkUsernameAvailability.queryOptions(
+			{ username: debouncedUsername.toLowerCase() },
+			{
+				enabled: isUsernameValid,
+				staleTime: 60000, // Cache for 1 minute
+			},
+		),
+	);
+
+	// Determine username status
+	const usernameStatus = useMemo(() => {
+		if (!username || username.length < 3) return "too_short";
+		if (!/^[a-zA-Z0-9_]+$/.test(username)) return "invalid";
+		if (username !== debouncedUsername) return "typing";
+		if (isCheckingUsername) return "checking";
+		if (usernameCheck?.available === true) return "available";
+		if (usernameCheck?.available === false) return "taken";
+		return "idle";
+	}, [username, debouncedUsername, isCheckingUsername, usernameCheck]);
+
+	const isUsernameAvailable = usernameStatus === "available";
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -156,22 +187,6 @@ export const UsernameAndProfileStep = ({
 							{/* Display Name & Username Group */}
 							<div className="space-y-4">
 								<div className="group relative mx-auto max-w-xs">
-									<div className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 opacity-0 transition-opacity group-hover:opacity-100">
-										<svg
-											aria-hidden="true"
-											width="16"
-											height="16"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="2"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											className="text-zinc-500"
-										>
-											<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-										</svg>
-									</div>
 									<Input
 										id="displayName"
 										placeholder="Display Name"
@@ -186,22 +201,6 @@ export const UsernameAndProfileStep = ({
 								</div>
 
 								<div className="group relative mx-auto max-w-[200px]">
-									<div className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 opacity-0 transition-opacity group-hover:opacity-100">
-										<svg
-											aria-hidden="true"
-											width="14"
-											height="14"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="2"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											className="text-zinc-500"
-										>
-											<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-										</svg>
-									</div>
 									<div className="relative">
 										<span className="-translate-y-1/2 absolute top-1/2 left-3 font-medium text-zinc-500">
 											@
@@ -217,34 +216,46 @@ export const UsernameAndProfileStep = ({
 													setUsername(value);
 												}
 											}}
-											className="h-10 rounded-lg border-transparent bg-transparent pr-8 pl-8 text-center font-medium text-zinc-400 transition-all placeholder:text-zinc-600 hover:border-zinc-700 hover:bg-zinc-800/50 focus:border-zinc-700 focus:bg-zinc-800/50 focus:ring-0"
+											className="h-10 rounded-lg border-transparent bg-transparent pr-8 pl-8 text-center font-medium transition-all placeholder:text-zinc-600 hover:border-zinc-700 hover:bg-zinc-800/50 focus:border-zinc-700 focus:bg-zinc-800/50 focus:ring-0"
 											maxLength={30}
 										/>
 									</div>
-									<div className="mt-1 px-1 text-right text-xs text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
-										{username.length}/30
+									{/* Status message */}
+									<div className="mt-1 px-1 text-center text-xs">
+										{usernameStatus === "checking" && (
+											<span className="text-zinc-500">
+												Checking availability...
+											</span>
+										)}
+										{usernameStatus === "available" && (
+											<span className="text-emerald-500">
+												Username is available!
+											</span>
+										)}
+										{usernameStatus === "taken" && (
+											<span className="text-red-500">
+												Username is already taken
+											</span>
+										)}
+										{usernameStatus === "too_short" && username.length > 0 && (
+											<span className="text-zinc-500">
+												At least 3 characters
+											</span>
+										)}
+										{(usernameStatus === "idle" ||
+											usernameStatus === "typing" ||
+											(usernameStatus === "too_short" &&
+												username.length === 0)) && (
+											<span className="text-zinc-600">
+												{username.length}/30
+											</span>
+										)}
 									</div>
 								</div>
 							</div>
 
 							{/* Bio Section */}
 							<div className="group relative mx-auto max-w-sm">
-								<div className="pointer-events-none absolute top-3 right-3 opacity-0 transition-opacity group-hover:opacity-100">
-									<svg
-										aria-hidden="true"
-										width="14"
-										height="14"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										className="text-zinc-500"
-									>
-										<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-									</svg>
-								</div>
 								<Textarea
 									id="bio"
 									placeholder="Add a bio to your profile..."
@@ -260,8 +271,13 @@ export const UsernameAndProfileStep = ({
 
 							<Button
 								type="submit"
-								disabled={!username || !displayName}
-								className="mt-4 h-12 w-full rounded-xl bg-white font-medium text-base text-black hover:bg-zinc-200"
+								disabled={
+									!username ||
+									!displayName ||
+									!isUsernameAvailable ||
+									isCheckingUsername
+								}
+								className="mt-4 h-12 w-full rounded-xl bg-white font-medium text-base text-black hover:bg-zinc-200 disabled:opacity-50"
 							>
 								Continue
 							</Button>
