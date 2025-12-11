@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 import type { OnboardingData } from "../page";
 
@@ -153,46 +154,48 @@ export const LinkStep = ({
 							</p>
 						</div>
 
-						<div className="custom-scrollbar grid max-h-[400px] grid-cols-4 gap-4 overflow-y-auto pr-2">
-							{/* Custom Link Option - First Item */}
-							<button
-								type="button"
-								className={`group flex aspect-square flex-col items-center justify-center rounded-xl border transition-all active:scale-95 ${
-									isCustomSelected
-										? "border-green-500 bg-zinc-800/80"
-										: "border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 hover:bg-zinc-800"
-								}`}
-								onClick={() => togglePlatform("custom")}
-							>
-								<Plus
-									className={`h-8 w-8 transition-colors ${isCustomSelected ? "text-green-500" : "text-zinc-400 group-hover:text-white"}`}
-								/>
-								<span className="mt-2 font-medium text-xs text-zinc-500 group-hover:text-zinc-300">
-									Custom
-								</span>
-							</button>
+						<ScrollArea className="h-[400px]">
+							<div className="grid grid-cols-4 gap-4 pr-4">
+								{/* Custom Link Option - First Item */}
+								<button
+									type="button"
+									className={`group flex aspect-square flex-col items-center justify-center rounded-xl border transition-all active:scale-95 ${
+										isCustomSelected
+											? "border-green-500 bg-zinc-800/80"
+											: "border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 hover:bg-zinc-800"
+									}`}
+									onClick={() => togglePlatform("custom")}
+								>
+									<Plus
+										className={`h-8 w-8 transition-colors ${isCustomSelected ? "text-green-500" : "text-zinc-400 group-hover:text-white"}`}
+									/>
+									<span className="mt-2 font-medium text-xs text-zinc-500 group-hover:text-zinc-300">
+										Custom
+									</span>
+								</button>
 
-							{/* Platform Options */}
-							{Object.entries(SUPPORT_PLATFORMS).map(([key, platform]) => {
-								const isSelected = selectedPlatforms.includes(key);
-								return (
-									<button
-										type="button"
-										key={key}
-										className={`group flex aspect-square flex-col items-center justify-center rounded-xl border transition-all active:scale-95 ${
-											isSelected
-												? "border-green-500 bg-zinc-800/80"
-												: "border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 hover:bg-zinc-800"
-										}`}
-										onClick={() => togglePlatform(key)}
-									>
-										<platform.icon
-											className={`h-8 w-8 transition-colors ${isSelected ? "text-white" : "text-zinc-400 group-hover:text-white"}`}
-										/>
-									</button>
-								);
-							})}
-						</div>
+								{/* Platform Options */}
+								{Object.entries(SUPPORT_PLATFORMS).map(([key, platform]) => {
+									const isSelected = selectedPlatforms.includes(key);
+									return (
+										<button
+											type="button"
+											key={key}
+											className={`group flex aspect-square flex-col items-center justify-center rounded-xl border transition-all active:scale-95 ${
+												isSelected
+													? "border-green-500 bg-zinc-800/80"
+													: "border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 hover:bg-zinc-800"
+											}`}
+											onClick={() => togglePlatform(key)}
+										>
+											<platform.icon
+												className={`h-8 w-8 transition-colors ${isSelected ? "text-white" : "text-zinc-400 group-hover:text-white"}`}
+											/>
+										</button>
+									);
+								})}
+							</div>
+						</ScrollArea>
 
 						<div className="mt-2 flex items-center justify-between border-zinc-800 border-t pt-4">
 							<Button
