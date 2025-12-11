@@ -10,6 +10,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "../../../components/ui/scroll-area";
 
 interface PageWithPreviewProps {
 	children: React.ReactNode;
@@ -32,9 +33,11 @@ export default function PageWithPreview({
 			)}
 		>
 			{/* Main Content Area (Left) */}
-			<div className="flex-1 overflow-y-auto p-4 md:p-8">
-				<div className="mx-auto max-w-2xl space-y-8">{children}</div>
-			</div>
+			<ScrollArea className="h-[calc(100vh-3.5rem)] flex-1">
+				<div className="p-4 md:p-8">
+					<div className="mx-auto max-w-2xl space-y-8">{children}</div>
+				</div>
+			</ScrollArea>
 
 			{/* Desktop Preview Area (Right) */}
 			<div className="hidden w-[450px] border-l bg-muted/30 lg:flex lg:flex-col">
