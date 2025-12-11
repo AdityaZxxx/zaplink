@@ -9,6 +9,7 @@ import {
 	Settings,
 	UserIcon,
 } from "lucide-react";
+import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -47,7 +48,7 @@ import { APP_NAME } from "@/lib/constants/BRANDS";
 
 type MenuItem = {
 	title: string;
-	url: string;
+	url: Route<string>;
 	icon: React.ComponentType<{ className?: string }>;
 };
 
