@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ProfileImageUploader } from "@/features/onboarding/components/ProfileImageUploader";
+import { DOMAIN_NAME } from "@/lib/constants/BRANDS";
 import { useUploadThing } from "@/utils/uploadthing";
 
 const profileSchema = z.object({
@@ -179,7 +180,7 @@ export default function ProfileForm({
 								<FormControl>
 									<div className="flex rounded-md shadow-sm ring-1 ring-input ring-inset focus-within:ring-2 focus-within:ring-ring">
 										<span className="flex select-none items-center pl-3 text-muted-foreground text-sm">
-											zap.link/
+											{DOMAIN_NAME}/
 										</span>
 										<input
 											{...field}
