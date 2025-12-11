@@ -94,12 +94,12 @@ function SidebarMenuItemComponent({ item }: { item: MenuItem }) {
 	return (
 		<SidebarMenuItem>
 			<SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-				<a href={item.url}>
+				<Link href={item.url}>
 					<item.icon />
 					<span className="group-data-[collapsible=icon]:hidden">
 						{item.title}
 					</span>
-				</a>
+				</Link>
 			</SidebarMenuButton>
 		</SidebarMenuItem>
 	);
@@ -134,12 +134,11 @@ function MobileMenu() {
 									variant={isActive ? "default" : "ghost"}
 									className="justify-start gap-2"
 									asChild
-									onClick={() => setOpen(false)}
 								>
-									<a href={item.url}>
+									<Link href={item.url} onClick={() => setOpen(false)}>
 										<item.icon className="h-5 w-5" />
 										{item.title}
-									</a>
+									</Link>
 								</Button>
 							);
 						})}
