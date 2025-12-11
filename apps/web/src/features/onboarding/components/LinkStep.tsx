@@ -197,7 +197,7 @@ export const LinkStep = ({
 							</div>
 						</ScrollArea>
 
-						<div className="mt-2 flex items-center justify-between border-zinc-800 border-t pt-4">
+						<div className="-mx-6 -mb-6 sticky bottom-0 z-50 flex items-center justify-between border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
 							<Button
 								type="button"
 								variant="ghost"
@@ -314,7 +314,7 @@ export const LinkStep = ({
 							})}
 						</div>
 
-						<div className="mt-8 flex gap-3 border-zinc-800 border-t pt-6">
+						<div className="-mx-6 -mb-6 sticky bottom-0 z-50 flex gap-3 border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
 							<Button
 								type="button"
 								variant="ghost"

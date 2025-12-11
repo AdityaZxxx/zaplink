@@ -161,15 +161,12 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 
 	return (
 		<div className="space-y-6">
-			<div className="flex justify-center">
-				<ProfileCard
-					profile={previewProfile as any}
-					links={previewLinks as any}
-					className="h-[600px] w-full max-w-md rounded-3xl border border-zinc-800 shadow-2xl"
-				/>
-			</div>
+			<ProfileCard
+				profile={previewProfile as any}
+				links={previewLinks as any}
+			/>
 
-			<div className="flex items-center justify-between border-zinc-800 border-t pt-4">
+			<div className="sticky bottom-0 z-50 flex items-center justify-between border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
 				<Button
 					type="button"
 					variant="ghost"

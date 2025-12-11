@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -269,18 +270,27 @@ export const UsernameAndProfileStep = ({
 								</div>
 							</div>
 
-							<Button
-								type="submit"
-								disabled={
-									!username ||
-									!displayName ||
-									!isUsernameAvailable ||
-									isCheckingUsername
-								}
-								className="mt-4 h-12 w-full rounded-xl bg-white font-medium text-base text-black hover:bg-zinc-200 disabled:opacity-50"
-							>
-								Continue
-							</Button>
+							<div className="-mx-6 -mb-8 sticky bottom-0 z-50 border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
+								<Button
+									type="submit"
+									disabled={
+										!username ||
+										!displayName ||
+										!isUsernameAvailable ||
+										isCheckingUsername
+									}
+									className="h-12 w-full rounded-xl bg-white font-medium text-base text-black hover:bg-zinc-200 disabled:opacity-50"
+								>
+									{isCheckingUsername ? (
+										<>
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											Checking...
+										</>
+									) : (
+										"Continue"
+									)}
+								</Button>
+							</div>
 						</div>
 					</form>
 				</CardContent>
