@@ -178,13 +178,13 @@ export default function ProfileForm({
 							<FormItem>
 								<FormLabel>Username</FormLabel>
 								<FormControl>
-									<div className="flex rounded-md shadow-sm ring-1 ring-input ring-inset focus-within:ring-2 focus-within:ring-ring">
-										<span className="flex select-none items-center pl-3 text-muted-foreground text-sm">
+									<div className="relative">
+										<div className="pointer-events-none absolute inset-y-0 left-3 flex select-none items-center text-muted-foreground text-sm">
 											{DOMAIN_NAME}/
-										</span>
-										<input
+										</div>
+										<Input
 											{...field}
-											className="block flex-1 border-0 bg-transparent py-2 pl-1 text-foreground placeholder:text-muted-foreground focus:ring-0 sm:text-sm sm:leading-6"
+											className="pl-[95px]"
 											placeholder="username"
 										/>
 									</div>
