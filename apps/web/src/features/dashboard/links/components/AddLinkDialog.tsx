@@ -237,7 +237,7 @@ export function AddLinkDialog({
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
 									<Label>Display Mode</Label>
-									<div className="grid grid-cols-3 gap-2">
+									<div className="grid grid-cols-2 gap-2 md:grid-cols-3">
 										<button
 											type="button"
 											onClick={() => setDisplayMode("standard")}
