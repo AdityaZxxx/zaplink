@@ -75,11 +75,11 @@ export function LinkThumbnailUploader({
 							className="object-cover transition-opacity group-hover:opacity-50"
 						/>
 						<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-							<UploadCloud className="h-8 w-8 text-white" />
+							<UploadCloud className="h-8 w-8 text-primary" />
 						</div>
 					</>
 				) : (
-					<div className="flex flex-col items-center justify-center gap-2 text-zinc-500 transition-colors group-hover:text-zinc-400">
+					<div className="flex flex-col items-center justify-center gap-2 text-muted transition-colors group-hover:text-muted">
 						<ImageIcon className="h-8 w-8" />
 						<span className="text-xs">Click to upload thumbnail</span>
 					</div>

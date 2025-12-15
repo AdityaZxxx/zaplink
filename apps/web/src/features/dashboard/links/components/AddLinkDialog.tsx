@@ -49,6 +49,7 @@ export interface AddLinkData {
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useUploadThing } from "@/utils/uploadthing";
+import { ScrollArea } from "../../../../components/ui/scroll-area";
 import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
 interface AddLinkDialogProps {
@@ -185,35 +186,26 @@ export function AddLinkDialog({
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogTrigger asChild>
-				<Button className="bg-white text-black hover:bg-zinc-200">
+				<Button>
 					<Plus className="mr-2 h-4 w-4" />
 					Add Link
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="border-zinc-800 bg-zinc-950 text-white sm:max-w-[600px]">
+			<DialogContent className="sm:max-w-[600px]">
 				<DialogHeader>
 					<DialogTitle>Add New Link</DialogTitle>
 				</DialogHeader>
 				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-					<TabsList className="grid w-full grid-cols-3 bg-zinc-900">
-						<TabsTrigger
-							value="custom"
-							className="data-[state=active]:bg-zinc-800 data-[state=active]:text-white"
-						>
+					<TabsList className="grid w-full grid-cols-3">
+						<TabsTrigger value="custom">
 							<LinkIcon className="mr-2 h-4 w-4" />
 							URL Link
 						</TabsTrigger>
-						<TabsTrigger
-							value="contact"
-							className="data-[state=active]:bg-zinc-800 data-[state=active]:text-white"
-						>
+						<TabsTrigger value="contact">
 							<Contact className="mr-2 h-4 w-4" />
 							Contact
 						</TabsTrigger>
-						<TabsTrigger
-							value="platform"
-							className="data-[state=active]:bg-zinc-800 data-[state=active]:text-white"
-						>
+						<TabsTrigger value="platform">
 							<LayoutGrid className="mr-2 h-4 w-4" />
 							Platform
 						</TabsTrigger>
@@ -229,7 +221,6 @@ export function AddLinkDialog({
 									placeholder="e.g. My Portfolio"
 									value={title}
 									onChange={(e) => setTitle(e.target.value)}
-									className="border-zinc-800 bg-zinc-900"
 								/>
 							</div>
 							<div className="space-y-2">
@@ -240,7 +231,6 @@ export function AddLinkDialog({
 									value={url}
 									onChange={(e) => setUrl(e.target.value)}
 									required
-									className="border-zinc-800 bg-zinc-900"
 								/>
 							</div>
 
@@ -254,8 +244,8 @@ export function AddLinkDialog({
 											className={cn(
 												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-xs transition-all",
 												displayMode === "standard"
-													? "border-white bg-zinc-800 text-white"
-													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
+													? "border-primary bg-primary/10 text-primary"
+													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
 											<AlignJustify className="h-4 w-4" />
@@ -267,8 +257,8 @@ export function AddLinkDialog({
 											className={cn(
 												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-xs transition-all",
 												displayMode === "featured"
-													? "border-white bg-zinc-800 text-white"
-													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
+													? "border-primary bg-primary/10 text-primary"
+													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
 											<Star className="h-4 w-4" />
@@ -280,8 +270,8 @@ export function AddLinkDialog({
 											className={cn(
 												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-xs transition-all",
 												displayMode === "grid"
-													? "border-white bg-zinc-800 text-white"
-													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
+													? "border-primary bg-primary/10 text-primary"
+													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
 											<Grid className="h-4 w-4" />
@@ -301,7 +291,7 @@ export function AddLinkDialog({
 
 							<Button
 								type="submit"
-								className="w-full bg-white text-black hover:bg-zinc-200"
+								className="w-full"
 								disabled={isSubmitting || isUploading}
 							>
 								{(isSubmitting || isUploading) && (
@@ -319,10 +309,10 @@ export function AddLinkDialog({
 								<div className="space-y-2">
 									<Label>Type</Label>
 									<Select value={contactType} onValueChange={setContactType}>
-										<SelectTrigger className="border-zinc-800 bg-zinc-900">
+										<SelectTrigger>
 											<SelectValue />
 										</SelectTrigger>
-										<SelectContent className="border-zinc-800 bg-zinc-900">
+										<SelectContent>
 											<SelectItem value="email">
 												<div className="flex items-center gap-2">
 													<Mail className="h-4 w-4" /> Email
@@ -355,7 +345,7 @@ export function AddLinkDialog({
 										value={contactValue}
 										onChange={(e) => setContactValue(e.target.value)}
 										required
-										className="border-zinc-800 bg-zinc-900"
+										className="border-input bg-background"
 									/>
 								</div>
 							</div>
@@ -367,15 +357,10 @@ export function AddLinkDialog({
 									placeholder="e.g. Contact Me"
 									value={title}
 									onChange={(e) => setTitle(e.target.value)}
-									className="border-zinc-800 bg-zinc-900"
 								/>
 							</div>
 
-							<Button
-								type="submit"
-								className="w-full bg-white text-black hover:bg-zinc-200"
-								disabled={isSubmitting}
-							>
+							<Button type="submit" className="w-full" disabled={isSubmitting}>
 								{isSubmitting ? "Creating..." : "Add Contact Info"}
 							</Button>
 						</form>
@@ -383,66 +368,68 @@ export function AddLinkDialog({
 
 					{/* Platform Link Selection */}
 					<TabsContent value="platform" className="pt-4">
-						<div className="custom-scrollbar max-h-[400px] space-y-6 overflow-y-auto pr-2">
-							{Object.entries(
-								Object.values(SUPPORT_PLATFORMS).reduce(
-									(acc, platform) => {
-										const category = platform.category || "other";
-										if (!acc[category]) acc[category] = [];
-										acc[category].push(platform);
-										return acc;
-									},
-									{} as Record<
-										string,
-										(typeof SUPPORT_PLATFORMS)[keyof typeof SUPPORT_PLATFORMS][]
-									>,
-								),
-							).map(([category, platforms]) => (
-								<div key={category} className="space-y-3">
-									<div className="flex items-center justify-between px-1">
-										<h3 className="font-medium text-sm text-zinc-400 capitalize">
-											{category}
-										</h3>
-										{platforms.length > 4 && (
-											<Button
-												variant="ghost"
-												size="sm"
-												className="h-6 text-xs text-zinc-500 hover:text-zinc-300"
-												onClick={() => toggleCategory(category)}
-											>
-												{expandedCategories[category]
-													? "Show less"
-													: `Show all (${platforms.length})`}
-												<ChevronDown
-													className={cn(
-														"ml-1 h-3 w-3 transition-transform",
-														expandedCategories[category] && "rotate-180",
-													)}
-												/>
-											</Button>
-										)}
+						<ScrollArea className="h-[400px] pr-4">
+							<div className="space-y-6">
+								{Object.entries(
+									Object.values(SUPPORT_PLATFORMS).reduce(
+										(acc, platform) => {
+											const category = platform.category || "other";
+											if (!acc[category]) acc[category] = [];
+											acc[category].push(platform);
+											return acc;
+										},
+										{} as Record<
+											string,
+											(typeof SUPPORT_PLATFORMS)[keyof typeof SUPPORT_PLATFORMS][]
+										>,
+									),
+								).map(([category, platforms]) => (
+									<div key={category} className="space-y-3">
+										<div className="flex items-center justify-between px-1">
+											<h3 className="font-medium text-muted-foreground text-sm capitalize">
+												{category}
+											</h3>
+											{platforms.length > 4 && (
+												<Button
+													variant="ghost"
+													size="sm"
+													className="h-6 text-muted-foreground text-xs hover:text-foreground"
+													onClick={() => toggleCategory(category)}
+												>
+													{expandedCategories[category]
+														? "Show less"
+														: `Show all (${platforms.length})`}
+													<ChevronDown
+														className={cn(
+															"ml-1 h-3 w-3 transition-transform",
+															expandedCategories[category] && "rotate-180",
+														)}
+													/>
+												</Button>
+											)}
+										</div>
+										<div className="grid grid-cols-4 gap-4">
+											{(expandedCategories[category]
+												? platforms
+												: platforms.slice(0, 4)
+											).map((platform) => (
+												<button
+													key={platform.name}
+													type="button"
+													onClick={() => handlePlatformSelect(platform)}
+													className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/50 hover:bg-accent"
+												>
+													<platform.icon className="h-6 w-6 text-muted-foreground" />
+													<span className="w-full truncate text-center font-medium text-[10px] text-foreground">
+														{platform.name}
+													</span>
+												</button>
+											))}
+										</div>
 									</div>
-									<div className="grid grid-cols-4 gap-4">
-										{(expandedCategories[category]
-											? platforms
-											: platforms.slice(0, 4)
-										).map((platform) => (
-											<button
-												key={platform.name}
-												type="button"
-												onClick={() => handlePlatformSelect(platform)}
-												className="flex flex-col items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/50 p-3 transition-all hover:border-zinc-700 hover:bg-zinc-800"
-											>
-												<platform.icon className="h-6 w-6 text-zinc-400" />
-												<span className="w-full truncate text-center font-medium text-[10px] text-zinc-300">
-													{platform.name}
-												</span>
-											</button>
-										))}
-									</div>
-								</div>
-							))}
-						</div>
+								))}
+							</div>
+						</ScrollArea>
 					</TabsContent>
 				</Tabs>
 			</DialogContent>
