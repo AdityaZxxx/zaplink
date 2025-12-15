@@ -64,17 +64,24 @@ function SocialItem({
 	const Icon = platform?.icon;
 
 	return (
-		<button
-			type="button"
+		// biome-ignore lint/a11y: cannot use button because of nested interactive elements
+		<div
 			ref={setNodeRef}
 			style={style}
 			className={cn(
-				"group relative flex h-14 w-14 flex-col items-center justify-center rounded-xl border border-border bg-card/50 transition-all hover:border-border/70 hover:bg-card",
+				"group relative flex h-14 w-14 cursor-pointer flex-col items-center justify-center rounded-xl border border-border bg-card/50 transition-all hover:border-border/70 hover:bg-card",
 				isDragging && "scale-110 border-primary bg-card shadow-xl",
 			)}
 			{...attributes}
 			{...listeners}
 			onClick={onEdit}
+			role="button"
+			tabIndex={0}
+			onKeyDown={(e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					onEdit();
+				}
+			}}
 		>
 			{Icon && (
 				<Icon className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-foreground" />
@@ -99,7 +106,7 @@ function SocialItem({
 			>
 				<span className="font-bold text-xs">×</span>
 			</button>
-		</button>
+		</div>
 	);
 }
 
