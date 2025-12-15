@@ -25,6 +25,10 @@ export default function DashboardPage() {
 	);
 	const { data: links = [] } = useQuery(trpc.links.getAllLinks.queryOptions());
 
+	const { data: stats } = useQuery(
+		trpc.analytics.getStats.queryOptions({ range: "last7" }),
+	);
+
 	const router = useRouter();
 
 	useEffect(() => {
@@ -101,10 +105,10 @@ export default function DashboardPage() {
 						</CardHeader>
 						<CardContent className="p-4 pt-0 md:p-6 md:pt-0">
 							<div className="font-bold text-2xl text-foreground md:text-3xl">
-								0
+								{stats?.totalViews || 0}
 							</div>
 							<p className="text-[10px] text-muted-foreground md:text-xs">
-								Coming soon
+								Last 7 days
 							</p>
 						</CardContent>
 					</Card>
