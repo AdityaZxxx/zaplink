@@ -53,8 +53,8 @@ function SocialItem({
 	} = useSortable({ id: link.id });
 
 	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
+		transform: CSS.Translate.toString(transform),
+		transition: isDragging ? undefined : transition,
 		zIndex: isDragging ? 50 : "auto",
 	};
 
