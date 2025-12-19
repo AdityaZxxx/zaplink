@@ -1,5 +1,20 @@
-import { pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+	pgEnum,
+	pgTable,
+	serial,
+	text,
+	timestamp,
+	varchar,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth";
+
+export const supportBannerEnum = pgEnum("support_banner_type", [
+	"none",
+	"stop_genocide",
+	"black_lives_matter",
+	"climate_action",
+	"mental_health",
+]);
 
 export const profiles = pgTable("profiles", {
 	id: serial("id").primaryKey(),
@@ -11,6 +26,7 @@ export const profiles = pgTable("profiles", {
 	bio: text("bio"),
 	avatarUrl: text("avatar_url"),
 	bannerUrl: text("banner_url"),
+	supportBanner: supportBannerEnum("support_banner").default("none"),
 	onboardingCompletedAt: timestamp("onboarding_completed_at"),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
