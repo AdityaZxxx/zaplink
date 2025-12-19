@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
 import Loader from "@/components/shared/Loader";
@@ -14,6 +14,8 @@ export default function SignInForm({
 	onSwitchToSignUp: () => void;
 }) {
 	const router = useRouter();
+	const searchParams = useSearchParams();
+	const callbackUrl = searchParams.get("callbackUrl");
 	const { isPending } = authClient.useSession();
 
 	const form = useForm({
@@ -29,7 +31,8 @@ export default function SignInForm({
 				},
 				{
 					onSuccess: () => {
-						router.push("/dashboard");
+						// biome-ignore lint/suspicious/noExplicitAny: Dynamic route handling
+						router.push((callbackUrl || "/dashboard") as any);
 						toast.success("Sign in successful");
 					},
 					onError: (error) => {

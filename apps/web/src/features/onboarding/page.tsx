@@ -54,12 +54,6 @@ export default function OnboardingPage() {
 	);
 
 	useEffect(() => {
-		if (!session.isPending && !session.data?.user) {
-			router.replace("/login");
-		}
-	}, [session, router]);
-
-	useEffect(() => {
 		if (!isOnboardingLoading && onboardingState?.isOnboardingComplete) {
 			router.replace("/dashboard");
 		}
@@ -69,7 +63,6 @@ export default function OnboardingPage() {
 	if (
 		session.isPending ||
 		isOnboardingLoading ||
-		!session.data?.user ||
 		onboardingState?.isOnboardingComplete
 	) {
 		return <Loader />;

@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,13 +28,7 @@ export default function DashboardPage() {
 		trpc.analytics.getStats.queryOptions({ range: "last7" }),
 	);
 
-	const router = useRouter();
-
-	useEffect(() => {
-		if (!isLoading && !profile) {
-			router.replace("/login");
-		}
-	}, [isLoading, profile, router]);
+	const _router = useRouter();
 
 	const handleCopyLink = () => {
 		if (profile?.username) {
