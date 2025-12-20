@@ -137,9 +137,9 @@ export default function OnboardingPage() {
 
 				{/* Progress Indicator */}
 				<div className="mb-8 flex gap-2">
-					{steps.map((_, index) => (
+					{steps.map((step, index) => (
 						<div
-							key={index}
+							key={step.title}
 							className={`h-1 flex-1 rounded-full transition-all duration-500 ${
 								index <= currentStep ? "bg-white" : "bg-zinc-800"
 							}`}
