@@ -26,6 +26,8 @@ export const profiles = pgTable("profiles", {
 	bio: text("bio"),
 	avatarUrl: text("avatar_url"),
 	bannerUrl: text("banner_url"),
+	seoTitle: varchar("seo_title", { length: 30 }),
+	seoDescription: varchar("seo_description", { length: 160 }),
 	supportBanner: supportBannerEnum("support_banner").default("none"),
 	onboardingCompletedAt: timestamp("onboarding_completed_at"),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
