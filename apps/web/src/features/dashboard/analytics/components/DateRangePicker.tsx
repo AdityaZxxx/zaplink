@@ -1,10 +1,10 @@
 "use client";
 
+import { cn } from "cn";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { DateRange as DayPickerDateRange } from "react-day-picker";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -22,7 +22,6 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 
 export const DATE_RANGES = [
 	{ label: "Today", value: "today" },

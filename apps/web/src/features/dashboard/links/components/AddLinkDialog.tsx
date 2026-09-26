@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "cn";
 import {
 	AlignJustify,
 	ChevronDown,
@@ -33,7 +34,6 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-import { cn } from "@/lib/utils";
 
 export interface AddLinkData {
 	title: string;

@@ -1,9 +1,8 @@
+import { cn } from "cn";
 import { CameraIcon, User2Icon } from "lucide-react";
 import Image from "next/image";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-
-import { cn } from "@/lib/utils";
 
 interface ProfileImageUploaderProps {
 	imageUrl: string | null;

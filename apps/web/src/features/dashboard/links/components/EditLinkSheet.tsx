@@ -1,6 +1,7 @@
 "use client";
 
 import type { links } from "@zaplink/db";
+import { cn } from "cn";
 import {
 	AlignJustify,
 	Grid,
@@ -30,7 +31,6 @@ import {
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-import { cn } from "@/lib/utils";
 import { useUploadThing } from "@/utils/uploadthing";
 import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 

@@ -6,6 +6,17 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Base UI emits data-orientation, not data-horizontal. Without these two
+ * variants a `data-horizontal:*` utility compiles to `&[data-horizontal]`,
+ * which never matches, and separator / scroll-area / tabs silently lose
+ * their orientation styling. Copied from shadcn/tailwind.css, and written
+ * in the one-line form already used for `dark` above so Biome's
+ * noUnknownAtRules does not reject Tailwind's @slot directive.
+ */
+@custom-variant data-horizontal (&:where([data-orientation="horizontal"]));
+@custom-variant data-vertical (&:where([data-orientation="vertical"]));
+
 @theme {
 	--font-sans:
 		"Inter", "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",

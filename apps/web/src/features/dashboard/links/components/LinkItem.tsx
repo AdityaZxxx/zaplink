@@ -9,6 +9,7 @@ import type {
 	linkPlatforms,
 	links,
 } from "@zaplink/db";
+import { cn } from "cn";
 import {
 	BarChart3,
 	Contact,
@@ -25,7 +26,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc/client";
 
 // Extended Link type to include relations
@@ -200,7 +200,7 @@ export default function LinkItem({
 						checked={!link.isHidden}
 						onCheckedChange={handleVisibilityChange}
 						aria-label="Toggle visibility"
-						className="scale-90 cursor-pointer data-[state=checked]:bg-green-500 md:scale-100"
+						className="scale-90 cursor-pointer data-checked:bg-green-500 md:scale-100"
 					/>
 					<Button
 						variant="ghost"

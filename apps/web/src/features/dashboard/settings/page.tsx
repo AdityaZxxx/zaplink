@@ -1,9 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { cn } from "cn";
 import { CreditCard, FileText, Flag, Search, Shield, User } from "lucide-react";
 import { useEffect, useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -14,7 +14,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ProfileCard } from "@/features/profile/components";
-import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc/client";
 import PageWithPreview from "../components/PageWithPreview";
 import { AccountSettings } from "./components/AccountSettings";

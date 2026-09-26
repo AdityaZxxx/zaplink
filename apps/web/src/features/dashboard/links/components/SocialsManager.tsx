@@ -17,10 +17,10 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { linkPlatforms, links } from "@zaplink/db";
+import { cn } from "cn";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-import { cn } from "@/lib/utils";
 
 type Link = typeof links.$inferSelect & {
 	platform?: typeof linkPlatforms.$inferSelect | null;

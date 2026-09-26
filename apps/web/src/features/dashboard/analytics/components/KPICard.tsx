@@ -1,8 +1,8 @@
 "use client";
 
+import { cn } from "cn";
 import { TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 
 interface KPICardProps {
 	title: string;

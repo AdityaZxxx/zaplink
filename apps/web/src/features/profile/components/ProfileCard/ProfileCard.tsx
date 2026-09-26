@@ -7,11 +7,11 @@ import type {
 	links,
 	profiles,
 } from "@zaplink/db";
+import { cn } from "cn";
 import { Link2, User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
-import { cn } from "@/lib/utils";
 import { ContactLink } from "./ContactLink";
 import { FeaturedLink } from "./FeaturedLink";
 import { GridLink } from "./GridLink";
