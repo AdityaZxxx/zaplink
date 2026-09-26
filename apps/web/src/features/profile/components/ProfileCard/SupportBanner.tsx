@@ -1,0 +1,166 @@
+"use client";
+
+import {
+	ChevronDown,
+	ChevronUp,
+	Globe,
+	Heart,
+	HeartHandshake,
+	Leaf,
+	Users,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+
+export type SupportCause =
+	| "none"
+	| "stop_genocide"
+	| "black_lives_matter"
+	| "climate_action"
+	| "mental_health";
+
+interface SupportBannerProps {
+	cause: SupportCause;
+}
+
+const CAUSE_CONTENT = {
+	stop_genocide: {
+		title: "Stop Genocide",
+		description: "Support humanitarian aid and global peace efforts.",
+		icon: HeartHandshake,
+		color: "bg-red-500",
+		textColor: "text-white",
+		link: "https://www.un.org/en/genocideprevention/",
+	},
+	black_lives_matter: {
+		title: "Black Lives Matter",
+		description: "Support the movement for racial justice and equality.",
+		icon: Users,
+		color: "bg-zinc-900",
+		textColor: "text-white",
+		link: "https://blacklivesmatter.com/",
+	},
+	climate_action: {
+		title: "Climate Action",
+		description: "Take action to protect our planet and future.",
+		icon: Leaf,
+		color: "bg-emerald-600",
+		textColor: "text-white",
+		link: "https://www.un.org/en/climatechange",
+	},
+	mental_health: {
+		title: "Mental Health Awareness",
+		description: "Prioritize mental well-being and support others.",
+		icon: Heart,
+		color: "bg-indigo-600",
+		textColor: "text-white",
+		link: "https://www.who.int/health-topics/mental-health",
+	},
+};
+
+export function SupportBanner({ cause }: SupportBannerProps) {
+	const [isMinimized, setIsMinimized] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
+
+	useEffect(() => {
+		if (cause !== "none") {
+			// Initial animation delay
+			const timer = setTimeout(() => setIsVisible(true), 500);
+			return () => clearTimeout(timer);
+		}
+	}, [cause]);
+
+	if (cause === "none" || !CAUSE_CONTENT[cause as keyof typeof CAUSE_CONTENT]) {
+		return null;
+	}
+
+	const content = CAUSE_CONTENT[cause as keyof typeof CAUSE_CONTENT];
+	const Icon = content.icon;
+
+	return (
+		<div
+			className={cn(
+				"absolute right-0 bottom-0 left-0 z-50 px-4 pb-0 transition-all duration-300 ease-in-out",
+				isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0",
+			)}
+		>
+			<div
+				className={cn(
+					"relative overflow-hidden rounded-2xl shadow-2xl transition-all duration-500",
+					content.color,
+					content.textColor,
+				)}
+			>
+				<button
+					type="button"
+					onClick={() => setIsMinimized(!isMinimized)}
+					className="absolute top-3 right-3 z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-white/10"
+					aria-label={isMinimized ? "Expand banner" : "Minimize banner"}
+				>
+					{isMinimized ? (
+						<ChevronUp className="h-4 w-4" />
+					) : (
+						<ChevronDown className="h-4 w-4" />
+					)}
+				</button>
+
+				<div className="relative flex flex-col p-4">
+					<div
+						className={cn(
+							"flex transition-all duration-500",
+							isMinimized
+								? "flex-row items-center gap-3 pr-10"
+								: "flex-1 flex-col items-center gap-3 py-2 text-center",
+						)}
+					>
+						<div
+							className={cn(
+								"flex items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-500",
+								isMinimized ? "h-8 w-8" : "h-16 w-16",
+							)}
+						>
+							<Icon
+								className={cn(
+									"transition-all duration-500",
+									isMinimized ? "h-4 w-4" : "h-8 w-8",
+								)}
+							/>
+						</div>
+						<span
+							className={cn(
+								"font-bold tracking-tight transition-all duration-500",
+								isMinimized ? "text-sm" : "text-xl",
+							)}
+						>
+							{content.title}
+						</span>
+					</div>
+
+					<div
+						className={cn(
+							"grid transition-all duration-500",
+							isMinimized
+								? "grid-rows-[0fr] opacity-0"
+								: "mt-2 grid-rows-[1fr] opacity-100",
+						)}
+					>
+						<div className="flex flex-col items-center overflow-hidden">
+							<p className="max-w-[280px] text-center text-sm leading-relaxed opacity-90">
+								{content.description}
+							</p>
+							<a
+								href={content.link}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 font-bold text-black text-xs transition-transform hover:scale-105 active:scale-95"
+							>
+								Learn More
+								<Globe className="h-3.5 w-3.5" />
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}

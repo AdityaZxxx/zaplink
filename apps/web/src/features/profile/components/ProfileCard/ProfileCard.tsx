@@ -17,6 +17,7 @@ import { FeaturedLink } from "./FeaturedLink";
 import { GridLink } from "./GridLink";
 import { SocialIconsRow } from "./SocialIconsRow";
 import { StandardLink } from "./StandardLink";
+import { SupportBanner, type SupportCause } from "./SupportBanner";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect & {
@@ -226,7 +227,14 @@ export default function ProfileCard({
 					</div>
 
 					{/* Footer */}
-					<div className="flex justify-center opacity-40 transition-opacity hover:opacity-100">
+					<div
+						className={cn(
+							"flex justify-center opacity-40 transition-opacity hover:opacity-100",
+							profile.supportBanner && profile.supportBanner !== "none"
+								? "pb-20"
+								: "pb-8",
+						)}
+					>
 						<a
 							href="/"
 							className="flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 font-medium text-[10px] backdrop-blur-sm transition-colors hover:bg-background"
@@ -236,6 +244,9 @@ export default function ProfileCard({
 						</a>
 					</div>
 				</div>
+
+				{/* Support Banner */}
+				<SupportBanner cause={profile.supportBanner as SupportCause} />
 			</div>
 		</div>
 	);

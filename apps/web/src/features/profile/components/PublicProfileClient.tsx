@@ -36,10 +36,12 @@ export default function PublicProfileClient({
 	};
 
 	return (
-		<ProfileCard
-			profile={profile}
-			links={links}
-			onLinkClick={handleLinkClick}
-		/>
+		<div className="mx-auto overflow-hidden md:mt-32 md:h-[700px] md:w-[340px] md:rounded-4xl">
+			<ProfileCard
+				profile={profile}
+				links={links}
+				onLinkClick={handleLinkClick}
+			/>
+		</div>
 	);
 }

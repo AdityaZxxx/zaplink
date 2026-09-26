@@ -89,6 +89,17 @@ export const profileRouter = router({
 					bio: z.string().max(500).optional(),
 					avatarUrl: z.union([z.url(), z.null()]).optional(),
 					bannerUrl: z.union([z.url(), z.null()]).optional(),
+					seoTitle: z.string().max(60).optional(),
+					seoDescription: z.string().max(160).optional(),
+					supportBanner: z
+						.enum([
+							"none",
+							"stop_genocide",
+							"black_lives_matter",
+							"climate_action",
+							"mental_health",
+						])
+						.optional(),
 				})
 				.refine((data) => Object.keys(data).length > 0, {
 					message: "At least one field must be provided for update",
@@ -142,6 +153,13 @@ export const profileRouter = router({
 				}),
 				...(input.bannerUrl !== undefined && {
 					bannerUrl: input.bannerUrl ?? null,
+				}),
+				...(input.seoTitle !== undefined && { seoTitle: input.seoTitle }),
+				...(input.seoDescription !== undefined && {
+					seoDescription: input.seoDescription,
+				}),
+				...(input.supportBanner !== undefined && {
+					supportBanner: input.supportBanner,
 				}),
 			};
 
