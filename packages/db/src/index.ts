@@ -7,7 +7,7 @@ import * as linkSchema from "./schema/link";
 import * as profileSchema from "./schema/profile";
 
 dotenv.config({
-	path: "../../apps/server/.env",
+	path: "../../apps/web/.env",
 });
 
 const schema = {
