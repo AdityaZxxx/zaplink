@@ -4,31 +4,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import PageWithPreview from "@/features/dashboard/components/PageWithPreview";
-import { ProfileCard } from "@/features/profile/components";
+import {
+	PROFILE_CARD_PREVIEW_CLASS,
+	ProfileCard,
+} from "@/features/profile/components";
+import type { ProfileFormValues } from "@/lib/validation/profile";
+import { profileFormSchema } from "@/lib/validation/profile";
 import type { LinksData, ProfileData } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
-import ProfileForm, { type ProfileFormValues } from "./ProfileForm";
+import ProfileForm from "./ProfileForm";
 
 interface ProfilePageClientProps {
 	initialProfile: ProfileData;
 	initialLinks: LinksData;
 }
-
-const profileSchema = z.object({
-	displayName: z
-		.string()
-		.min(1, "Display name is required")
-		.max(30, "Display name must be 30 characters or fewer"),
-	username: z
-		.string()
-		.min(3, "Username must be at least 3 characters")
-		.max(30, "Username must be 30 characters or fewer"),
-	bio: z.string().max(160, "Bio must be 160 characters or fewer").optional(),
-	avatarUrl: z.string().optional(),
-	bannerUrl: z.string().optional(),
-});
 
 export default function ProfilePageClient({
 	initialProfile,
@@ -51,7 +41,7 @@ export default function ProfilePageClient({
 	);
 
 	const form = useForm<ProfileFormValues>({
-		resolver: zodResolver(profileSchema),
+		resolver: zodResolver(profileFormSchema),
 		defaultValues: {
 			displayName: initialProfile.displayName ?? "",
 			username: initialProfile.username ?? "",
@@ -78,7 +68,7 @@ export default function ProfilePageClient({
 				<ProfileCard
 					profile={previewProfile}
 					links={initialLinks} // Links are managed in a separate page, so we use initial ones
-					className="h-full max-w-none rounded-none border-none shadow-none ring-0"
+					className={PROFILE_CARD_PREVIEW_CLASS}
 				/>
 			}
 		>

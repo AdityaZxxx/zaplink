@@ -1,11 +1,8 @@
 "use client";
 
-import { Spinner } from "@phosphor-icons/react";
 import { useState } from "react";
 import type { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
 	Form,
 	FormControl,
@@ -17,31 +14,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { SaveBar } from "@/features/dashboard/components/SaveBar";
 import { UsernameField } from "@/features/dashboard/components/UsernameField";
 import { ProfileImageUploader } from "@/features/onboarding/components/ProfileImageUploader";
+import type { ProfileFormValues } from "@/lib/validation/profile";
+import { BIO_MAX } from "@/lib/validation/profile";
 import { useUploadThing } from "@/utils/uploadthing";
-
-/*
- * These are the column widths (both varchar(30)), narrower than the
- * ceilings updateProfile accepts, so an over-long value fails on insert.
- */
-const profileSchema = z.object({
-	displayName: z
-		.string()
-		.min(1, "Display name is required")
-		.max(30, "Display name must be 30 characters or fewer"),
-	username: z
-		.string()
-		.min(3, "Username must be at least 3 characters")
-		.max(30, "Username must be 30 characters or fewer"),
-	bio: z.string().max(160, "Bio must be 160 characters or fewer").optional(),
-	avatarUrl: z.string().optional(),
-	bannerUrl: z.string().optional(),
-});
-
-export type ProfileFormValues = z.infer<typeof profileSchema>;
-
-const BIO_MAX = 160;
 
 interface ProfileFormProps {
 	form: ReturnType<typeof useForm<ProfileFormValues>>;
@@ -213,33 +191,11 @@ export default function ProfileForm({
 					)}
 				/>
 
-				{/*
-				 * The left slot holds the row height, so the note appearing on the first
-				 * keystroke does not slide the buttons sideways.
-				 */}
-				<div className="flex items-center justify-between gap-3 border-t pt-4">
-					<p aria-live="polite" className="text-muted-foreground text-xs">
-						{isDirty ? "Unsaved changes" : null}
-					</p>
-					<div className="flex shrink-0 items-center gap-2">
-						<Button
-							type="button"
-							variant="outline"
-							onClick={() => form.reset()}
-							disabled={!isDirty || isSubmitting}
-						>
-							Reset
-						</Button>
-						<Button type="submit" disabled={!isDirty || isSubmitting}>
-							{/*
-							 * The label stays put, so the button keeps its width and the row does not
-							 * reflow mid-submit.
-							 */}
-							{isSubmitting && <Spinner className="animate-spin" />}
-							Save changes
-						</Button>
-					</div>
-				</div>
+				<SaveBar
+					isDirty={isDirty}
+					isSubmitting={isSubmitting}
+					onReset={() => form.reset()}
+				/>
 			</form>
 		</Form>
 	);
