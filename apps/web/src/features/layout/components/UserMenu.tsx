@@ -9,6 +9,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
+	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -78,65 +79,79 @@ export default function UserMenu() {
 
 				<DropdownMenuSeparator />
 
-				<DropdownMenuLabel className="sr-only">Theme</DropdownMenuLabel>
-				<div className="grid grid-cols-3 gap-1 p-2">
-					<Button
-						variant={theme === "light" ? "default" : "outline"}
-						size="sm"
-						className={cn(
-							"flex h-8 flex-col items-center justify-center gap-1 px-2 py-1",
-							theme === "light" && "bg-primary text-primary-foreground",
-						)}
-						onClick={() => setTheme("light")}
-					>
-						<Sun className="h-4 w-4" />
-					</Button>
-					<Button
-						variant={theme === "dark" ? "default" : "outline"}
-						size="sm"
-						className={cn(
-							"flex h-8 flex-col items-center justify-center gap-1 px-2 py-1",
-							theme === "dark" && "bg-primary text-primary-foreground",
-						)}
-						onClick={() => setTheme("dark")}
-					>
-						<Moon className="h-4 w-4" />
-					</Button>
-					<Button
-						variant={theme === "system" ? "default" : "outline"}
-						size="sm"
-						className={cn(
-							"flex h-8 flex-col items-center justify-center gap-1 px-2 py-1",
-							theme === "system" && "bg-primary text-primary-foreground",
-						)}
-						onClick={() => setTheme("system")}
-					>
-						<Monitor className="h-4 w-4" />
-					</Button>
-				</div>
+				{/*
+				 * DropdownMenuGroup is required, not decorative: it is the only
+				 * thing that provides MenuGroupContext, and DropdownMenuLabel
+				 * reads that context to wire up aria-labelledby. Rendered bare,
+				 * Base UI throws "MenuGroupContext is missing" -- in production
+				 * too, not just dev. It also supplies role="group", so the
+				 * visually hidden "Theme" label now actually names the control.
+				 */}
+				<DropdownMenuGroup>
+					<DropdownMenuLabel className="sr-only">Theme</DropdownMenuLabel>
+					<div className="grid grid-cols-3 gap-1 p-2">
+						<Button
+							variant={theme === "light" ? "default" : "outline"}
+							size="sm"
+							className={cn(
+								"flex h-8 flex-col items-center justify-center gap-1 px-2 py-1",
+								theme === "light" && "bg-primary text-primary-foreground",
+							)}
+							onClick={() => setTheme("light")}
+						>
+							<Sun className="h-4 w-4" />
+						</Button>
+						<Button
+							variant={theme === "dark" ? "default" : "outline"}
+							size="sm"
+							className={cn(
+								"flex h-8 flex-col items-center justify-center gap-1 px-2 py-1",
+								theme === "dark" && "bg-primary text-primary-foreground",
+							)}
+							onClick={() => setTheme("dark")}
+						>
+							<Moon className="h-4 w-4" />
+						</Button>
+						<Button
+							variant={theme === "system" ? "default" : "outline"}
+							size="sm"
+							className={cn(
+								"flex h-8 flex-col items-center justify-center gap-1 px-2 py-1",
+								theme === "system" && "bg-primary text-primary-foreground",
+							)}
+							onClick={() => setTheme("system")}
+						>
+							<Monitor className="h-4 w-4" />
+						</Button>
+					</div>
+				</DropdownMenuGroup>
 
 				<DropdownMenuSeparator />
 
+				{/*
+				 * Styled in place rather than wrapping a <Button> in `render`.
+				 * MenuPrimitive.Item is nativeButton={false} and expects a div,
+				 * so handing it a real <button> made Base UI stamp role="menuitem"
+				 * and aria-disabled onto a button and warn about the mismatch.
+				 * Keeping the item as the one interactive element also keeps it in
+				 * the menu's own keyboard navigation, which a nested button
+				 * would sit outside of.
+				 */}
 				<DropdownMenuItem
-					render={
-						<Button
-							variant="secondary"
-							className="w-full"
-							onClick={() => {
-								authClient.signOut({
-									fetchOptions: {
-										onSuccess: () => {
-											router.push("/");
-										},
-									},
-								});
-							}}
-						>
-							<SignOut className="h-4 w-4" />
-							Logout
-						</Button>
-					}
-				/>
+					className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
+					onClick={() => {
+						authClient.signOut({
+							fetchOptions: {
+								onSuccess: () => {
+									router.push("/");
+								},
+							},
+						});
+					}}
+				>
+					<SignOut className="h-4 w-4" />
+					Logout
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
