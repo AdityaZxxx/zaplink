@@ -20,7 +20,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { KPICard } from "@/features/dashboard/analytics/components/KPICard";
 import { formatCompact } from "@/features/dashboard/analytics/lib/format";
 import { iconForLink } from "@/features/dashboard/links/lib/linkIcon";
-import { ProfileCard } from "@/features/profile/components";
+import {
+	PROFILE_CARD_PREVIEW_CLASS,
+	ProfileCard,
+} from "@/features/profile/components";
 import { DOMAIN_NAME } from "@/lib/constants/BRANDS";
 import type { DashboardStats, LinksData, ProfileData } from "@/types/api";
 import { trpc } from "@/utils/trpc/client";
@@ -75,7 +78,7 @@ export default function DashboardPage({
 				<ProfileCard
 					profile={profile}
 					links={links}
-					className="h-full max-w-none rounded-none border-none shadow-none ring-0"
+					className={PROFILE_CARD_PREVIEW_CLASS}
 				/>
 			}
 		>

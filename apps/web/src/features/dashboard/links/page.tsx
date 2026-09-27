@@ -5,7 +5,10 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ProfileCard } from "@/features/profile/components";
+import {
+	PROFILE_CARD_PREVIEW_CLASS,
+	ProfileCard,
+} from "@/features/profile/components";
 import type { LinksData, ProfileData, ProfileLink } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import PageWithPreview from "../components/PageWithPreview";
@@ -137,7 +140,7 @@ export default function LinksPage({
 				<ProfileCard
 					profile={profile}
 					links={links.filter((link) => !link.isHidden)}
-					className="h-full max-w-none rounded-none border-none shadow-none ring-0"
+					className={PROFILE_CARD_PREVIEW_CLASS}
 				/>
 			}
 		>

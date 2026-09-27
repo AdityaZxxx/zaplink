@@ -1,5 +1,3 @@
-"use client";
-
 import { PencilSimple, Trash } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import type { ProfileLink } from "@/types/api";

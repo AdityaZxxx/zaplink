@@ -17,7 +17,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { ProfileCard } from "@/features/profile/components";
+import {
+	PROFILE_CARD_PREVIEW_CLASS,
+	ProfileCard,
+} from "@/features/profile/components";
 import type { LinksData, ProfileData } from "@/types/api";
 import { trpc } from "@/utils/trpc/client";
 import PageWithPreview from "../components/PageWithPreview";
@@ -107,7 +110,7 @@ export default function SettingsPage({
 				<ProfileCard
 					profile={profile}
 					links={links}
-					className="h-full max-w-none rounded-none border-none shadow-none ring-0"
+					className={PROFILE_CARD_PREVIEW_CLASS}
 				/>
 			}
 		>

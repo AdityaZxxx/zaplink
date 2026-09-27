@@ -1,5 +1,3 @@
-"use client";
-
 import { CursorClick } from "@phosphor-icons/react";
 
 export function EmptyLinksState() {
