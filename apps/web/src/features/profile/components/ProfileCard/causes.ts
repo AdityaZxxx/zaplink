@@ -8,24 +8,20 @@ export type SupportCause =
 	| "climate_action"
 	| "mental_health";
 
-/** The causes a visitor can actually pick. "none" is the off state, not a pick. */
+/*
+ * "none" is the off state, not a pick.
+ */
 export type SupportCauseId = Exclude<SupportCause, "none">;
 
 export type SupportCauseContent = {
 	title: string;
 	description: string;
 	icon: Icon;
-	/** Solid fill used for the banner, and for the swatch in the settings picker. */
 	color: string;
 	textColor: string;
 	link: string;
 };
 
-/**
- * Single source of truth for the causes. SupportBanner renders one of these on
- * the public profile, and the settings picker renders all of them, so both
- * sides of the toggle are guaranteed to describe the same thing.
- */
 export const SUPPORT_CAUSES: Record<SupportCauseId, SupportCauseContent> = {
 	stop_genocide: {
 		title: "Stop Genocide",
@@ -61,9 +57,8 @@ export const SUPPORT_CAUSES: Record<SupportCauseId, SupportCauseContent> = {
 	},
 };
 
-/**
- * Declaration order, not object key order, is what the picker lays out. Kept
- * explicit so a future key added to the map cannot silently reshuffle the grid.
+/*
+ * The picker lays these out in declaration order.
  */
 export const SUPPORT_CAUSE_IDS = [
 	"stop_genocide",

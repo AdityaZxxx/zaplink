@@ -16,10 +16,9 @@ interface PageWithPreviewProps {
 	children: React.ReactNode;
 	preview: React.ReactNode;
 	className?: string;
-	/**
-	 * Width of the scrolling column. Defaults to max-w-2xl, which suits a
-	 * single-column form. A page that splits that same column into a nav plus a
-	 * panel has to spend the difference, so it passes something wider.
+	/*
+	 * Defaults to max-w-2xl, which suits a single-column form; a page that
+	 * splits the column into a nav plus a panel passes something wider.
 	 */
 	contentClassName?: string;
 }

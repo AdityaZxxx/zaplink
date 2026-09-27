@@ -26,37 +26,25 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 	const isEnabled = isSupportCauseId(value);
 
 	/*
-	 * The last cause the visitor actually chose, so turning the banner off and
-	 * back on restores their cause instead of silently swapping it for the first
-	 * one in the list.
-	 *
-	 * Seeded with a real cause id rather than the stored value. A profile whose
-	 * banner is off stores "none", which is not a cause, and initialising from it
-	 * left the picker with nothing highlighted and made switching the banner back
-	 * on a no-op that wrote "none" over "none".
+	 * Seed from the last chosen cause, not the stored value: a banner that is
+	 * * off stores "none", which is not a cause.
 	 */
 	const [lastCause, setLastCause] = useState<SupportCauseId>(
 		isSupportCauseId(value) ? value : SUPPORT_CAUSE_IDS[0],
 	);
 
-	// Stable across renders and unique if the section is ever mounted twice.
 	const switchId = useId();
 
-	// Which cause the picker marks as selected. While the banner is off the grid
-	// is collapsed, so this only decides what a later re-enable restores.
 	const highlighted = isEnabled ? value : lastCause;
 
 	/*
-	 * Deliberately no onSuccess toast. The switch position and the selected cause
-	 * are already the feedback, and a toast on every tap is noise on a control
-	 * people toggle repeatedly while they decide.
+	 * No success toast: the switch position and the highlighted cause are
+	 * * already the feedback.
 	 */
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
 			/*
-			 * The profile preview in this page reads the same cache entry, so the
-			 * write happens before the response and the banner appears in the
-			 * phone preview on the first frame rather than after a round trip.
+			 * Optimistic, so the live preview updates before the response.
 			 */
 			onMutate: async (next) => {
 				await queryClient.cancelQueries({ queryKey: profileQueryKey });
@@ -91,7 +79,6 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 		if (checked) {
 			selectCause(lastCause);
 		} else {
-			// Remember the cause being switched off so it can come back.
 			if (isEnabled) setLastCause(value);
 			selectCause("none");
 		}
@@ -99,28 +86,11 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 
 	return (
 		/*
-		 * aria-busy, not disabled, while the save is in flight. Disabling a
-		 * control that currently holds focus makes the browser blur it, so a
-		 * keyboard visitor who pressed Space on the switch lost their place and
-		 * had to tab back from the top after every toggle. Announcing the busy
-		 * state keeps the control, and the focus, where they were.
-		 *
-		 * Two writes landing out of order is the cheaper failure: each one sets a
-		 * single enum field, so the worst case is a briefly stale value that the
-		 * onSettled refetch corrects.
+		 * aria-busy, not disabled: disabling a focused control blurs it and
+		 * * loses the keyboard user's place. Out-of-order writes are the cheaper
+		 * * failure, since each sets one field and onSettled refetches.
 		 */
 		<div className="space-y-4" aria-busy={isPending}>
-			{/*
-			 * A <label> wrapping the switch, so the whole row is the hit target
-			 * and the visible text is the accessible name. A bare switch beside a
-			 * heading gave a 32x20px target and no name at all.
-			 *
-			 * The explicit htmlFor is not redundant with the wrapping. Base UI's
-			 * switch renders a real checkbox input as its labelable control, so
-			 * the implicit association already activates it, but naming the
-			 * relationship attaches the accessible name to the control rather than
-			 * only to the wrapper.
-			 */}
 			<label
 				htmlFor={switchId}
 				className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border p-4 transition-colors duration-150 ease-out hover:bg-muted/60 has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30"
@@ -134,19 +104,8 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 			</label>
 
 			{/*
-			 * Reveal rather than a keyframe entrance. A toggle is a state change a
-			 * visitor can interrupt, so it takes a transition that retargets
-			 * mid-flight; animate-in/fade-in ran on a fixed timeline and could
-			 * only be replayed, not reversed. grid-template-rows collapses the
-			 * region without a measured height, and the exit is the same 150ms as
-			 * the enter, which reads as a reveal rather than a performance.
-			 *
-			 * The transition alone does not hide the picker. Collapsing to 0fr
-			 * clips the pixels, but the radios inside stay laid out and stay in
-			 * the tab order, so a keyboard user tabbed through the panel landed on
-			 * four invisible controls. `inert` on the fieldset is what actually
-			 * takes them out of the tab order and the accessibility tree while
-			 * they are collapsed.
+			 * inert, because collapsing to 0fr clips the pixels but leaves the
+			 * * radios in the tab order.
 			 */}
 			<div
 				className={cn(
@@ -159,13 +118,6 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 				<div className="overflow-hidden">
 					<fieldset inert={!isEnabled} className="pt-2 pb-1">
 						<legend className="sr-only">Choose a cause</legend>
-						{/*
-						 * Radios rather than buttons: the arrow keys move between
-						 * causes for free, and the group reports itself correctly to
-						 * assistive tech. Each one is picked by looking at it, since
-						 * the card carries the same swatch and icon the visitor will
-						 * actually see on their profile.
-						 */}
 						<div className="grid gap-2 sm:grid-cols-2">
 							{SUPPORT_CAUSE_IDS.map((id) => {
 								const cause = SUPPORT_CAUSES[id];
@@ -195,23 +147,11 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 										<span
 											className={cn(
 												"flex size-8 shrink-0 items-center justify-center rounded-full text-white",
-												// The swatch has to show the banner's real colour, so
-												// it cannot be tinted for legibility. Black Lives
-												// Matter is near-black, which all but vanishes
-												// against the dark card, so it gets the neutral
-												// hairline that keeps a shape readable on any
-												// background. Pure black in light, pure white in
-												// dark, never a tinted neutral.
+												// Real banner colours, never tinted, so the near-black cause needs a * hairline to read on the dark card.
 												"ring-1 ring-black/10 dark:ring-white/10",
 												cause.color,
 											)}
 										>
-											{/*
-											 * Outline by default, fill when selected: the icon
-											 * variant carries the selection, so the state does
-											 * not depend on colour alone and survives motion
-											 * being switched off.
-											 */}
 											<Icon
 												weight={isSelected ? "fill" : "regular"}
 												className="size-4"

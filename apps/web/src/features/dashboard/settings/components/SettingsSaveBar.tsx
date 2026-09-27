@@ -9,14 +9,9 @@ interface SettingsSaveBarProps {
 	onReset: () => void;
 }
 
-/**
- * Shared by every editable settings section so they all read the same way: a
- * hairline, a plain-language note about unsaved work, and a pair of buttons
- * that stay inert until there is something to save.
- *
- * `justify-between` with a left slot is deliberate. Rendering the note only
- * when dirty would slide the buttons left on the first keystroke; an empty
- * paragraph holds the row height without moving anything.
+/*
+ * The left slot holds the row height, so the note appearing on the first
+ * keystroke does not slide the buttons.
  */
 export function SettingsSaveBar({
 	isDirty,
@@ -39,10 +34,8 @@ export function SettingsSaveBar({
 				</Button>
 				<Button type="submit" disabled={!isDirty || isSubmitting}>
 					{/*
-					 * The label never swaps to "Saving...". A spinner beside a
-					 * stable label keeps the button the same width, so the row
-					 * does not reflow mid-submit, and the disabled state is
-					 * already the cue that the save is in flight.
+					 * The label stays put, so the button keeps its width and the row does
+					 * not reflow mid-submit.
 					 */}
 					{isSubmitting && <Spinner className="animate-spin" />}
 					Save changes

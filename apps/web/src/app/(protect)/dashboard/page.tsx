@@ -11,20 +11,11 @@ export default async function Page() {
 		api.analytics.getStats({ range: "last7" }),
 	]);
 
-	// A signed-in user with no profile has not finished onboarding. The client
-	// used to discover this after its own fetch and render `null`, which is a
-	// blank page with no way forward.
+	// A signed-in user with no profile has not finished onboarding.
 	if (!profile) {
 		redirect("/onboarding");
 	}
 
-	/*
-	 * These casts are the cost of moving the fetch to the server, and they are
-	 * cast-shaped rather than suppressed: a server caller returns `Date` for
-	 * timestamp columns, while the tRPC client decodes them as strings. The page
-	 * only ever reads them in the browser, where the string form is what arrives
-	 * anyway. See ./types for the full note.
-	 */
 	return (
 		<DashboardPage
 			initialProfile={profile as unknown as ProfileData}

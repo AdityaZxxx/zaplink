@@ -7,13 +7,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Base UI emits data-orientation, not data-horizontal. Without these two
- * variants a `data-horizontal:*` utility compiles to `&[data-horizontal]`,
- * which never matches, and separator / scroll-area / tabs silently lose
- * their orientation styling. Copied from shadcn/tailwind.css, and written
- * in the one-line form already used for `dark` above so Biome's
- * noUnknownAtRules does not reject Tailwind's @slot directive.
- */
+ * Base UI emits data-orientation, not data-horizontal: without these, a
+ * data-horizontal:* utility compiles to a selector that never matches.
+*/
 @custom-variant data-horizontal (&:where([data-orientation="horizontal"]));
 @custom-variant data-vertical (&:where([data-orientation="vertical"]));
 
@@ -49,8 +45,9 @@ body {
 	--accent-foreground: oklch(0.205 0 0);
 	--destructive: oklch(0.577 0.245 27.325);
 	--destructive-foreground: oklch(1 0 0);
-	/* Darker than emerald-600 (3.73:1 on white) because the delta it labels is
-	   text-xs, which needs 4.5:1 rather than the 3:1 of a large glyph. */
+	/*
+	 * Darker than emerald-600, which is 3.73:1 on white.
+	*/
 	--success: oklch(0.52 0.14 163.2);
 	--border: oklch(0.922 0 0);
 	--input: oklch(0.922 0 0);
@@ -60,11 +57,6 @@ body {
 	--chart-3: oklch(0.55 0.22 263);
 	--chart-4: oklch(0.49 0.22 264);
 	--chart-5: oklch(0.42 0.18 266);
-	/* Two-series pair for the analytics chart. The --chart-* ramp above is
-	   theme-invariant, which suits large fills but not 2px strokes: chart-5
-	   lands at 8.85:1 on the light card and 2.03:1 on the dark one. These two
-	   are declared per theme so both stay legible, and swapping them is a
-	   repaint rather than a re-render. */
 	--chart-series-1: oklch(0.62 0.19 260);
 	--chart-series-2: oklch(0.42 0.18 266);
 	--sidebar: oklch(0.985 0 0);
@@ -130,9 +122,9 @@ body {
 	--chart-3: oklch(0.55 0.22 263);
 	--chart-4: oklch(0.49 0.22 264);
 	--chart-5: oklch(0.42 0.18 266);
-	/* Mirrored, not reused: on the dark card these two steps clear the 3:1
-	   that WCAG asks of a non-text graphic, where the light-theme pair would
-	   not. */
+	/*
+	 * Not reused from the ramp: on the dark card these two steps clear 3:1.
+	*/
 	--chart-series-1: oklch(0.81 0.1 252);
 	--chart-series-2: oklch(0.55 0.22 263);
 	--sidebar: oklch(0.205 0 0);

@@ -33,10 +33,9 @@ import type { ProfileLink } from "@/types/api";
 import { useUploadThing } from "@/utils/uploadthing";
 import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
-/**
- * The fields an edit can write. Flat, because the sheet sends one patch per
- * save and the shape differs by link type, whereas `ProfileLink` nests those
- * under `custom` and `contact`.
+/*
+ * Flat, because the sheet sends one patch per save and the shape differs by
+ * link type, whereas ProfileLink nests these under custom and contact.
  */
 export type LinkUpdate = {
 	title?: string;
@@ -95,7 +94,6 @@ export function EditLinkSheet({
 			setIsUploading(true);
 			let finalThumbnailUrl = thumbnailUrl;
 
-			// Upload thumbnail if file exists
 			if (thumbnailFile) {
 				const res = await startUpload([thumbnailFile], {
 					linkId: link.id,
@@ -115,7 +113,6 @@ export function EditLinkSheet({
 			} else if (link.type === "contact") {
 				updates.contactType = contactType;
 				updates.contactValue = contactValue;
-				// Auto-format URL for contact
 				let finalUrl = contactValue;
 				if (contactType === "email" && !contactValue.startsWith("mailto:")) {
 					finalUrl = `mailto:${contactValue}`;

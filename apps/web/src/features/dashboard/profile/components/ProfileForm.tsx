@@ -23,10 +23,8 @@ import { DOMAIN_NAME } from "@/lib/constants/BRANDS";
 import { useUploadThing } from "@/utils/uploadthing";
 
 /*
- * The limits are the column widths in `profiles.display_name` and
- * `profiles.username` (both varchar(30)), not the looser ceilings the
- * updateProfile procedure accepts. Postgres rejects an over-long value with a
- * raw driver error, so the form has to be the stricter of the two.
+ * These are the column widths (both varchar(30)), narrower than the
+ * ceilings updateProfile accepts, so an over-long value fails on insert.
  */
 const profileSchema = z.object({
 	displayName: z
@@ -70,7 +68,6 @@ export default function ProfileForm({
 			let finalAvatarUrl = values.avatarUrl;
 			let finalBannerUrl = values.bannerUrl;
 
-			// Upload avatar if changed
 			if (avatarFile) {
 				const res = await uploadAvatar([avatarFile]);
 				if (res?.[0]) {
@@ -80,7 +77,6 @@ export default function ProfileForm({
 				}
 			}
 
-			// Upload banner if changed
 			if (bannerFile) {
 				const res = await uploadBanner([bannerFile]);
 				if (res?.[0]) {
@@ -90,7 +86,7 @@ export default function ProfileForm({
 				}
 			}
 
-			// Safety check: NEVER submit a blob URL
+			// A blob URL here would be written to the database.
 			if (finalAvatarUrl?.startsWith("blob:")) {
 				throw new Error("Invalid avatar URL. Please try uploading again.");
 			}
@@ -98,7 +94,6 @@ export default function ProfileForm({
 				throw new Error("Invalid banner URL. Please try uploading again.");
 			}
 
-			// Submit with final URLs
 			onSubmit({
 				...values,
 				avatarUrl: finalAvatarUrl,
@@ -123,12 +118,6 @@ export default function ProfileForm({
 				onSubmit={form.handleSubmit(handleFormSubmit)}
 				className="space-y-6"
 			>
-				{/*
-				 * Avatar and banner share a row on large screens. The avatar takes
-				 * its own width and the banner fills the rest, rather than an even
-				 * split: a square avatar has no use for half a column, and a 50/50
-				 * grid shrank the banner to a thumbnail of itself.
-				 */}
 				<div className="grid gap-6 md:grid-cols-[6rem_1fr] md:items-start">
 					<FormField
 						control={form.control}
@@ -146,12 +135,6 @@ export default function ProfileForm({
 										sizeClass="aspect-square size-24 rounded-full"
 									/>
 								</FormControl>
-								{/*
-								 * No description here. In a 6rem column a sentence
-								 * wrapped to four lines beside a picture that already
-								 * says what it is. The banner keeps one because a wide
-								 * image is ambiguous in a way a square one is not.
-								 */}
 								<FormMessage />
 							</FormItem>
 						)}
@@ -210,11 +193,6 @@ export default function ProfileForm({
 					name="bio"
 					render={({ field }) => (
 						<FormItem>
-							{/*
-							 * The count sits beside the label rather than under the
-							 * field, matching the SEO section. Under the field it read
-							 * as a caption for the textarea instead of a limit on it.
-							 */}
 							<div className="flex items-center justify-between gap-2">
 								<FormLabel>Bio</FormLabel>
 								<span className="text-muted-foreground text-xs tabular-nums">
@@ -237,9 +215,8 @@ export default function ProfileForm({
 				/>
 
 				{/*
-				 * justify-between with a left slot, so the note appearing on the
-				 * first keystroke does not slide the buttons sideways. An empty
-				 * paragraph still holds the row height.
+				 * The left slot holds the row height, so the note appearing on the first
+				 * keystroke does not slide the buttons sideways.
 				 */}
 				<div className="flex items-center justify-between gap-3 border-t pt-4">
 					<p aria-live="polite" className="text-muted-foreground text-xs">
@@ -256,9 +233,8 @@ export default function ProfileForm({
 						</Button>
 						<Button type="submit" disabled={!isDirty || isSubmitting}>
 							{/*
-							 * The label never swaps to "Saving...". A spinner beside a
-							 * stable label keeps the button the same width, so the row
-							 * does not reflow mid-submit.
+							 * The label stays put, so the button keeps its width and the row does not
+							 * reflow mid-submit.
 							 */}
 							{isSubmitting && <Spinner className="animate-spin" />}
 							Save changes
@@ -270,20 +246,11 @@ export default function ProfileForm({
 	);
 }
 
-/**
- * The username input carries a domain prefix, so it cannot use `FormControl`.
- * That component attaches the id, `aria-describedby` and `aria-invalid` to
- * whichever element it renders, and here that was the wrapper div rather than
- * the input, so the label pointed at a div and the description was announced
- * for nothing.
- *
- * It also used an absolutely positioned prefix with `pl-[95px]`. The prefix is
- * a wider string than 95px at this font, so the value began flush against
- * "zaplink.com/" with no gap. A flex sibling sizes itself instead.
- *
- * The read of the generated ids is a hook, so it lives in its own component
- * rendered inside FormItem: a hook called by the component that renders
- * FormItem would run before that context provider exists.
+/*
+ * FormControl puts the id and aria-describedby on the wrapper div rather
+ * than the input, and the pl-[95px] prefix this replaces was narrower than
+ * "zaplink.com/" at this font. The useFormField read is a hook, so it needs
+ * its own component inside FormItem.
  */
 function UsernameField({
 	field,

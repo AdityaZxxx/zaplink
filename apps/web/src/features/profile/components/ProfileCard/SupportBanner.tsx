@@ -15,7 +15,6 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 
 	useEffect(() => {
 		if (cause !== "none") {
-			// Initial animation delay
 			const timer = setTimeout(() => setIsVisible(true), 500);
 			return () => clearTimeout(timer);
 		}

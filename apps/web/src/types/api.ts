@@ -3,37 +3,23 @@ import type { AppRouter } from "@zaplink/api/routers/index";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-/**
- * The row shapes the UI works with, taken from the router's own output rather
- * than from `profiles.$inferSelect` and friends.
- *
- * The database types declare timestamp columns as `Date`, but nothing reaches
- * the browser as a `Date`: the tRPC client decodes JSON, so those columns
- * arrive as strings. A server-side caller, by contrast, hands back real `Date`
- * objects. Typing against the router output describes the data that is
- * actually in memory on the client, which is where these types are used. A
- * server component that fetches directly casts once at its own boundary.
- *
- * This lives outside any feature because more than one feature renders these
- * rows: the dashboard pages, the settings sections and the public profile.
+/*
+ * Typed from the router output, not the row types: the tRPC client decodes
+ * timestamps to strings, while a server caller gets real Dates, so a server
+ * component casts once at its own boundary. Outside any feature because the
+ * dashboard, the settings sections and the public profile all render these rows.
  */
 export type ProfileData = NonNullable<RouterOutputs["profile"]["getProfile"]>;
 export type LinksData = RouterOutputs["links"]["getAllLinks"];
 
-/** One link with the relations `links.getAllLinks` loads alongside it. */
 export type ProfileLink = LinksData[number];
 
-/** The stats the dashboard summary shows. */
 export type DashboardStats = NonNullable<
 	RouterOutputs["analytics"]["getStats"]
 >;
 
-/**
- * What `iconForLink` needs in order to choose a glyph.
- *
- * Narrower than a link row on purpose: the helper reads only the type and the
- * two relations, and a caller should not have to hand it a whole row. That also
- * keeps it independent of the timestamp columns, so every caller fits.
+/*
+ * Deliberately narrower than a row, so iconForLink needs no timestamp columns.
  */
 export type LinkKind = {
 	type: string;

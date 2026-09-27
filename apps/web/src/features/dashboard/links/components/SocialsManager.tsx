@@ -58,16 +58,8 @@ function SocialItem({
 
 	return (
 		/*
-		 * The frame is a div with role="button" because it carries dnd-kit's
-		 * drag listeners, and the KeyboardSensor claims Enter and Space to
-		 * start a drag. A native button would activate on those same keys and
-		 * open the editor at the same time as a drag began. The delete control
-		 * is a sibling rather than a child for the same reason a nested button
-		 * would be illegal, so the two actions are separate tab stops.
-		 *
-		 * The delete affordance was a 24px circle of a bold "×" sitting half
-		 * outside the tile. It is now a real ghost button parked in the corner,
-		 * revealed on hover and on focus rather than always drawn.
+		 * Not a native button: the KeyboardSensor claims Enter and Space to
+		 * start a drag, and a button would activate on the same keys.
 		 */
 		<div className="group/item relative">
 			{/* biome-ignore lint/a11y/useSemanticElements: a native button would activate on the same keys the dnd-kit KeyboardSensor uses to start a drag. */}
@@ -98,10 +90,8 @@ function SocialItem({
 			</div>
 
 			{/*
-			 * `group/item` is on the wrapper, not the tile, so hovering either
-			 * one reveals this. It is also permanently visible below md, because
-			 * a hover-only control is one a touch device cannot see, and opacity
-			 * leaves it in the tap order, so it would be tappable while invisible.
+			 * Always visible below md: opacity leaves a control in the tap order, so a
+			 * hover-only button would be tappable while invisible.
 			 */}
 			<button
 				type="button"

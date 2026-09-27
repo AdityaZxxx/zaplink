@@ -16,11 +16,6 @@ interface ProfilePageClientProps {
 	initialLinks: LinksData;
 }
 
-/*
- * The two forms that write the profile row. Kept identical to the account form
- * in Settings so the same field cannot end up with two different rules; see
- * ./ProfileForm for the limits, which come from the column widths.
- */
 const profileSchema = z.object({
 	displayName: z
 		.string()
@@ -43,9 +38,7 @@ export default function ProfilePageClient({
 		trpc.profile.updateProfile.mutationOptions({
 			onSuccess: (updated) => {
 				toast.success("Profile updated");
-				// Seed the cache from the response instead of refetching: the
-				// procedure returns the row it just wrote, and the live preview
-				// reads from this same entry.
+				// Seeded from the response, since the preview reads this same entry.
 				queryClient.setQueryData(
 					trpc.profile.getProfile.queryOptions().queryKey,
 					updated,
@@ -68,11 +61,8 @@ export default function ProfilePageClient({
 		},
 	});
 
-	// Watch all fields for real-time preview
 	const watchedValues = form.watch();
 
-	// Merge watched values with initial profile to create a preview object
-	// We cast to any because of Date vs string mismatch issues and partial updates
 	const previewProfile = {
 		...initialProfile,
 		...watchedValues,

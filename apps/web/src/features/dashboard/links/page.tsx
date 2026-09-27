@@ -32,13 +32,6 @@ export default function LinksPage({
 	const [editingLink, setEditingLink] = useState<ProfileLink | null>(null);
 	const [addLinkType, setAddLinkType] = useState<AddLinkType>("custom");
 
-	/*
-	 * Seeded from the server render, which is what removed the local mirror of
-	 * the query. That mirror re-created every link on each refetch and had to
-	 * convert its timestamps back with `new Date(...)`, so two representations
-	 * of the same rows existed at once and the row identity churned on every
-	 * poll.
-	 */
 	const { data: profile } = useQuery({
 		...trpc.profile.getProfile.queryOptions(),
 		initialData: initialProfile,
@@ -63,15 +56,9 @@ export default function LinksPage({
 	const updateLinkMutation = useMutation(
 		trpc.links.updateLink.mutationOptions({
 			/*
-			 * Patched into the cache rather than into a local mirror of the list.
-			 * The switch and the phone preview both read this one entry, so a
-			 * visibility toggle moved both on the first frame. Waiting for the
-			 * round trip left the switch showing the old state for seconds after
-			 * the click, which read as the control ignoring you.
-			 *
-			 * Only the real columns land optimistically. displayMode and
-			 * thumbnailUrl sit under `custom` on the row rather than at the top
-			 * level, so those arrive with the refetch that onSettled triggers.
+			 * Only top-level columns land optimistically: displayMode and
+			 * thumbnailUrl sit under `custom`, so they arrive with the onSettled
+			 * refetch.
 			 */
 			onMutate: async (next) => {
 				await queryClient.cancelQueries({ queryKey: linksQueryKey });
@@ -136,7 +123,6 @@ export default function LinksPage({
 		setIsAddOpen(true);
 	}
 
-	// Filter links for zones
 	const socialLinks = links.filter(
 		(link) => link.type === "platform" && link.platform?.category === "social",
 	);

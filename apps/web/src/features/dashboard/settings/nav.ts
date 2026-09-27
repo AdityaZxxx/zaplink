@@ -8,25 +8,17 @@ import {
 	User,
 } from "@phosphor-icons/react";
 
-/** Sections a visitor can actually open. Each one maps to a `#id` deep link. */
 export type SettingsSectionId = "account" | "seo" | "support-banner";
 
 export type SettingsNavItem = {
 	id: SettingsSectionId;
 	title: string;
 	icon: Icon;
-	/**
-	 * Drives the panel header rather than being written twice. The nav entry
-	 * and the panel it opens can therefore never drift apart, which is what
-	 * happened when each section component hard-coded its own heading.
-	 */
 	description: string;
 };
 
-/**
- * Sections the product has not built. They stay in the nav as a roadmap, but
- * they are not interactive and they have no panel: an item that navigates to
- * a "coming soon" placeholder is a promise the app cannot keep.
+/*
+ * Planned sections stay in the nav as a roadmap, but are not interactive.
  */
 export type PlannedNavItem = {
 	id: string;
@@ -96,11 +88,6 @@ export const SETTINGS_SECTIONS: SettingsNavItem[] = SETTINGS_NAV_GROUPS.flatMap(
 
 export const DEFAULT_SECTION_ID: SettingsSectionId = "account";
 
-/**
- * id to title, for the controls that only ever receive the id as their value.
- * Derived rather than written out, so renaming a section cannot leave this
- * behind. Without it the mobile select trigger renders the raw id, "account".
- */
 export const SECTION_TITLES = Object.fromEntries(
 	SETTINGS_SECTIONS.map((section) => [section.id, section.title]),
 ) as Record<SettingsSectionId, string>;

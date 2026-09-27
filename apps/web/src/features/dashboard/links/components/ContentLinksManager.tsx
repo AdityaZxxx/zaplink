@@ -59,11 +59,6 @@ export function ContentLinksManager({
 					items={links.map((link) => link.id)}
 					strategy={verticalListSortingStrategy}
 				>
-					{/*
-					 * The gap lives here only. LinkItem also carried an mb-3, so
-					 * every row was separated by 24px: 12 from the list and 12
-					 * from the item that was already in a spaced list.
-					 */}
 					<div className="grid gap-3">
 						{links.map((link) => (
 							<LinkItem

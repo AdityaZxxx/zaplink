@@ -44,22 +44,13 @@ export default function SettingsPage({
 	initialLinks,
 }: SettingsPageProps) {
 	const [activeId, setActiveId] = useState<SettingsSectionId>(() => {
-		/*
-		 * Read the hash during the initialiser rather than in an effect. An
-		 * effect would render "account" first and swap to the linked section on
-		 * the next tick, so a shared #seo link would flash the wrong panel.
-		 */
+		// In the initialiser, not an effect: an effect would paint "account"
+		// before swapping to the linked section.
 		if (typeof window === "undefined") return DEFAULT_SECTION_ID;
 		const fromHash = window.location.hash.slice(1);
 		return isSettingsSectionId(fromHash) ? fromHash : DEFAULT_SECTION_ID;
 	});
 
-	/*
-	 * Seeded from the server render, so the panel and the preview paint with
-	 * real data on the first frame. The query still owns the value from here on,
-	 * which is what lets a save in one section show up in the others and in the
-	 * live preview without any cross-component wiring.
-	 */
 	const { data: profile } = useQuery({
 		...trpc.profile.getProfile.queryOptions(),
 		initialData: initialProfile,
@@ -76,8 +67,7 @@ export default function SettingsPage({
 			if (isSettingsSectionId(fromHash)) setActiveId(fromHash);
 		};
 
-		// popstate covers Back and Forward between sections; hashchange covers
-		// a hash edited in the address bar.
+		// popstate for Back/Forward, hashchange for a hand-edited hash.
 		window.addEventListener("popstate", syncFromLocation);
 		window.addEventListener("hashchange", syncFromLocation);
 		return () => {
@@ -88,12 +78,8 @@ export default function SettingsPage({
 
 	const selectSection = useCallback((id: SettingsSectionId) => {
 		setActiveId(id);
-		/*
-		 * pushState, not `location.hash =`. Assigning the hash asks the browser
-		 * to scroll to a matching element, which yanked the scroll area, and it
-		 * pushed a history entry per click so Back had to be pressed six times
-		 * to leave the page.
-		 */
+		// pushState, not `location.hash =`, which scrolls the panel and
+		// pushes an entry per click.
 		window.history.pushState(null, "", `#${id}`);
 	}, []);
 
@@ -114,10 +100,8 @@ export default function SettingsPage({
 
 	return (
 		<PageWithPreview
-			// Wider than the max-w-2xl default. This page splits its column into a
-			// nav and a panel, and at 2xl the panel was left around 380px once the
-			// nav and the gap were taken out, which wrapped every section
-			// description onto a second line.
+			// This page splits its column into a nav and a panel, so it needs
+			// more than the single-column default.
 			contentClassName="max-w-3xl"
 			preview={
 				<ProfileCard
@@ -140,16 +124,7 @@ export default function SettingsPage({
 
 				<div className="flex w-full flex-col gap-8 lg:flex-row lg:gap-10">
 					{/*
-					 * top-14, not top-0: the dashboard header in Sidebar.tsx is
-					 * sticky and permanently occupies the first 3.5rem, so this
-					 * section nav has to pin below it rather than under it. It
-					 * takes no z-index of its own, which is enough to sit above the
-					 * flowing content it covers, and keeps it out of the stacking
-					 * contest with the header's deliberate z-[5].
-					 *
-					 * The negative margin and background are for the mobile case
-					 * only, where the bar must span the full width of the scroll
-					 * area rather than stop at the edge of the centred column.
+					 * top-14 clears the sticky 3.5rem header in Sidebar.tsx.
 					 */}
 					<aside className="sticky top-14 -mx-4 shrink-0 bg-background px-4 py-2 lg:top-auto lg:mx-0 lg:w-52 lg:bg-transparent lg:px-0 lg:py-0">
 						{/* One control on small screens, a list on large ones. Both read
@@ -159,28 +134,20 @@ export default function SettingsPage({
 							<Select
 								value={activeId}
 								onValueChange={(value) => {
-									// A select can be cleared, but this one always drives an
-									// active section, so there is nothing to fall back to.
 									if (!isSettingsSectionId(value)) return;
 									selectSection(value);
 								}}
 							>
 								<SelectTrigger
 									className="w-full"
-									/*
-									 * Names the control and keeps the visible text inside
-									 * the accessible name, which WCAG 2.5.3 requires so that
-									 * "click Account" works with speech input. A bare
-									 * "Settings section" would not contain it.
-									 */
+									/* The label must contain the visible text for speech
+									input, which is what WCAG 2.5.3 asks for. */
 									aria-label={`Settings section: ${activeSection.title}`}
 								>
 									{/*
-									 * Base UI renders the raw value unless the value is
-									 * formatted, and this trigger's items carry an icon
-									 * alongside their text, so nothing could infer a label
-									 * from them. Left to itself the mobile trigger read
-									 * "account".
+									 * Base UI shows the raw value unless the items are
+									 * formatted, and these carry an icon, so it reads
+									 * "account" without this.
 									 */}
 									<SelectValue>
 										{(value: SettingsSectionId) =>
@@ -221,11 +188,6 @@ export default function SettingsPage({
 														aria-current={isActive ? "true" : undefined}
 														onClick={() => selectSection(item.id)}
 														className={cn(
-															/*
-															 * Mirrors SidebarMenuButton: 32px rows, 12px radius,
-															 * and pl-2.5 rather than px-3 so the icon does not sit
-															 * a pixel off the text's left edge.
-															 */
 															"flex h-8 w-full items-center gap-2 overflow-hidden rounded-xl py-2 pr-3 pl-2.5 text-left text-sm",
 															"outline-none transition-[color,background-color] duration-150 ease-out",
 															"focus-visible:ring-3 focus-visible:ring-ring/30",
@@ -257,13 +219,6 @@ export default function SettingsPage({
 								<ul className="flex flex-col gap-0.5">
 									{PLANNED_NAV_GROUP.map((item) => (
 										<li key={item.id}>
-											{/*
-											 * Not a button. These sections do not exist, and the old
-											 * build made them focusable only to open a placeholder
-											 * panel, which spent a nav slot on a dead end. A plain
-											 * row with a badge states the same thing and costs nothing
-											 * when it is clicked.
-											 */}
 											<div className="flex h-8 items-center gap-2 overflow-hidden rounded-xl py-2 pr-3 pl-2.5 text-muted-foreground/50 text-sm">
 												<item.icon className="size-4 shrink-0" />
 												<span className="truncate">{item.title}</span>
@@ -289,22 +244,13 @@ export default function SettingsPage({
 							<CardHeader>
 								<CardTitle>{activeSection.title}</CardTitle>
 								<CardDescription>{activeSection.description}</CardDescription>
-								{/*
-								 * A hairline, not a border on the header: the header is inset by
-								 * --card-spacing, so border-b would stop short of both edges
-								 * and read as a floating rule. This is a divider, so it stays a
-								 * border rather than becoming a shadow.
-								 */}
 								<div className="-mx-(--card-spacing) mt-4 h-px bg-border" />
 							</CardHeader>
 
 							{/*
-							 * Every section stays mounted and the inactive ones are hidden,
-							 * rather than rendering only the active one. Switching sections
-							 * is a single click away from a half-typed description, and
-							 * unmounting threw that work away. `hidden` also drops the
-							 * sections from the tab order and the accessibility tree,
-							 * which display:none alone would not do for a grid.
+							 * Inactive sections stay mounted, so switching does not
+							 * discard a half-typed field. `hidden` rather than
+							 * display:none, which leaves a grid in the tab order.
 							 */}
 							{SETTINGS_SECTIONS.map((section) => (
 								<div

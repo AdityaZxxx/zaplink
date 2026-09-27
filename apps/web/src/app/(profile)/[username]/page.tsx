@@ -13,9 +13,7 @@ type PublicProfilePageProps = {
 type Trpc = Awaited<ReturnType<typeof trpcServer>>;
 
 /*
- * generateMetadata and the page both need the profile, and Next runs them in
- * the same request. `cache` collapses them into one query instead of two, and
- * is scoped to the request so nothing leaks between visitors.
+ * cache() so generateMetadata and the page share one fetch.
  */
 const getProfileByUsername = cache((api: Trpc, username: string) =>
 	api.profile.getProfileByUsername({ username }),
@@ -32,17 +30,13 @@ export async function generateMetadata({
 	const api = await trpcServer();
 	const profile = await getProfileByUsername(api, username);
 
-	// A missing profile renders the not-found view, which should not be
-	// indexable as somebody else's page.
+	// A notFound() page must not be indexable as somebody else's profile.
 	if (!profile) {
 		return { title: `${APP_NAME} — Page not found` };
 	}
 
 	/*
-	 * The fallbacks below are the contract the SEO settings preview in the
-	 * dashboard draws against. Change one and change the other: the panel shows
-	 * what a search engine will show, so a blank field has to resolve the same
-	 * way here as it does there.
+	 * The SEO settings preview reads these same fallbacks, so change both.
 	 */
 	const title = profile.seoTitle || profile.displayName || profile.username;
 	const description =
@@ -101,9 +95,7 @@ export default async function PublicProfilePage({
 	return (
 		<div className="w-full bg-none md:container md:mx-auto md:block md:px-4 md:py-6">
 			<PublicProfileClient
-				// A server caller hands back `Date` for timestamp columns where
-				// the client describes the strings a tRPC response carries.
-				// ProfileCard reads none of those columns.
+				// A server caller gets Date where the client gets strings.
 				profile={profile as unknown as ProfileData}
 				links={userLinks as unknown as LinksData}
 			/>

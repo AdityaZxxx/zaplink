@@ -23,19 +23,15 @@ import { queryClient, trpc } from "@/utils/trpc/client";
 import { SettingsSaveBar } from "./SettingsSaveBar";
 
 /*
- * `profiles.seo_title` is varchar(30), which is the real ceiling. The
- * updateProfile procedure allows 60, so a longer title passes validation and
- * then fails on insert; the narrower limit is enforced here to match the
- * column. Widening the column is the real fix, and it is a migration.
+ * seo_title is varchar(30), narrower than the 60 the update procedure
+ * accepts, so an over-long value fails on insert.
  */
 const SEO_TITLE_MAX = 30;
 const SEO_DESCRIPTION_MAX = 160;
 
 /*
- * Google's own link colours for a result, not project tokens. This block
- * previews a surface that lives outside the app, so it has to match that
- * surface rather than the design system. The light and dark steps are the two
- * Google uses for each theme.
+ * Google's result colours, not project tokens: this previews a surface
+ * that lives outside the app.
  */
 const SERP_LINK = "text-[#1a0dab] dark:text-[#8ab4f8]";
 
@@ -59,11 +55,6 @@ interface SeoSettingsProps {
 	profile: ProfileData;
 }
 
-/**
- * A counter that changes colour as the field fills, so running out of room is
- * visible before it is a validation error. `tabular-nums` keeps the digits from
- * shifting the label as they tick.
- */
 function CharacterCount({ value, max }: { value?: string; max: number }) {
 	const length = value?.length ?? 0;
 	const remaining = max - length;
@@ -72,8 +63,8 @@ function CharacterCount({ value, max }: { value?: string; max: number }) {
 		<span
 			className={cn(
 				"text-xs tabular-nums",
-				// A colour change, not a warning toast: the limit is a fact about
-				// the field, and it stays legible with motion switched off.
+				// Colour, not a toast: the limit is a fact about the field, not a
+				// failure worth interrupting for.
 				remaining <= 0
 					? "text-destructive"
 					: remaining <= Math.max(1, Math.round(max * 0.1))
@@ -95,9 +86,6 @@ export function SeoSettings({ profile }: SeoSettingsProps) {
 		},
 	});
 
-	// Watch both fields so the result preview tracks typing. The phone preview
-	// beside this panel shows the profile, not the meta tags, so without this
-	// the two halves of the page would disagree about what is being edited.
 	const [seoTitle, seoDescription] = form.watch(["seoTitle", "seoDescription"]);
 
 	const updateProfileMutation = useMutation(
@@ -115,8 +103,8 @@ export function SeoSettings({ profile }: SeoSettingsProps) {
 		}),
 	);
 
-	// What search engines fall back to when a field is blank, mirroring the
-	// fallbacks in generateMetadata on the public profile route.
+	// These must stay in step with the fallbacks in generateMetadata on the
+	// public profile route.
 	const resolvedTitle = seoTitle || profile.displayName || profile.username;
 	const resolvedDescription = seoDescription || profile.bio;
 
@@ -178,12 +166,6 @@ export function SeoSettings({ profile }: SeoSettingsProps) {
 					)}
 				/>
 
-				{/*
-				 * The point of the section: these two fields exist to change a
-				 * search result, so the page shows one. It previews the fields as
-				 * they are typed, not as they are saved, because deciding on a
-				 * title needs to happen before committing to it.
-				 */}
 				<div className="rounded-2xl border bg-muted/40 p-4">
 					<p className="font-medium text-muted-foreground text-xs">
 						Search result preview

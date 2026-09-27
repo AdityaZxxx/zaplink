@@ -67,14 +67,12 @@ export function AddLinkDialog({
 }: AddLinkDialogProps) {
 	const [activeTab, setActiveTab] = useState<string>(initialTab);
 
-	// Reset tab when dialog opens/closes or initialTab changes
 	useEffect(() => {
 		if (isOpen) {
 			setActiveTab(initialTab);
 		}
 	}, [isOpen, initialTab]);
 
-	// Form States
 	const [title, setTitle] = useState("");
 	const [url, setUrl] = useState("");
 	const [displayMode, setDisplayMode] = useState<
@@ -120,7 +118,6 @@ export function AddLinkDialog({
 				setIsUploading(true);
 				let finalThumbnailUrl = thumbnailUrl;
 
-				// Upload thumbnail if file exists
 				if (thumbnailFile) {
 					const res = await startUpload([thumbnailFile], {});
 					if (res?.[0]) {
@@ -183,12 +180,7 @@ export function AddLinkDialog({
 
 	return (
 		/*
-		 * No DialogTrigger. This dialog is opened by the per-section "Add
-		 * social", "Add block" and "Add contact" buttons, each of which sets the
-		 * tab it should open on. The trigger this used to render was a fourth,
-		 * unlabelled entry point that appeared in normal flow at the very bottom
-		 * of the page, styled as a default button while the three real ones were
-		 * outlines.
+		 * No DialogTrigger: the per-section Add buttons open this on their own tab.
 		 */
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[600px]">

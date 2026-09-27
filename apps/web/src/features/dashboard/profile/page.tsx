@@ -14,9 +14,6 @@ export default async function ProfilePage() {
 		redirect("/onboarding");
 	}
 
-	// See ../../types: a server caller hands back `Date` for timestamp columns
-	// where the browser gets strings, so one cast at the boundary is the whole
-	// cost of reading them on the client.
 	return (
 		<ProfilePageClient
 			initialProfile={profile as unknown as ProfileData}

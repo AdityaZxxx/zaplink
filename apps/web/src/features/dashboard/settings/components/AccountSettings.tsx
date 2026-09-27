@@ -23,10 +23,8 @@ import { queryClient, trpc } from "@/utils/trpc/client";
 import { SettingsSaveBar } from "./SettingsSaveBar";
 
 /*
- * The limits below are the column widths in `profiles.display_name` and
- * `profiles.username` (both varchar(30)), not the looser ceilings the
- * updateProfile procedure accepts. Postgres rejects an over-long value with a
- * raw driver error, so the form has to be the stricter of the two.
+ * These are the column widths (both varchar(30)), narrower than the
+ * ceilings updateProfile accepts, so an over-long value fails on insert.
  */
 const accountFormSchema = z.object({
 	displayName: z
@@ -41,17 +39,11 @@ const accountFormSchema = z.object({
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
 
-/**
- * The username input carries a domain prefix, so it cannot use `FormControl`.
- * That component attaches the id, `aria-describedby` and `aria-invalid` to
- * whichever element it renders, and here that is the wrapper div around the
- * input rather than the input itself, which left the label pointing at a div,
- * the description announced for nothing, and the invalid state unreachable.
- *
- * Reading the ids off the field context puts them on the input where they
- * belong. That read is a hook, so it lives in its own component rendered inside
- * FormItem: a hook called by the component that renders FormItem would run
- * before that context provider exists and yield an id of "undefined".
+/*
+ * FormControl puts the id and aria-describedby on the wrapper div rather
+ * than the input, and the pl-[95px] prefix this replaces was narrower than
+ * "zaplink.com/" at this font. The useFormField read is a hook, so it needs
+ * its own component inside FormItem.
  */
 function UsernameField({
 	field,
@@ -81,15 +73,8 @@ function UsernameInput({
 
 	return (
 		/*
-		 * The domain is a flex sibling of the input inside one surface, rather
-		 * than an absolutely positioned prefix with a hard-coded left padding.
-		 * Same result, but the offset tracks the font instead of assuming it, so
-		 * nothing overlaps when the font or the label changes.
-		 *
-		 * The wrapper carries the surface and the focus ring, and the Input's
-		 * own ring is suppressed with the important modifier, so exactly one ring
-		 * is ever visible. :has(:focus-visible) rather than focus-within keeps
-		 * the ring keyboard-only, matching what the Input does on its own.
+		 * The wrapper owns the ring and the Input's is suppressed with the
+		 * important modifier, so only one ring shows.
 		 */
 		<div className="flex items-center rounded-2xl bg-input/50 transition-[color,box-shadow] duration-200 has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30">
 			<span className="select-none ps-3 font-medium text-muted-foreground text-sm">
@@ -126,9 +111,8 @@ export function AccountSettings({ profile }: AccountSettingsProps) {
 		trpc.profile.updateProfile.mutationOptions({
 			onSuccess: (updated) => {
 				toast.success("Account updated");
-				// Seed the cache from the response instead of refetching: the
-				// procedure returns the row it just wrote, and the live preview
-				// and every other section read from this one cache entry.
+				// Seeded from the response rather than refetched, since every reader
+				// // shares this one cache entry.
 				queryClient.setQueryData(
 					trpc.profile.getProfile.queryOptions().queryKey,
 					updated,

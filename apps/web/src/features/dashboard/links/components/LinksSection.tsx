@@ -5,20 +5,12 @@ import { Button } from "@/components/ui/button";
 
 interface LinksSectionProps {
 	title: string;
-	/** One line on what this zone does and where it appears on the profile. */
 	description: string;
 	actionLabel: string;
 	onAdd: () => void;
 	children: React.ReactNode;
 }
 
-/**
- * The frame every zone on the links page sits in.
- *
- * The three managers each built their own copy of this, which is how they ended
- * up with three different heading capitalisations and three different button
- * weights for what is the same control. One shape, one set of words.
- */
 export function LinksSection({
 	title,
 	description,

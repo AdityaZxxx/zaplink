@@ -16,20 +16,9 @@ interface KPICardProps {
 	subtitle: string;
 	icon: React.ReactNode;
 	change?: number;
-	/**
-	 * For laying the tile out in a grid. The dashboard puts its third tile on a
-	 * row of its own below md, and the tile has to be able to take that span
-	 * itself, since a wrapper div would break the grid item.
-	 */
 	className?: string;
 }
 
-/**
- * The delta used to be colour plus a 180-degree rotation of `TrendUp`, and
- * dropped the indicator entirely at exactly 0. Direction is now carried by a
- * real icon *and* a printed sign, so it survives greyscale and a screen
- * reader, and a flat value is a stated state rather than missing data.
- */
 function Delta({ change }: { change: number }) {
 	if (change === 0) {
 		return (
@@ -70,21 +59,13 @@ export function KPICard({
 }: KPICardProps) {
 	return (
 		<Card className={className}>
-			{/*
-			 * CardHeader already switches to a two-column grid when a CardAction
-			 * is present, so the icon is placed there instead of overriding the
-			 * header with a hand-rolled flex row.
-			 */}
 			<CardHeader>
 				<CardTitle className="font-medium text-muted-foreground text-sm">
 					{title}
 				</CardTitle>
 				<CardAction className="self-center">
 					{/*
-					 * Neutral on purpose. The tile used to carry a decorative
-					 * blue/purple/green border, which collided with the green
-					 * and red that already mean "rose" and "fell" further down.
-					 * Colour on this card now means exactly one thing.
+					 * Neutral on purpose, since the delta colours already mean rose and fell.
 					 */}
 					<span className="flex size-7 items-center justify-center rounded-lg bg-muted text-muted-foreground [&_svg]:size-3.5">
 						{icon}

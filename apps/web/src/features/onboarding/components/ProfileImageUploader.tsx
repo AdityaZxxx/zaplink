@@ -27,7 +27,6 @@ export const ProfileImageUploader = ({
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	// Clean up preview URL when component unmounts
 	useEffect(() => {
 		return () => {
 			if (previewUrl) {
@@ -39,13 +38,11 @@ export const ProfileImageUploader = ({
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
-			// Validate file type
 			if (!file.type.match("image.*")) {
 				toast.error("Please select an image file");
 				return;
 			}
 
-			// Create preview
 			if (previewUrl) {
 				URL.revokeObjectURL(previewUrl);
 			}
@@ -53,30 +50,19 @@ export const ProfileImageUploader = ({
 			const objectUrl = URL.createObjectURL(file);
 			setPreviewUrl(objectUrl);
 
-			// Pass file to parent
 			if (onFileChange) {
 				onFileChange(file);
 			}
 
-			// Also update the string URL for immediate feedback if needed,
-			// though for deferred upload we mainly care about the file.
-			// We can pass the objectUrl as a temporary "image url"
 			onImageChange(objectUrl);
 		}
 	};
 
-	// Use preview URL if available, otherwise use the provided imageUrl
 	const displayUrl = previewUrl || imageUrl;
 
 	/*
-	 * The scrim used to appear on group-hover only, which left the file input
-	 * reachable by keyboard with nothing drawn: tabbing onto it produced no
-	 * ring and no overlay. group-focus-within brings the scrim up for keyboard
-	 * focus, and has-[:focus-visible] on the frame draws the same ring every
-	 * other control in the app uses.
-	 *
-	 * The frame is also token-coloured now. It was pinned to zinc-900, so the
-	 * empty state was a near-black tile in light mode and in dark mode alike.
+	 * group-focus-within, so the scrim also appears for keyboard focus: a
+	 * hover-only scrim left the file input focusable with nothing drawn.
 	 */
 	return (
 		<div className="space-y-2">

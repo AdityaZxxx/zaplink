@@ -26,12 +26,6 @@ interface LinkItemProps {
 	onEdit: () => void;
 }
 
-/**
- * A mode marker, not a status. These were amber, blue and emerald at 9px, which
- * made three decorative choices look like three states and put the labels below
- * the size at which they can be read. The tone is the muted token and the icon
- * plus the word carry which mode it is.
- */
 function ModeBadge({
 	icon: Icon,
 	label,
@@ -62,14 +56,12 @@ export default function LinkItem({
 		isDragging,
 	} = useSortable({ id: link.id });
 
-	// Fetch click count for this link
 	const { data: clickData } = useQuery(
 		trpc.analytics.getLinkClickCount.queryOptions(
 			{ linkId: link.id },
 			{
-				// Refetch every 30 seconds to keep data fresh
 				refetchInterval: 30000,
-				// Don't show error toast for this query
+				// silent: a failed count should not interrupt editing.
 				meta: { silent: true },
 			},
 		),
@@ -83,8 +75,6 @@ export default function LinkItem({
 
 	const Icon = iconForLink(link);
 	const isHidden = link.isHidden;
-	// Stable across renders and unique per row, so the "Visible" label can name
-	// its own switch rather than every row naming the first one.
 	const visibilityId = useId();
 
 	return (
@@ -95,14 +85,10 @@ export default function LinkItem({
 					"hover:border-ring/40",
 					isDragging &&
 						"z-50 scale-[1.02] border-ring bg-card shadow-lg ring-2 ring-ring/20",
-					// Hidden rows keep a dashed edge as the static cue. The
-					// dimming used to be the only signal, which reads as
-					// "disabled" rather than "off on your profile".
 					isHidden && "border-dashed bg-card/40",
 				)}
 			>
 				<div className="flex flex-1 items-stretch">
-					{/* Drag Handle */}
 					<div
 						{...attributes}
 						{...listeners}
@@ -112,13 +98,6 @@ export default function LinkItem({
 						<span className="sr-only">Reorder {link.title}</span>
 					</div>
 
-					{/*
-					 * One control for the whole editable area. The thumbnail and
-					 * the text were two separate buttons that both opened the same
-					 * editor, which left a dead strip between them and gave a
-					 * keyboard user two stops for one action. :focus-visible
-					 * rather than :focus, so a pointer press does not draw a ring.
-					 */}
 					<button
 						type="button"
 						onClick={onEdit}
@@ -141,12 +120,6 @@ export default function LinkItem({
 									/>
 								</span>
 							) : (
-								/*
-								 * The fallback used to be a full-size bordered cell,
-								 * the same footprint as a thumbnail, so a link with no
-								 * image read as a broken one. A plain glyph on the
-								 * muted fill now looks deliberate.
-								 */
 								<Icon aria-hidden className="size-5 text-muted-foreground" />
 							)}
 						</span>
@@ -175,7 +148,6 @@ export default function LinkItem({
 					</button>
 				</div>
 
-				{/* Actions */}
 				<div className="flex w-full items-center justify-end gap-3 border-border border-t bg-muted/20 px-4 py-2 md:w-auto md:border-t-0 md:border-l md:bg-transparent md:py-0 md:pr-4 md:pl-4">
 					{clickData && clickData.clickCount > 0 && (
 						<span className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2 py-0.5 font-medium text-muted-foreground text-xs tabular-nums">
@@ -184,14 +156,6 @@ export default function LinkItem({
 							<span className="sr-only">clicks</span>
 						</span>
 					)}
-					{/*
-					 * Labelling the switch "Visible" is what the previous
-					 * aria-label of "Toggle visibility" failed to do: the row
-					 * showed a bare switch with no word saying what it governed,
-					 * and a screen reader heard the same words on every row of the
-					 * list. The explicit htmlFor keeps the name attached to the
-					 * control rather than only to the wrapper.
-					 */}
 					<label
 						htmlFor={visibilityId}
 						className="flex cursor-pointer items-center gap-2"

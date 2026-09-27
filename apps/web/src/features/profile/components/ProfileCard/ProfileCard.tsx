@@ -14,15 +14,6 @@ import { SocialIconsRow } from "./SocialIconsRow";
 import { StandardLink } from "./StandardLink";
 import { SupportBanner } from "./SupportBanner";
 
-/*
- * Typed from the router's output rather than from the database row types.
- *
- * The database declares timestamp columns as `Date`, but a tRPC client decodes
- * JSON, so every caller in the browser was holding strings and needed a
- * suppression to hand them over. This card reads none of those columns, and
- * declaring the shape it actually receives removes the mismatch for good rather
- * than hiding it at each call site.
- */
 type Profile = ProfileData;
 type Link = LinksData[number];
 

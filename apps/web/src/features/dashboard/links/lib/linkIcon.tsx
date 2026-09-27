@@ -8,14 +8,9 @@ import {
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 import type { LinkKind } from "@/types/api";
 
-/**
- * The icon that stands for a link, by what the link *is* rather than by its
- * type. Platform rows get the brand mark, contact rows get the icon for their
- * contact kind, and only a plain URL falls back to the generic chain.
- *
- * Returning the component instead of a node leaves sizing and colour to the
- * caller, which is what let the dashboard and the links list disagree about
- * both before this was shared.
+/*
+ * Returns the component rather than a node, so sizing and colour stay
+ * with the caller.
  */
 export function iconForLink(link: LinkKind) {
 	if (link.type === "platform" && link.platform?.name) {

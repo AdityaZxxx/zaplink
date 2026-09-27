@@ -3,19 +3,11 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 const buttonVariants = cva(
-  /*
-   * transition-all became a named list. It was transitioning `width`, `height`,
-   * `border-width` and `font-size` on every state change too, none of which a
-   * button actually animates, and it made any future property animate by
-   * accident.
-   *
-   * `scale` replaces the old `active:translate-y-px`. Press feedback wants a
-   * change the visitor can reverse by lifting off early, and a one-pixel nudge
-   * is easier to miss than a 4% squash. `scale` is also safe on a popup
-   * trigger, which is why the old `:not-aria-[haspopup]` guard is gone: it
-   * existed to stop `translate-y-px` from shifting a trigger that a popup was
-   * aligned to, and `scale` does not move the box.
-   */
+/*
+   * scale replaces the old active:translate-y-px: it does not move the box, so
+   * a popup trigger stays aligned and the :not-aria-[haspopup] guard is
+   * unnecessary.
+  */
   "group/button inline-flex shrink-0 items-center justify-center rounded-2xl border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap outline-none select-none transition-[color,background-color,border-color,box-shadow,opacity,scale] duration-150 ease-out focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
@@ -50,18 +42,16 @@ const buttonVariants = cva(
   }
 )
 
-/** 4% squash. Anything deeper reads as exaggerated. */
 const pressScale = "active:not-disabled:scale-[0.96]"
 
 function Button({
   className,
   variant = "default",
   size = "default",
-  /**
-   * Opt out of the press scale where motion would be noise: a control inside a
-   * dense toolbar, or one the visitor is holding down on purpose. Off by
-   * default, because a button that gives no press feedback feels broken.
-   */
+/*
+   * Opt out of the press scale where it would be noise, such as in a dense
+   * toolbar.
+  */
   static: isStatic = false,
   ...props
 }: ButtonPrimitive.Props &

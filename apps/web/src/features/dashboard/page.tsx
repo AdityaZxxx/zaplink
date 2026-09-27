@@ -37,12 +37,6 @@ export default function DashboardPage({
 	initialLinks,
 	initialStats,
 }: DashboardPageProps) {
-	/*
-	 * Seeded from the server render, so the page paints with real numbers and
-	 * never shows a spinner or an empty frame. The query still owns the value
-	 * afterwards, which is what keeps a link added on the links page reflected
-	 * here without this page knowing about that page.
-	 */
 	const { data: profile } = useQuery({
 		...trpc.profile.getProfile.queryOptions(),
 		initialData: initialProfile,
@@ -59,8 +53,7 @@ export default function DashboardPage({
 	const [copied, setCopied] = useState(false);
 
 	const profileUrl = `${DOMAIN_NAME}/${profile.username}`;
-	// Typed routes cannot see a value interpolated into a path, and the public
-	// profile really does live at /<username>.
+	// Typed routes cannot see an interpolated path, so this needs a cast.
 	const profilePath = `/${profile.username}` as Route<string>;
 
 	async function handleCopy() {
@@ -69,8 +62,7 @@ export default function DashboardPage({
 				`${window.location.origin}/${profile.username}`,
 			);
 			setCopied(true);
-			// The tick reverts on its own. A toast would fire as well, and two
-			// channels reporting one copy is noise.
+			// No toast: the reverting tick already says it worked.
 			setTimeout(() => setCopied(false), 2000);
 		} catch {
 			toast.error("Could not copy to clipboard");
@@ -87,9 +79,10 @@ export default function DashboardPage({
 				/>
 			}
 		>
-			{/* pb-20, not md:pb-0: the preview button is hidden at lg but still
-			    shown from md up, so dropping the padding at md let the last row of
-			    the page sit under it. */}
+			{/*
+			 * pb-20 at every width, since the preview button is hidden at lg but
+			 * still overlaps the content below it.
+			 */}
 			<div className="space-y-6 pb-20 lg:space-y-8 lg:pb-0">
 				<div className="space-y-1">
 					<h1 className="font-bold text-3xl tracking-tight">
@@ -100,16 +93,6 @@ export default function DashboardPage({
 					</p>
 				</div>
 
-				{/*
-				 * The same KPICard the analytics page uses, rather than a second
-				 * hand-rolled stat tile. That version had 10px captions, a
-				 * decorative glow on a status that was not a status, and no
-				 * delta, so the two pages disagreed about the same numbers.
-				 *
-				 * Two across on mobile with the third on a row of its own, which
-				 * is what keeps the quick actions within reach of the fold. One
-				 * per row pushed them a full screen down.
-				 */}
 				<div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
 					<KPICard
 						title="Total links"
@@ -172,24 +155,8 @@ export default function DashboardPage({
 									here and on your public page.
 								</p>
 								{/*
-								 * The empty-state call to action, as a link that wears the
-								 * button recipe rather than a Link re-typing it. It had
-								 * lost the focus ring in the process, so a keyboard
-								 * visitor tabbed onto a control that gave no sign of
-								 * where they were.
-								 *
-								 * buttonVariants and not Button: this navigates, and Button
-								 * renders a real <button>. Pointed at a <Link> it makes
-								 * Base UI put role="button" on the anchor, which throws
-								 * away the link role and with it middle-click, "open in
-								 * new tab", and the way a screen reader announces the
-								 * control. The variants are the styling half of the
-								 * primitive and carry no semantics, so a caller can take
-								 * them without the semantics.
-								 *
-								 * The press scale is spelled out rather than inherited:
-								 * Button adds it as `active:not-disabled:`, and
-								 * :not-disabled never matches an anchor.
+								 * buttonVariants, not Button: pointing Button at an anchor puts
+								 * role="button" on it and loses the link role.
 								 */}
 								<Link
 									href="/dashboard/links"
@@ -209,11 +176,6 @@ export default function DashboardPage({
 					)}
 				</section>
 
-				{/*
-				 * One frame. This used to be a bordered box with 4px of padding
-				 * wrapped around a second, differently-rounded, differently-
-				 * coloured box, so the two radii fought each other for no reason.
-				 */}
 				<Card>
 					<CardContent className="flex flex-col items-center justify-between gap-4 sm:flex-row">
 						<div className="space-y-1 text-center sm:text-left">
@@ -228,17 +190,6 @@ export default function DashboardPage({
 						</div>
 						<div className="flex w-full shrink-0 items-center gap-2 sm:w-auto">
 							<CopyButton copied={copied} onCopy={handleCopy} />
-							{/*
-							 * An anchor, not a button calling window.open. The link is
-							 * real, so middle-click, copy-link and "open in new tab" all
-							 * work, and rel="noopener" is set where it belongs rather
-							 * than being left to the caller.
-							 *
-							 * It wears the button recipe rather than re-typing it, which
-							 * is what brings the focus ring this was missing. See the
-							 * empty-state call to action above for why that is
-							 * buttonVariants and not Button.
-							 */}
 							<Link
 								href={profilePath}
 								target="_blank"
@@ -259,11 +210,6 @@ export default function DashboardPage({
 	);
 }
 
-/**
- * The tick cross-fades over the copy glyph rather than replacing it. Both icons
- * stay mounted and one is layered over the other, so entering and exiting both
- * animate without a dependency and without the button changing size.
- */
 function CopyButton({
 	copied,
 	onCopy,
@@ -272,11 +218,6 @@ function CopyButton({
 	onCopy: () => void;
 }) {
 	return (
-		/*
-		 * The `outline` variant, which is what this was re-typing by hand. Same
-		 * border, same fill, same hover, plus the focus ring it was missing and
-		 * the disabled treatment it had no way to express.
-		 */
 		<Button
 			type="button"
 			variant="outline"
@@ -310,11 +251,6 @@ function CopyButton({
 	);
 }
 
-/**
- * A whole-card link, so the entire tile is the hit target rather than just the
- * label. The watermark icon this replaced was a rotated glyph at 10% opacity in
- * the corner, which read as a smudge rather than as decoration.
- */
 function QuickAction({
 	href,
 	icon: Icon,
@@ -344,11 +280,6 @@ function QuickAction({
 	);
 }
 
-/**
- * Each row opens the link in a new tab, and says so with a trailing glyph, so
- * the row is not a control that looks clickable and then does nothing. The
- * glyph is the one for that kind of link, not a generic chain for all of them.
- */
 function LinkRow({ link }: { link: LinksData[number] }) {
 	const Icon = iconForLink(link);
 
