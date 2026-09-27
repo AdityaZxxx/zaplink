@@ -7,6 +7,7 @@ import {
 	LineChart,
 	ResponsiveContainer,
 	Tooltip,
+	type TooltipContentProps,
 	XAxis,
 	YAxis,
 } from "recharts";
@@ -28,8 +29,13 @@ interface EngagementChartProps {
 	data: ChartDataPoint[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-	if (active && payload && payload.length) {
+// Recharts 3 widened the label to `string | number | undefined`, so it has to
+// be narrowed before parsing. Without that guard a nullish label stringified
+// into "undefined Z" and every date in the tooltip read Invalid Date. The
+// function form of `content` is used rather than an element so the props are
+// typed instead of arriving as `any`.
+function CustomTooltip({ active, payload, label }: TooltipContentProps) {
+	if (active && payload && payload.length && label != null) {
 		// Parse as UTC and convert to local time
 		const timestamp = new Date(`${label} Z`); // Add 'Z' to ensure UTC parsing
 		const now = new Date();
@@ -80,7 +86,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 		);
 	}
 	return null;
-};
+}
 
 export function EngagementChart({ data }: EngagementChartProps) {
 	return (
@@ -146,7 +152,6 @@ export function EngagementChart({ data }: EngagementChartProps) {
 									tickFormatter={(value) => `${value}`}
 									width={40}
 								/>
-								<Tooltip content={<CustomTooltip />} />
 								<Line
 									type="monotone"
 									dataKey="views"
@@ -169,6 +174,13 @@ export function EngagementChart({ data }: EngagementChartProps) {
 									animationDuration={1000}
 									animationEasing="ease-in-out"
 								/>
+								{/*
+									  Recharts 3 dropped the render-order hack that used to force the
+									  Tooltip above the series, and now derives SVG z-order from JSX
+									  order. Keep this last so the active dot cannot paint over the
+									  tooltip.
+									*/}
+								<Tooltip content={CustomTooltip} />
 							</LineChart>
 						</ResponsiveContainer>
 					) : (
