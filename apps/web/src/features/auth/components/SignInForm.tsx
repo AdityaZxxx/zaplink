@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { callbackPath } from "../callbackPath";
 import { signInSchema } from "../schema";
 import { AuthField } from "./AuthField";
 
@@ -33,8 +34,7 @@ export default function SignInForm({
 				},
 				{
 					onSuccess: () => {
-						// biome-ignore lint/suspicious/noExplicitAny: Dynamic route handling
-						router.push((callbackUrl || "/dashboard") as any);
+						router.push(callbackPath(callbackUrl));
 						toast.success("Signed in");
 					},
 					onError: (error) => {
