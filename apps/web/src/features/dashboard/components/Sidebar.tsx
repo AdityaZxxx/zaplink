@@ -213,7 +213,19 @@ export function DashboardSidebar({
 		<SidebarProvider defaultOpen={defaultOpen}>
 			<AppSidebar />
 			<main className="flex w-full flex-1 flex-col">
-				<header className="flex h-14 items-center gap-4 border-b bg-background px-4">
+				{/*
+				 * Sticky so the breadcrumb and account controls stay put while a
+				 * long page scrolls. bg-background is already opaque, so nothing
+				 * shows through the bar as content passes under it.
+				 *
+				 * z-[5] is a deliberate sandwich, not a default. It has to clear
+				 * page content that brings its own stacking context -- the
+				 * dashboard cards use `relative z-10` -- while staying under the
+				 * sidebar, which is `fixed z-10` on desktop and a `z-50` Sheet on
+				 * mobile. A plain z-10 would tie with the desktop sidebar and,
+				 * being later in the DOM, paint the bar over it.
+				 */}
+				<header className="sticky top-0 z-[5] flex h-14 shrink-0 items-center gap-4 border-b bg-background px-4">
 					<div className="flex items-center gap-2">
 						<SidebarTrigger className="hidden md:flex" />
 						<Breadcrumb>
