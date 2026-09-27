@@ -7,10 +7,10 @@ import {
 	House,
 	Link as LinkIcon,
 	List,
+	Rabbit,
 	User,
 } from "@phosphor-icons/react";
 import type { Route } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -79,7 +79,14 @@ function SidebarLogo() {
 	return (
 		<div className="flex items-center gap-2 px-2">
 			<div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-				<Image src="/logo.jpg" alt={APP_NAME} width={40} height={40} />
+				<Rabbit
+					weight="fill"
+					className="h-5 w-5 text-primary-foreground"
+					// Decorative: the app name sits right next to it, so
+					// announcing the icon too would read "Zaplink Zaplink".
+					aria-hidden
+					focusable={false}
+				/>
 			</div>
 			<span className="font-bold text-lg group-data-[collapsible=icon]:hidden">
 				{APP_NAME}
