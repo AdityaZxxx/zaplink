@@ -1,4 +1,4 @@
-import { links, profiles } from "@zaplink/db";
+import { profiles } from "@zaplink/db";
 
 /*
  * Timestamps are left out on purpose. With no transformer configured, a server
@@ -8,10 +8,11 @@ import { links, profiles } from "@zaplink/db";
  * component. Nothing reads a timestamp, so dropping the columns removes the
  * disagreement instead of casting across it.
  *
- * Each query builder wants a different form, so the pair is written twice. The
- * invariant that matters, that a server result is assignable to the type its
- * client components declare, is checked by tsc at each consuming page, so
- * adding a timestamp column back fails the build there.
+ * Each query builder wants a different form, so a table read through both
+ * states the pair. The invariant that matters, that a server result is
+ * assignable to the type its client components declare, is checked by tsc at
+ * each consuming page, so adding a timestamp column back fails the build
+ * there.
  */
 
 export const profileSelect = {
@@ -40,16 +41,9 @@ export const profileColumns = {
 	supportBanner: true,
 } as const satisfies Record<keyof typeof profileSelect, true>;
 
-export const linkSelect = {
-	id: links.id,
-	profileId: links.profileId,
-	type: links.type,
-	title: links.title,
-	url: links.url,
-	sortOrder: links.sortOrder,
-	isHidden: links.isHidden,
-};
-
+/*
+ * Only the relational query builder reads links, so there is no pair here.
+ */
 export const linkColumns = {
 	id: true,
 	profileId: true,
@@ -58,4 +52,4 @@ export const linkColumns = {
 	url: true,
 	sortOrder: true,
 	isHidden: true,
-} as const satisfies Record<keyof typeof linkSelect, true>;
+} as const;

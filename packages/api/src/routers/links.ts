@@ -8,25 +8,18 @@ import {
 	linkCustoms,
 	linkPlatforms,
 	links,
-	profiles,
 } from "@zaplink/db";
 import { z } from "zod";
 import { linkColumns } from "../columns";
+import { findProfileId } from "../find-profile-id";
 import { protectedProcedure, publicProcedure, router } from "../index";
 
 export const linksRouter = router({
 	getAllLinks: protectedProcedure.query(async ({ ctx }) => {
-		const userProfile = await ctx.db
-			.select({ id: profiles.id })
-			.from(profiles)
-			.where(eq(profiles.userId, ctx.session.user.id))
-			.limit(1);
-
-		if (!userProfile[0]) {
+		const profileId = await findProfileId(ctx.db, ctx.session.user.id);
+		if (profileId === null) {
 			return [];
 		}
-
-		const profileId = userProfile[0].id;
 
 		const userLinks = await ctx.db.query.links.findMany({
 			where: eq(links.profileId, profileId),
@@ -42,23 +35,19 @@ export const linksRouter = router({
 		return userLinks;
 	}),
 
+	/*
+	 * Takes the profile id rather than a username because the public profile
+	 * page has already resolved the profile by the time it needs the links, and
+	 * looking it up a second time here was a query whose result was discarded.
+	 */
 	getPublicLinks: publicProcedure
-		.input(z.object({ username: z.string() }))
+		.input(z.object({ profileId: z.number() }))
 		.query(async ({ ctx, input }) => {
-			const userProfile = await ctx.db
-				.select({ id: profiles.id })
-				.from(profiles)
-				.where(eq(profiles.username, input.username))
-				.limit(1);
-
-			if (!userProfile[0]) {
-				return [];
-			}
-
-			const profileId = userProfile[0].id;
-
 			const userLinks = await ctx.db.query.links.findMany({
-				where: and(eq(links.profileId, profileId), eq(links.isHidden, false)),
+				where: and(
+					eq(links.profileId, input.profileId),
+					eq(links.isHidden, false),
+				),
 				orderBy: asc(links.sortOrder),
 				columns: linkColumns,
 				with: {
@@ -88,19 +77,13 @@ export const linksRouter = router({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const userProfile = await ctx.db
-				.select({ id: profiles.id })
-				.from(profiles)
-				.where(eq(profiles.userId, ctx.session.user.id))
-				.limit(1);
-
-			if (!userProfile[0]) {
+			const profileId = await findProfileId(ctx.db, ctx.session.user.id);
+			if (profileId === null) {
 				throw new TRPCError({
 					code: "NOT_FOUND",
 					message: "Profile not found, cannot create link.",
 				});
 			}
-			const profileId = userProfile[0].id;
 
 			const linkType =
 				input.type || (input.platformName ? "platform" : "custom");
@@ -180,19 +163,13 @@ export const linksRouter = router({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const userProfile = await ctx.db
-				.select({ id: profiles.id })
-				.from(profiles)
-				.where(eq(profiles.userId, ctx.session.user.id))
-				.limit(1);
-
-			if (!userProfile[0]) {
+			const profileId = await findProfileId(ctx.db, ctx.session.user.id);
+			if (profileId === null) {
 				throw new TRPCError({
 					code: "NOT_FOUND",
 					message: "Profile not found.",
 				});
 			}
-			const profileId = userProfile[0].id;
 
 			const updateData: Partial<typeof links.$inferInsert> = {
 				updatedAt: new Date(),
@@ -285,19 +262,13 @@ export const linksRouter = router({
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
-			const userProfile = await ctx.db
-				.select({ id: profiles.id })
-				.from(profiles)
-				.where(eq(profiles.userId, ctx.session.user.id))
-				.limit(1);
-
-			if (!userProfile[0]) {
+			const profileId = await findProfileId(ctx.db, ctx.session.user.id);
+			if (profileId === null) {
 				throw new TRPCError({
 					code: "NOT_FOUND",
 					message: "Profile not found.",
 				});
 			}
-			const profileId = userProfile[0].id;
 
 			const userLinks = await ctx.db
 				.select({ id: links.id })
@@ -328,19 +299,13 @@ export const linksRouter = router({
 	deleteLink: protectedProcedure
 		.input(z.object({ id: z.number() }))
 		.mutation(async ({ ctx, input }) => {
-			const userProfile = await ctx.db
-				.select({ id: profiles.id })
-				.from(profiles)
-				.where(eq(profiles.userId, ctx.session.user.id))
-				.limit(1);
-
-			if (!userProfile[0]) {
+			const profileId = await findProfileId(ctx.db, ctx.session.user.id);
+			if (profileId === null) {
 				throw new TRPCError({
 					code: "NOT_FOUND",
 					message: "Profile not found.",
 				});
 			}
-			const profileId = userProfile[0].id;
 
 			const [deletedLink] = await ctx.db
 				.delete(links)

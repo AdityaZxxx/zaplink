@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
-import { and, asc, eq, links, ne, profiles } from "@zaplink/db";
+import { and, eq, ne, profiles } from "@zaplink/db";
 import { z } from "zod";
-import { linkSelect, profileSelect } from "../columns";
+import { profileSelect } from "../columns";
 import { protectedProcedure, publicProcedure, router } from "../index";
 
 export const profileRouter = router({
@@ -24,20 +24,12 @@ export const profileRouter = router({
 				.where(eq(profiles.username, input.username))
 				.limit(1);
 
-			if (!profile[0]) {
-				return null;
-			}
-
-			const userLinks = await ctx.db
-				.select(linkSelect)
-				.from(links)
-				.where(eq(links.profileId, profile[0].id))
-				.orderBy(asc(links.sortOrder));
-
-			return {
-				...profile[0],
-				links: userLinks,
-			};
+			/*
+			 * No links attached: the public page fetches them through
+			 * getPublicLinks, which drops the hidden ones, so a copy here was a
+			 * second query per page load that nothing read.
+			 */
+			return profile[0] ?? null;
 		}),
 
 	createProfile: protectedProcedure

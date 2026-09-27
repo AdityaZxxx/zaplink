@@ -187,10 +187,8 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 
 	/*
 	 * All three relations are filled in even though onboarding only makes
-	 * custom and platform links. Drizzle types a `one()` join as always
-	 * present when its key is not unique, and linkId is not unique in the join
-	 * tables. The card only reads the relation matching `type`, so the rest
-	 * are never observed.
+	 * custom and platform links. The card only reads the relation matching
+	 * `type`, so the other two are never observed.
 	 */
 	const previewLinks = useMemo<LinksData>(
 		() =>

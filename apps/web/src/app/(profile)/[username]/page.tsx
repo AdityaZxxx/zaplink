@@ -18,8 +18,8 @@ const getProfileByUsername = cache((api: Trpc, username: string) =>
 	api.profile.getProfileByUsername({ username }),
 );
 
-const getPublicLinks = cache((api: Trpc, username: string) =>
-	api.links.getPublicLinks({ username }),
+const getPublicLinks = cache((api: Trpc, profileId: number) =>
+	api.links.getPublicLinks({ profileId }),
 );
 
 export async function generateMetadata({
@@ -70,10 +70,7 @@ export default async function PublicProfilePage({
 }: PublicProfilePageProps) {
 	const { username } = await params;
 	const api = await trpcServer();
-	const [profile, userLinks] = await Promise.all([
-		getProfileByUsername(api, username),
-		getPublicLinks(api, username),
-	]);
+	const profile = await getProfileByUsername(api, username);
 
 	if (!profile) {
 		return (
@@ -91,6 +88,13 @@ export default async function PublicProfilePage({
 			</div>
 		);
 	}
+
+	/*
+	 * Sequential, and keyed on the profile id, because the links query needs an
+	 * id the profile query produces. Running them together meant looking the
+	 * same profile up twice and throwing the first result away.
+	 */
+	const userLinks = await getPublicLinks(api, profile.id);
 
 	return (
 		<div className="w-full bg-none md:container md:mx-auto md:block md:px-4 md:py-6">

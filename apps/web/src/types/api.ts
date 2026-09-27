@@ -11,6 +11,14 @@ type RouterOutputs = inferRouterOutputs<AppRouter>;
  * all render these rows.
  */
 export type ProfileData = NonNullable<RouterOutputs["profile"]["getProfile"]>;
+
+/*
+ * Drizzle types the platform, custom and contact sides of a link as always
+ * present, because the relation is a `one()` over a notNull foreign key. A
+ * link with no matching row really does arrive with them null, which the
+ * optional chaining in the card and the link managers relies on. Do not
+ * tighten those away.
+ */
 export type LinksData = RouterOutputs["links"]["getAllLinks"];
 
 export type ProfileLink = LinksData[number];
