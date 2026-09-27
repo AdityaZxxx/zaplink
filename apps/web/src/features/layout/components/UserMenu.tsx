@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -31,7 +31,9 @@ export default function UserMenu() {
 
 	if (!session || !profile) {
 		return (
-			<Button render={<Link href="/login">Sign In</Link>} variant="outline" />
+			<Link href="/login" className={buttonVariants({ variant: "outline" })}>
+				Sign In
+			</Link>
 		);
 	}
 

@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileCard } from "@/features/profile/components";
 import { trpc } from "@/utils/trpc/client";
@@ -173,12 +173,17 @@ export default function DashboardPage() {
 						<h2 className="font-semibold text-foreground text-lg tracking-tight md:text-xl">
 							Your Links
 						</h2>
-						<Button
-							render={<Link href="/dashboard/links">View All</Link>}
-							variant="ghost"
-							size="sm"
-							className="h-8 text-muted-foreground text-xs hover:text-foreground md:h-9 md:text-sm"
-						/>
+						<Link
+							href="/dashboard/links"
+							className={buttonVariants({
+								variant: "ghost",
+								size: "sm",
+								className:
+									"h-8 text-muted-foreground text-xs hover:text-foreground md:h-9 md:text-sm",
+							})}
+						>
+							View All
+						</Link>
 					</div>
 
 					{links.length === 0 ? (
@@ -192,15 +197,13 @@ export default function DashboardPage() {
 							<p className="mb-4 text-muted-foreground text-xs md:text-sm">
 								Your profile is empty. Add your first link to get started.
 							</p>
-							<Button
-								render={
-									<Link href="/dashboard/links">
-										<Plus className="mr-2 h-4 w-4" />
-										Add Link
-									</Link>
-								}
-								size="sm"
-							/>
+							<Link
+								href="/dashboard/links"
+								className={buttonVariants({ size: "sm" })}
+							>
+								<Plus className="mr-2 h-4 w-4" />
+								Add Link
+							</Link>
 						</div>
 					) : (
 						<div className="grid gap-3">

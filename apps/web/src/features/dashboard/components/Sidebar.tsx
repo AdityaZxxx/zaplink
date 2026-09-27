@@ -22,7 +22,7 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Drawer,
 	DrawerContent,
@@ -134,17 +134,18 @@ function MobileMenu() {
 						{menuItems.map((item) => {
 							const isActive = pathname === item.url;
 							return (
-								<Button
+								<Link
 									key={item.title}
-									variant={isActive ? "default" : "ghost"}
-									className="justify-start gap-2"
-									render={
-										<Link href={item.url} onClick={() => setOpen(false)}>
-											<item.icon className="h-5 w-5" />
-											{item.title}
-										</Link>
-									}
-								/>
+									href={item.url}
+									onClick={() => setOpen(false)}
+									className={buttonVariants({
+										variant: isActive ? "default" : "ghost",
+										className: "justify-start gap-2",
+									})}
+								>
+									<item.icon className="h-5 w-5" />
+									{item.title}
+								</Link>
 							);
 						})}
 					</div>
