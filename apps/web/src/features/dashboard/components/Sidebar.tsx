@@ -225,11 +225,19 @@ export function DashboardSidebar({
 					</div>
 					<div className="flex-1" />
 					<div className="flex items-center gap-4">
-						<Link href="/dashboard/notifications">
-							<Bell className="h-5 w-5" />
+						<Link
+							href="/dashboard/notifications"
+							aria-label="Notifications"
+							className={buttonVariants({ variant: "ghost", size: "icon" })}
+						>
+							<Bell />
 						</Link>
-						<Link href="/dashboard/settings">
-							<Gear className="h-5 w-5" />
+						<Link
+							href="/dashboard/settings"
+							aria-label="Settings"
+							className={buttonVariants({ variant: "ghost", size: "icon" })}
+						>
+							<Gear />
 						</Link>
 						<MobileMenu />
 						<UserMenu />
