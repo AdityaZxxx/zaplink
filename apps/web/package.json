@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --port=3000",
+		"dev:lan": "next dev --port=3000 --hostname 0.0.0.0",
 		"generate:icon": "bun run scripts/generate-icon.tsx",
 		"build": "bun run generate:icon && next build",
 		"start": "next start",
