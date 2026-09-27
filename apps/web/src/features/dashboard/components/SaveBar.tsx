@@ -1,9 +1,7 @@
-"use client";
-
 import { Spinner } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 
-interface SettingsSaveBarProps {
+interface SaveBarProps {
 	isDirty: boolean;
 	isSubmitting: boolean;
 	onReset: () => void;
@@ -13,11 +11,7 @@ interface SettingsSaveBarProps {
  * The left slot holds the row height, so the note appearing on the first
  * keystroke does not slide the buttons.
  */
-export function SettingsSaveBar({
-	isDirty,
-	isSubmitting,
-	onReset,
-}: SettingsSaveBarProps) {
+export function SaveBar({ isDirty, isSubmitting, onReset }: SaveBarProps) {
 	return (
 		<div className="flex items-center justify-between gap-3 border-t pt-4">
 			<p aria-live="polite" className="text-muted-foreground text-xs">

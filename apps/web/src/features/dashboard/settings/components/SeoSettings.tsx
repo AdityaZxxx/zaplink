@@ -17,10 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { SaveBar } from "@/features/dashboard/components/SaveBar";
 import { DOMAIN_NAME } from "@/lib/constants/BRANDS";
 import type { ProfileData } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
-import { SettingsSaveBar } from "./SettingsSaveBar";
 
 /*
  * seo_title is varchar(30), narrower than the 60 the update procedure
@@ -184,7 +184,7 @@ export function SeoSettings({ profile }: SeoSettingsProps) {
 					</div>
 				</div>
 
-				<SettingsSaveBar
+				<SaveBar
 					isDirty={form.formState.isDirty}
 					isSubmitting={updateProfileMutation.isPending}
 					onReset={() => form.reset()}
