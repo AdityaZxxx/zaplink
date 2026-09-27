@@ -65,12 +65,12 @@ export default function ProfileForm({
 				<form.Field name="avatarUrl">
 					{(field) => (
 						<Field>
-							<FieldLabel htmlFor="profile-avatar">Avatar</FieldLabel>
+							<FieldLabel htmlFor="profile-avatar">Profile photo</FieldLabel>
 							<ProfileImageUploader
 								imageUrl={field.state.value || null}
 								onImageChange={field.handleChange}
 								onFileChange={onAvatarFileChange}
-								label="Avatar"
+								label="Profile photo"
 								endpoint="avatarUploader"
 								sizeClass="aspect-square size-24 rounded-full"
 							/>
@@ -81,12 +81,12 @@ export default function ProfileForm({
 				<form.Field name="bannerUrl">
 					{(field) => (
 						<Field>
-							<FieldLabel htmlFor="profile-banner">Banner</FieldLabel>
+							<FieldLabel htmlFor="profile-banner">Banner image</FieldLabel>
 							<ProfileImageUploader
 								imageUrl={field.state.value || null}
 								onImageChange={field.handleChange}
 								onFileChange={onBannerFileChange}
-								label="Banner"
+								label="Banner image"
 								endpoint="bannerUploader"
 								sizeClass="aspect-video w-full rounded-2xl"
 							/>
@@ -143,7 +143,7 @@ export default function ProfileForm({
 						<Field data-invalid={isInvalid}>
 							<div className="flex items-center justify-between gap-2">
 								<FieldLabel htmlFor={BIO_ID}>Bio</FieldLabel>
-								<span className="text-muted-foreground text-xs tabular-nums">
+								<span className="text-caption text-muted-foreground tabular-nums">
 									{field.state.value?.length ?? 0}/{BIO_MAX}
 								</span>
 							</div>
@@ -154,7 +154,7 @@ export default function ProfileForm({
 								value={field.state.value ?? ""}
 								onBlur={field.handleBlur}
 								onChange={(e) => field.handleChange(e.target.value)}
-								placeholder="Tell us about yourself"
+								placeholder="A sentence about what you make"
 								aria-invalid={isInvalid}
 								aria-describedby="profile-bio-description"
 							/>

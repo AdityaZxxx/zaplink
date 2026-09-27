@@ -52,8 +52,8 @@ export default function PageWithPreview({
 			{/* Desktop Preview Area (Right) */}
 			<div className="hidden w-[450px] border-l bg-muted/30 lg:flex lg:flex-col">
 				<div className="flex items-center justify-center border-b p-4">
-					<p className="font-medium text-muted-foreground text-sm">
-						Live Preview
+					<p className="font-medium text-body text-muted-foreground">
+						Live preview
 					</p>
 				</div>
 				<div className="flex-1 overflow-hidden p-8">

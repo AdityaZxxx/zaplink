@@ -1,22 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import AuthGuard from "@/features/auth/components/AuthGuard";
 import Providers from "@/features/layout/providers/Providers";
+import { APP_NAME } from "@/lib/constants/BRANDS";
+import { geistMono, geistSans } from "@/lib/fonts";
 import "../../index.css";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-	title: "zaplink",
-	description: "zaplink",
+	title: {
+		default: APP_NAME,
+		template: `%s | ${APP_NAME}`,
+	},
+	description: "Your Zaplink dashboard.",
+	robots: { index: false, follow: false },
 };
 
 export default function RootLayout({
@@ -25,10 +20,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
+		<html
+			lang="en"
+			className={`${geistSans.variable} ${geistMono.variable}`}
+			suppressHydrationWarning
+		>
+			<body>
 				<Providers>
 					<AuthGuard>{children}</AuthGuard>
 				</Providers>

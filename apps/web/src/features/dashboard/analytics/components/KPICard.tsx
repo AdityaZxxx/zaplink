@@ -22,7 +22,7 @@ interface KPICardProps {
 function Delta({ change }: { change: number }) {
 	if (change === 0) {
 		return (
-			<span className="inline-flex items-center gap-1 text-muted-foreground text-xs">
+			<span className="inline-flex items-center gap-1 text-caption text-muted-foreground">
 				<Minus aria-hidden className="size-3" weight="bold" />
 				No change
 			</span>
@@ -34,7 +34,7 @@ function Delta({ change }: { change: number }) {
 	return (
 		<span
 			className={cn(
-				"inline-flex items-center gap-1 font-medium text-xs tabular-nums",
+				"inline-flex items-center gap-1 font-medium text-caption tabular-nums",
 				rising ? "text-success" : "text-destructive",
 			)}
 		>
@@ -60,7 +60,7 @@ export function KPICard({
 	return (
 		<Card className={className}>
 			<CardHeader>
-				<CardTitle className="font-medium text-muted-foreground text-sm">
+				<CardTitle className="font-medium text-body text-muted-foreground">
 					{title}
 				</CardTitle>
 				<CardAction className="self-center">
@@ -73,10 +73,8 @@ export function KPICard({
 				</CardAction>
 			</CardHeader>
 			<CardContent>
-				<div className="font-semibold text-3xl tabular-nums tracking-tight">
-					{value}
-				</div>
-				<div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs">
+				<div className="font-semibold text-title tabular-nums">{value}</div>
+				<div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-caption">
 					{change !== undefined && <Delta change={change} />}
 					<span className="text-muted-foreground">{subtitle}</span>
 				</div>

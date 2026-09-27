@@ -133,8 +133,8 @@ export function SocialsManager({
 	return (
 		<LinksSection
 			title="Social icons"
-			description="Shown in the header of your profile."
-			actionLabel="Add social"
+			description="The small icons under your name."
+			actionLabel="Add social icon"
 			onAdd={onAdd}
 		>
 			<DndContext
@@ -147,8 +147,8 @@ export function SocialsManager({
 					strategy={horizontalListSortingStrategy}
 				>
 					{links.length === 0 ? (
-						<p className="rounded-2xl border border-border border-dashed px-4 py-6 text-center text-muted-foreground text-sm">
-							No social icons yet. Add one to appear under your name.
+						<p className="rounded-2xl border border-border border-dashed px-4 py-6 text-center text-body text-muted-foreground">
+							No social icons yet. Add one and it appears under your name.
 						</p>
 					) : (
 						<div className="flex flex-wrap gap-3">

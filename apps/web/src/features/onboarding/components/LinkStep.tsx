@@ -146,11 +146,9 @@ export const LinkStep = ({
 				<Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur-xl">
 					<CardContent className="p-6">
 						<div className="mb-6 text-center">
-							<h2 className="mb-2 font-semibold text-white text-xl">
-								Add your links
-							</h2>
-							<p className="text-sm text-zinc-400">
-								Select the platforms you want to add to your profile.
+							<h2 className="mb-2 text-heading text-white">Add your links</h2>
+							<p className="text-body text-zinc-400">
+								Pick what belongs on your profile. You can change it later.
 							</p>
 						</div>
 
@@ -167,10 +165,11 @@ export const LinkStep = ({
 									onClick={() => togglePlatform("custom")}
 								>
 									<Plus
+										aria-hidden
 										className={`h-8 w-8 transition-colors ${isCustomSelected ? "text-green-500" : "text-zinc-400 group-hover:text-white"}`}
 									/>
-									<span className="mt-2 font-medium text-xs text-zinc-500 group-hover:text-zinc-300">
-										Custom
+									<span className="mt-2 px-1 text-center font-medium text-caption text-zinc-500 group-hover:text-zinc-300">
+										Custom link
 									</span>
 								</button>
 
@@ -187,8 +186,11 @@ export const LinkStep = ({
 													: "border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 hover:bg-zinc-800"
 											}`}
 											onClick={() => togglePlatform(key)}
+											aria-label={platform.name}
+											aria-pressed={isSelected}
 										>
 											<platform.icon
+												aria-hidden
 												className={`h-8 w-8 transition-colors ${isSelected ? "text-white" : "text-zinc-400 group-hover:text-white"}`}
 											/>
 										</button>
@@ -210,7 +212,7 @@ export const LinkStep = ({
 								onClick={handleSelectionContinue}
 								className="bg-white px-8 text-black hover:bg-zinc-200"
 							>
-								{selectedPlatforms.length > 0 ? "Continue" : "Skip"}
+								{selectedPlatforms.length > 0 ? "Continue" : "Skip for now"}
 							</Button>
 						</div>
 					</CardContent>
@@ -224,11 +226,9 @@ export const LinkStep = ({
 			<Card className="border-zinc-800 bg-zinc-900/50 backdrop-blur-xl">
 				<CardContent className="p-6">
 					<div className="mb-6 text-center">
-						<h2 className="mb-2 font-semibold text-white text-xl">
-							Enter your details
-						</h2>
-						<p className="text-sm text-zinc-400">
-							Fill in the links you want to display.
+						<h2 className="mb-2 text-heading text-white">Add your details</h2>
+						<p className="text-body text-zinc-400">
+							Paste the address for each one you picked.
 						</p>
 					</div>
 
@@ -242,34 +242,59 @@ export const LinkStep = ({
 											className="space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/30 p-4"
 										>
 											<div className="mb-2 flex items-center justify-between">
-												<Label className="font-medium text-white">
-													Custom Link
-												</Label>
+												<Label className="text-white">Custom link</Label>
 												<button
 													type="button"
 													onClick={() => togglePlatform("custom")}
+													aria-label="Remove this custom link"
 													className="text-zinc-500 hover:text-red-400"
 												>
-													<Trash className="h-4 w-4" />
+													<Trash aria-hidden className="h-4 w-4" />
 												</button>
 											</div>
 											<div className="space-y-3">
-												<Input
-													placeholder="Link Title (e.g. My Portfolio)"
-													value={linkInputs.custom?.title || ""}
-													onChange={(e) =>
-														handleInputChange("custom", "title", e.target.value)
-													}
-													className="border-zinc-800 bg-zinc-950/50 focus:border-white/20 focus:ring-0"
-												/>
-												<Input
-													placeholder="URL (https://...)"
-													value={linkInputs.custom?.value || ""}
-													onChange={(e) =>
-														handleInputChange("custom", "value", e.target.value)
-													}
-													className="border-zinc-800 bg-zinc-950/50 focus:border-white/20 focus:ring-0"
-												/>
+												<div className="space-y-1.5">
+													<Label
+														htmlFor="custom-link-title"
+														className="text-caption text-zinc-400"
+													>
+														Title
+													</Label>
+													<Input
+														id="custom-link-title"
+														placeholder="My portfolio"
+														value={linkInputs.custom?.title || ""}
+														onChange={(e) =>
+															handleInputChange(
+																"custom",
+																"title",
+																e.target.value,
+															)
+														}
+														className="border-zinc-800 bg-zinc-950/50 focus:border-white/20 focus:ring-0"
+													/>
+												</div>
+												<div className="space-y-1.5">
+													<Label
+														htmlFor="custom-link-url"
+														className="text-caption text-zinc-400"
+													>
+														URL
+													</Label>
+													<Input
+														id="custom-link-url"
+														placeholder="https://example.com"
+														value={linkInputs.custom?.value || ""}
+														onChange={(e) =>
+															handleInputChange(
+																"custom",
+																"value",
+																e.target.value,
+															)
+														}
+														className="border-zinc-800 bg-zinc-950/50 focus:border-white/20 focus:ring-0"
+													/>
+												</div>
 											</div>
 										</div>
 									);
@@ -283,25 +308,30 @@ export const LinkStep = ({
 									<div key={key} className="space-y-3">
 										<div className="flex items-center justify-between">
 											<div className="flex items-center gap-2">
-												<platform.icon className="h-4 w-4 text-zinc-400" />
-												<Label className="text-zinc-300">{platform.name}</Label>
+												<platform.icon
+													aria-hidden
+													className="h-4 w-4 text-zinc-400"
+												/>
+												<Label>{platform.name}</Label>
 											</div>
 											<button
 												type="button"
 												onClick={() => togglePlatform(key)}
+												aria-label={`Remove ${platform.name}`}
 												className="text-zinc-500 hover:text-red-400"
 											>
-												<Trash className="h-4 w-4" />
+												<Trash aria-hidden className="h-4 w-4" />
 											</button>
 										</div>
 										<div className="relative">
 											<div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-												<span className="max-w-[150px] truncate text-sm text-zinc-500">
+												<span className="max-w-[150px] truncate text-body text-zinc-500">
 													{platform.baseUrl.replace("https://", "")}
 												</span>
 											</div>
 											<Input
-												placeholder="username"
+												aria-label={`${platform.name} ${platform.inputLabel}`}
+												placeholder={platform.inputLabel}
 												value={linkInputs[key]?.value || ""}
 												onChange={(e) =>
 													handleInputChange(key, "value", e.target.value)
@@ -321,7 +351,7 @@ export const LinkStep = ({
 								onClick={() => setStep("selection")}
 								className="flex-1 text-zinc-400 hover:bg-zinc-800 hover:text-white"
 							>
-								Back to Selection
+								Back
 							</Button>
 							<Button
 								type="submit"

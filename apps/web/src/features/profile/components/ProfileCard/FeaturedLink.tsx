@@ -26,7 +26,7 @@ export function FeaturedLink({ link, onClick }: FeaturedLinkProps) {
 					/>
 				) : (
 					<div className="flex h-full w-full items-center justify-center bg-muted">
-						<span className="font-bold text-4xl text-muted-foreground/20">
+						<span className="text-4xl text-muted-foreground/20">
 							{link.title.charAt(0)}
 						</span>
 					</div>
@@ -40,9 +40,7 @@ export function FeaturedLink({ link, onClick }: FeaturedLinkProps) {
 			<div className="absolute inset-x-0 bottom-0 p-6">
 				<div className="flex items-end justify-between gap-4">
 					<div className="space-y-1">
-						<h3 className="font-bold text-white text-xl leading-tight">
-							{link.title}
-						</h3>
+						<h3 className="text-heading text-white">{link.title}</h3>
 					</div>
 				</div>
 			</div>

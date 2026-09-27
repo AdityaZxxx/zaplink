@@ -48,7 +48,7 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 				setShowSuccessModal(true);
 			},
 			onError: (error) => {
-				toast.error("Something went wrong", {
+				toast.error("Could not publish your profile", {
 					description: error.message,
 				});
 			},
@@ -116,7 +116,7 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 				links: data.links,
 			});
 		} catch (error) {
-			toast.error("Failed to upload images");
+			toast.error("Could not upload your images. Try again.");
 			console.error(error);
 		} finally {
 			setIsUploading(false);
@@ -126,7 +126,7 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 	const handleCopyLink = () => {
 		const url = `${window.location.origin}/${data.username}`;
 		navigator.clipboard.writeText(url);
-		toast.success("Link copied to clipboard!");
+		toast.success("Link copied");
 	};
 
 	const [previewAvatarUrl, setPreviewAvatarUrl] = useState<string | null>(null);
@@ -215,9 +215,7 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 					disabled={completeOnboardingMutation.isPending}
 					className="bg-white px-8 text-black hover:bg-zinc-200"
 				>
-					{completeOnboardingMutation.isPending
-						? "Publishing..."
-						: "Publish Profile"}
+					{completeOnboardingMutation.isPending ? "Publishing" : "Publish"}
 				</Button>
 			</div>
 
@@ -228,14 +226,13 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 				>
 					<DialogHeader>
 						<div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-green-500/20 bg-green-500/10">
-							<CheckCircle className="h-10 w-10 text-green-500" />
+							<CheckCircle aria-hidden className="h-10 w-10 text-green-500" />
 						</div>
-						<DialogTitle className="text-center font-bold text-2xl">
-							Your Zaplink is Live!
+						<DialogTitle className="text-center text-title">
+							Your profile is live
 						</DialogTitle>
 						<DialogDescription className="text-center text-zinc-400">
-							Congratulations! Your profile has been successfully created and is
-							ready to share with the world.
+							Copy the link below, then add more links from the dashboard.
 						</DialogDescription>
 					</DialogHeader>
 
@@ -245,23 +242,23 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 							className="h-12 w-full gap-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
 							onClick={handleCopyLink}
 						>
-							<Copy className="h-4 w-4" />
-							Copy Link
+							<Copy aria-hidden className="h-4 w-4" />
+							Copy link
 						</Button>
 						<Button
 							variant="outline"
 							className="h-12 w-full gap-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
 							onClick={() => window.open(`/${data.username}`, "_blank")}
 						>
-							<ArrowSquareOut className="h-4 w-4" />
-							Visit Page
+							<ArrowSquareOut aria-hidden className="h-4 w-4" />
+							View profile
 						</Button>
 						<Button
 							className="h-12 w-full gap-2 bg-white text-black hover:bg-zinc-200"
 							onClick={() => router.push("/dashboard")}
 						>
-							<Layout className="h-4 w-4" />
-							Go to Editor
+							<Layout aria-hidden className="h-4 w-4" />
+							Go to dashboard
 						</Button>
 					</div>
 				</DialogContent>

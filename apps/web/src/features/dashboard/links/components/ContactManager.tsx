@@ -19,14 +19,14 @@ export function ContactManager({
 }: ContactManagerProps) {
 	return (
 		<LinksSection
-			title="Contact info"
-			description="Sticky buttons for quick actions."
+			title="Contact"
+			description="Buttons pinned to the bottom of your page."
 			actionLabel="Add contact"
 			onAdd={onAdd}
 		>
 			{links.length === 0 ? (
-				<p className="rounded-2xl border border-border border-dashed px-4 py-6 text-center text-muted-foreground text-sm">
-					No contact details yet. Add one so visitors can reach you.
+				<p className="rounded-2xl border border-border border-dashed px-4 py-6 text-center text-body text-muted-foreground">
+					No contact buttons yet. Add one so people can reach you directly.
 				</p>
 			) : (
 				<ul className="grid gap-3 sm:grid-cols-2">
@@ -42,10 +42,10 @@ export function ContactManager({
 									<Icon aria-hidden className="size-5" />
 								</span>
 								<span className="min-w-0 flex-1">
-									<span className="block truncate font-medium text-sm">
+									<span className="block truncate font-medium text-body">
 										{link.title || link.contact?.value}
 									</span>
-									<span className="block truncate text-muted-foreground text-xs">
+									<span className="block truncate text-caption text-muted-foreground">
 										{link.contact?.value}
 									</span>
 								</span>

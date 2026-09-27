@@ -17,8 +17,8 @@ interface StatsOverviewProps {
 }
 
 const TILES = [
-	{ title: "Total Views", icon: Eye },
-	{ title: "Total Clicks", icon: CursorClick },
+	{ title: "Total views", icon: Eye },
+	{ title: "Total clicks", icon: CursorClick },
 	{ title: "Click-through rate", icon: TrendUp },
 ] as const;
 

@@ -5,24 +5,26 @@ import { APP_NAME, DOMAIN_NAME } from "@/lib/constants/BRANDS";
 export default function HowItWorksSection() {
 	return (
 		<section className="relative overflow-hidden border-border/5 border-t bg-background px-4 py-32">
-			{/* Ambient Background Glow */}
 			<div className="pointer-events-none absolute top-0 left-1/2 h-[500px] w-[1000px] -translate-x-1/2 rounded-full bg-primary/20 opacity-20 blur-[120px]" />
 
 			<div className="relative z-10 mx-auto max-w-7xl">
 				<div className="mb-20 text-center">
-					<h2 className="mb-6 font-bold text-3xl text-foreground tracking-tight md:text-5xl">
-						From Zero to Live in 30 Seconds
+					<h2 className="mb-6 text-3xl text-foreground md:text-headline">
+						Live in three steps
 					</h2>
-					<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-						Within a minute, you can create a link for your profile. Just pure
-						efficiency.
+					<p className="mx-auto max-w-2xl text-body-lg text-muted-foreground md:text-lead">
+						No themes to pick, no dashboard to learn. Three screens and the
+						address is yours.
 					</p>
 				</div>
 
 				<div className="grid gap-8 md:grid-cols-3">
 					{/* Step 1: Claim */}
 					<div className="group relative overflow-hidden rounded-4xl border border-border/5 bg-card/40 p-8 transition-all duration-500 hover:bg-card/60">
-						<div className="absolute top-0 right-0 select-none p-8 font-bold text-8xl text-foreground opacity-10 transition-opacity group-hover:opacity-20">
+						<div
+							aria-hidden
+							className="absolute top-0 right-0 select-none p-8 text-8xl text-foreground opacity-10 transition-opacity group-hover:opacity-20"
+						>
 							1
 						</div>
 
@@ -33,24 +35,28 @@ export default function HowItWorksSection() {
 									<div className="h-2 w-2 rounded-full bg-yellow-500/50" />
 									<div className="h-2 w-2 rounded-full bg-green-500/50" />
 								</div>
-								<div className="flex h-8 items-center rounded bg-muted/50 px-3 font-mono text-muted-foreground text-xs">
+								<div className="flex h-8 items-center rounded bg-muted/50 px-3 font-mono text-caption text-muted-foreground">
 									{DOMAIN_NAME}/
 									<span className="animate-pulse text-foreground">|</span>
 								</div>
 							</div>
 
-							<h3 className="mt-auto mb-3 font-semibold text-2xl text-foreground">
-								Claim Username
+							<h3 className="mt-auto mb-3 text-foreground text-heading">
+								Claim a username
 							</h3>
-							<p className="text-muted-foreground leading-relaxed">
-								Secure your unique URL. Short, memorable, and yours forever.
+							<p className="text-muted-foreground">
+								Pick the address your profile lives at. It is the one thing
+								people type to reach you.
 							</p>
 						</div>
 					</div>
 
 					{/* Step 2: Add Links */}
 					<div className="group relative overflow-hidden rounded-4xl border border-border/5 bg-card/40 p-8 transition-all duration-500 hover:bg-card/60">
-						<div className="absolute top-0 right-0 select-none p-8 font-bold text-8xl text-foreground opacity-10 transition-opacity group-hover:opacity-20">
+						<div
+							aria-hidden
+							className="absolute top-0 right-0 select-none p-8 text-8xl text-foreground opacity-10 transition-opacity group-hover:opacity-20"
+						>
 							2
 						</div>
 
@@ -70,19 +76,22 @@ export default function HowItWorksSection() {
 								</div>
 							</div>
 
-							<h3 className="mt-auto mb-3 font-semibold text-2xl text-foreground">
-								Stack Your Links
+							<h3 className="mt-auto mb-3 text-foreground text-heading">
+								Add your links
 							</h3>
-							<p className="text-muted-foreground leading-relaxed">
-								Paste your social profiles, portfolio, or products. We
-								auto-fetch the metadata.
+							<p className="text-muted-foreground">
+								Paste each address. The title and image come with it, so there
+								is less to type.
 							</p>
 						</div>
 					</div>
 
-					{/* Step 3: Launch */}
+					{/* Step 3: Share */}
 					<div className="group relative overflow-hidden rounded-4xl border border-border/5 bg-card/40 p-8 transition-all duration-500 hover:bg-card/60">
-						<div className="absolute top-0 right-0 select-none p-8 font-bold text-8xl text-foreground opacity-10 transition-opacity group-hover:opacity-20">
+						<div
+							aria-hidden
+							className="absolute top-0 right-0 select-none p-8 text-8xl text-foreground opacity-10 transition-opacity group-hover:opacity-20"
+						>
 							3
 						</div>
 
@@ -90,30 +99,33 @@ export default function HowItWorksSection() {
 							<div className="mb-8 flex h-24 w-full max-w-[240px] items-center justify-center transition-transform duration-500 group-hover:-translate-y-2">
 								<div className="relative">
 									<div className="absolute inset-0 animate-pulse rounded-full bg-primary/20 blur-xl" />
-									<Button className="relative rounded-full bg-primary px-6 py-2 font-bold text-primary-foreground text-sm shadow-xl transition-transform hover:scale-105">
-										Publish Now
+									<Button className="relative rounded-full bg-primary px-6 py-2 font-medium text-primary-foreground text-sm shadow-xl transition-transform hover:scale-105">
+										Publish
 									</Button>
 									<div
+										aria-hidden
 										className="absolute -top-4 -right-4 h-2 w-2 animate-bounce rounded-full bg-yellow-400"
 										style={{ animationDelay: "0.1s" }}
 									/>
 									<div
+										aria-hidden
 										className="absolute -bottom-2 -left-6 h-2 w-2 animate-bounce rounded-full bg-blue-400"
 										style={{ animationDelay: "0.3s" }}
 									/>
 									<div
+										aria-hidden
 										className="absolute top-8 -right-8 h-2 w-2 animate-bounce rounded-full bg-purple-400"
 										style={{ animationDelay: "0.5s" }}
 									/>
 								</div>
 							</div>
 
-							<h3 className="mt-auto mb-3 font-semibold text-2xl text-foreground">
-								Share Anywhere
+							<h3 className="mt-auto mb-3 text-foreground text-heading">
+								Share it anywhere
 							</h3>
-							<p className="text-muted-foreground leading-relaxed">
-								One link for your Instagram, TikTok, and many more platform.
-								Track analytics instantly.
+							<p className="text-muted-foreground">
+								Put the one address in your bio, your channel, or a post. Every
+								tap is counted.
 							</p>
 						</div>
 					</div>
@@ -121,7 +133,7 @@ export default function HowItWorksSection() {
 
 				<div className="mt-20 text-center">
 					<Button className="group inline-flex items-center gap-2 rounded-full border border-border bg-card px-8 py-4 font-medium text-base text-foreground transition-all hover:border-border/80 hover:bg-muted">
-						Claim {APP_NAME} for free
+						Claim your {APP_NAME} username
 						<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
 					</Button>
 				</div>

@@ -34,7 +34,7 @@ function ModeBadge({
 	label: string;
 }) {
 	return (
-		<span className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2 py-0.5 font-medium text-muted-foreground text-xs">
+		<span className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2 py-0.5 font-medium text-caption text-muted-foreground">
 			<Icon aria-hidden className="size-3" />
 			{label}
 		</span>
@@ -126,7 +126,7 @@ export default function LinkItem({
 
 						<span className="flex min-w-0 flex-1 flex-col justify-center gap-1 p-3 md:p-4">
 							<span className="flex items-center gap-2">
-								<span className="truncate font-semibold text-base md:text-lg">
+								<span className="truncate font-semibold text-body-lg md:text-heading">
 									{link.title}
 								</span>
 								{link.custom?.displayMode === "featured" && (
@@ -136,12 +136,12 @@ export default function LinkItem({
 									<ModeBadge icon={SquaresFour} label="Grid" />
 								)}
 								{isHidden && (
-									<span className="flex shrink-0 items-center rounded-full border border-border border-dashed px-2 py-0.5 font-medium text-muted-foreground text-xs">
+									<span className="flex shrink-0 items-center rounded-full border border-border border-dashed px-2 py-0.5 font-medium text-caption text-muted-foreground">
 										Hidden
 									</span>
 								)}
 							</span>
-							<span className="max-w-[150px] truncate text-muted-foreground text-xs sm:max-w-[300px] md:text-sm">
+							<span className="max-w-[150px] truncate text-caption text-muted-foreground sm:max-w-[300px] md:text-body">
 								{link.url}
 							</span>
 						</span>
@@ -150,7 +150,7 @@ export default function LinkItem({
 
 				<div className="flex w-full items-center justify-end gap-3 border-border border-t bg-muted/20 px-4 py-2 md:w-auto md:border-t-0 md:border-l md:bg-transparent md:py-0 md:pr-4 md:pl-4">
 					{clickData && clickData.clickCount > 0 && (
-						<span className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2 py-0.5 font-medium text-muted-foreground text-xs tabular-nums">
+						<span className="flex shrink-0 items-center gap-1 rounded-full bg-muted px-2 py-0.5 font-medium text-caption text-muted-foreground tabular-nums">
 							<ChartBar aria-hidden className="size-3" />
 							{clickData.clickCount.toLocaleString()}
 							<span className="sr-only">clicks</span>
@@ -160,7 +160,9 @@ export default function LinkItem({
 						htmlFor={visibilityId}
 						className="flex cursor-pointer items-center gap-2"
 					>
-						<span className="text-muted-foreground text-xs">Visible</span>
+						<span className="text-caption text-muted-foreground">
+							Show on page
+						</span>
 						<Switch
 							id={visibilityId}
 							checked={!isHidden}

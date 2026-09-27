@@ -33,7 +33,7 @@ export default function UserMenu() {
 	if (!session || !profile) {
 		return (
 			<Link href="/login" className={buttonVariants({ variant: "outline" })}>
-				Sign In
+				Sign in
 			</Link>
 		);
 	}
@@ -67,11 +67,11 @@ export default function UserMenu() {
 						<AvatarImage src={profile.avatarUrl!} alt={profile.displayName!} />
 						<AvatarFallback>{profile.displayName?.charAt(0)}</AvatarFallback>
 					</Avatar>
-					<div className="grid flex-1 text-left text-sm leading-tight">
+					<div className="grid flex-1 text-left text-body leading-tight">
 						<span className="truncate font-semibold">
 							{profile.displayName}
 						</span>
-						<span className="truncate text-muted-foreground text-sm">
+						<span className="truncate text-body text-muted-foreground">
 							@{profile.username}
 						</span>
 					</div>
@@ -99,7 +99,7 @@ export default function UserMenu() {
 							)}
 							onClick={() => setTheme("light")}
 						>
-							<Sun className="h-4 w-4" />
+							<Sun aria-hidden className="h-4 w-4" />
 						</Button>
 						<Button
 							variant={theme === "dark" ? "default" : "outline"}
@@ -110,7 +110,7 @@ export default function UserMenu() {
 							)}
 							onClick={() => setTheme("dark")}
 						>
-							<Moon className="h-4 w-4" />
+							<Moon aria-hidden className="h-4 w-4" />
 						</Button>
 						<Button
 							variant={theme === "system" ? "default" : "outline"}
@@ -121,7 +121,7 @@ export default function UserMenu() {
 							)}
 							onClick={() => setTheme("system")}
 						>
-							<Monitor className="h-4 w-4" />
+							<Monitor aria-hidden className="h-4 w-4" />
 						</Button>
 					</div>
 				</DropdownMenuGroup>
@@ -149,8 +149,8 @@ export default function UserMenu() {
 						});
 					}}
 				>
-					<SignOut className="h-4 w-4" />
-					Logout
+					<SignOut aria-hidden className="h-4 w-4" />
+					Sign out
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

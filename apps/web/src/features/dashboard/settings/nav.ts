@@ -41,21 +41,21 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
 				title: "Account",
 				icon: User,
 				description:
-					"The name and address people use to find and recognise you.",
+					"The name and address people use to find and recognize you.",
 			},
 			{
 				id: "seo",
-				title: "Search & SEO",
+				title: "Search and SEO",
 				icon: MagnifyingGlass,
 				description:
 					"Control the title and summary search engines show for your profile.",
 			},
 			{
 				id: "support-banner",
-				title: "Support Banner",
+				title: "Support banner",
 				icon: Flag,
 				description:
-					"Show a banner for a cause at the foot of your public profile.",
+					"Show a banner for a cause at the foot of your public page.",
 			},
 		],
 	},

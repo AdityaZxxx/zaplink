@@ -34,13 +34,13 @@ export function LinkThumbnailUploader({
 		if (file) {
 			// Validate file type
 			if (!file.type.match("image.*")) {
-				toast.error("Please select an image file");
+				toast.error("Choose an image file.");
 				return;
 			}
 
 			// Validate file size (e.g., 4MB)
 			if (file.size > 4 * 1024 * 1024) {
-				toast.error("File size must be less than 4MB");
+				toast.error("Use an image under 4 MB.");
 				return;
 			}
 
@@ -70,18 +70,18 @@ export function LinkThumbnailUploader({
 					<>
 						<Image
 							src={displayUrl}
-							alt="Thumbnail"
+							alt=""
 							fill
 							className="object-cover transition-opacity group-hover:opacity-50"
 						/>
 						<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-							<CloudArrowUp className="h-8 w-8 text-primary" />
+							<CloudArrowUp aria-hidden className="h-8 w-8 text-primary" />
 						</div>
 					</>
 				) : (
 					<div className="flex flex-col items-center justify-center gap-2 text-muted transition-colors group-hover:text-muted">
-						<ImageIcon className="h-8 w-8" />
-						<span className="text-xs">Click to upload thumbnail</span>
+						<ImageIcon aria-hidden className="h-8 w-8" />
+						<span className="text-caption">Choose an image</span>
 					</div>
 				)}
 
@@ -105,9 +105,9 @@ export function LinkThumbnailUploader({
 							fileInputRef.current.value = "";
 						}
 					}}
-					className="text-red-500 text-xs hover:underline"
+					className="text-caption text-red-500 hover:underline"
 				>
-					Remove thumbnail
+					Remove image
 				</button>
 			)}
 		</div>

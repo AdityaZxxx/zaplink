@@ -56,9 +56,9 @@ export function TopLinksList({ links, loading = false }: TopLinksListProps) {
 		<Card className="lg:col-span-3">
 			<CardHeader>
 				<CardTitle>Top links</CardTitle>
-				<CardDescription>Where your audience is going.</CardDescription>
+				<CardDescription>Ranked by clicks.</CardDescription>
 				{!loading && links.length > 0 && (
-					<CardAction className="self-center text-muted-foreground text-xs tabular-nums">
+					<CardAction className="self-center text-caption text-muted-foreground tabular-nums">
 						{links.length} tracked
 					</CardAction>
 				)}
@@ -86,9 +86,9 @@ export function TopLinksList({ links, loading = false }: TopLinksListProps) {
 							aria-hidden
 							className="size-8 text-muted-foreground opacity-40"
 						/>
-						<p className="font-medium text-sm">No clicks yet</p>
-						<p className="max-w-56 text-muted-foreground text-xs">
-							Share your profile to start tracking which links pull people in.
+						<p className="font-medium text-body">No clicks yet</p>
+						<p className="max-w-56 text-caption text-muted-foreground">
+							Share your profile link and the clicks land here.
 						</p>
 					</div>
 				) : (
@@ -119,10 +119,10 @@ export function TopLinksList({ links, loading = false }: TopLinksListProps) {
 										</span>
 
 										<span className="flex min-w-0 flex-1 flex-col">
-											<span className="truncate font-medium text-sm">
+											<span className="truncate font-medium text-body">
 												{link.title}
 											</span>
-											<span className="flex items-center gap-1 text-muted-foreground text-xs">
+											<span className="flex items-center gap-1 text-caption text-muted-foreground">
 												{/*
 												 * The bare host, not the full URL: a truncated
 												 * `https://www.instagram.com/…` reads as noise,
@@ -138,10 +138,10 @@ export function TopLinksList({ links, loading = false }: TopLinksListProps) {
 										</span>
 
 										<span className="shrink-0 text-right">
-											<span className="block font-semibold text-sm tabular-nums">
+											<span className="block font-semibold text-body tabular-nums">
 												{formatCompact(link.clicks)}
 											</span>
-											<span className="text-muted-foreground text-xs">
+											<span className="text-caption text-muted-foreground">
 												clicks
 											</span>
 										</span>

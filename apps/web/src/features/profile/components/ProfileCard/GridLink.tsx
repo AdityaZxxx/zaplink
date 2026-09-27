@@ -26,7 +26,7 @@ export function GridLink({ link, onClick }: GridLinkProps) {
 					/>
 				) : (
 					<div className="flex h-full w-full items-center justify-center bg-muted">
-						<span className="font-bold text-4xl text-muted-foreground/20">
+						<span className="text-4xl text-muted-foreground/20">
 							{link.title.charAt(0)}
 						</span>
 					</div>
@@ -36,7 +36,7 @@ export function GridLink({ link, onClick }: GridLinkProps) {
 			{/* Overlay & Content */}
 			<div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/80 via-transparent to-transparent p-3 opacity-90 transition-opacity group-hover:opacity-100">
 				<div className="flex items-center justify-between gap-2">
-					<span className="truncate font-medium text-white text-xs">
+					<span className="truncate font-medium text-caption text-white">
 						{link.title}
 					</span>
 				</div>

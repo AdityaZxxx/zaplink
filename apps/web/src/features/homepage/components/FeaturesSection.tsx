@@ -1,25 +1,18 @@
-import {
-	ArrowUpRight,
-	GithubLogo,
-	Globe,
-	Stack,
-} from "@phosphor-icons/react/ssr";
-import { Button } from "@/components/ui/button";
+import { GithubLogo, Globe, Stack } from "@phosphor-icons/react/ssr";
 
 export default function FeaturesSection() {
 	return (
 		<section className="relative overflow-hidden border-primary/5 border-t bg-background px-4 py-32">
-			{/* Ambient Background Glow */}
 			<div className="pointer-events-none absolute top-0 left-1/2 h-[500px] w-[1000px] -translate-x-1/2 rounded-full bg-primary/20 opacity-20 blur-[120px]" />
 
 			<div className="relative z-10 mx-auto max-w-7xl">
 				<div className="mb-16 text-center">
-					<h2 className="mb-4 font-bold text-3xl text-primary md:text-5xl">
-						Everything you need. <br /> Nothing you don't.
+					<h2 className="mb-4 text-3xl text-primary md:text-headline">
+						Everything in one dashboard
 					</h2>
-					<p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-						We stripped away the clutter. What's left is a tool focused purely
-						on speed, aesthetics, and conversion.
+					<p className="mx-auto max-w-2xl text-body-lg text-muted-foreground md:text-lead">
+						Add a link, give it a layout, hide what you do not want, then read
+						the numbers for each one.
 					</p>
 				</div>
 
@@ -28,12 +21,12 @@ export default function FeaturesSection() {
 					<div className="group relative overflow-hidden rounded-[2.5rem] border border-border bg-secondary/50 p-8 backdrop-blur-md transition-all duration-500 hover:bg-secondary/80 md:col-span-7 md:p-12">
 						<div className="relative z-10 flex h-full flex-col justify-between">
 							<div>
-								<h3 className="mb-3 font-semibold text-3xl text-primary">
-									Privacy-first Analytics
+								<h3 className="mb-3 text-heading text-primary">
+									Per-link analytics
 								</h3>
-								<p className="max-w-sm text-lg text-muted-foreground">
-									Real-time insights without the cookies. Know your audience,
-									not their secrets.
+								<p className="max-w-sm text-body-lg text-muted-foreground">
+									Views and clicks for every link, so you can tell which one
+									earns the tap.
 								</p>
 							</div>
 
@@ -87,13 +80,12 @@ export default function FeaturesSection() {
 						<div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-yellow-500/20 opacity-0 blur-[80px] transition-opacity duration-700 group-hover:opacity-100" />
 
 						<div className="relative z-10">
-							<h3 className="mb-3 font-semibold text-3xl text-primary">
-								Instant Load
+							<h3 className="mb-3 text-heading text-primary">
+								Quick on a phone
 							</h3>
-							<p className="text-lg text-muted-foreground">
-								Built on the edge.{" "}
-								<span className="font-medium text-primary">0ms</span> layout
-								shift. Your profile loads before they blink.
+							<p className="text-body-lg text-muted-foreground">
+								The page is small and served from the edge, so it loads on a
+								weak connection.
 							</p>
 						</div>
 
@@ -106,11 +98,12 @@ export default function FeaturesSection() {
 					{/* Card 3: Mobile (Spans 5 cols) */}
 					<div className="group relative min-h-[400px] overflow-hidden rounded-[2.5rem] border border-border bg-secondary/50 p-8 backdrop-blur-md transition-all duration-500 hover:bg-secondary/80 md:col-span-5 md:p-12">
 						<div className="relative z-10">
-							<h3 className="mb-3 font-semibold text-3xl text-primary">
-								Mobile Native
+							<h3 className="mb-3 text-heading text-primary">
+								Read on a phone
 							</h3>
-							<p className="text-lg text-muted-foreground">
-								Thumb-friendly zones. Haptic-feel interactions.
+							<p className="text-body-lg text-muted-foreground">
+								Most people open a profile from a phone, so the layout and the
+								tap targets are sized for one.
 							</p>
 						</div>
 
@@ -131,35 +124,25 @@ export default function FeaturesSection() {
 					<div className="group relative flex flex-col justify-center overflow-hidden rounded-[2.5rem] border border-border bg-secondary/50 p-8 backdrop-blur-md transition-all duration-500 hover:bg-secondary/80 md:col-span-7 md:p-12">
 						<div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-						<div className="relative z-10 flex flex-col items-start gap-8 md:flex-row md:items-center">
-							<div className="flex-1">
-								<div className="mb-6 flex gap-3">
-									<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
-										<GithubLogo className="h-5 w-5 text-primary" />
-									</div>
-									<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
-										<Globe className="h-5 w-5 text-primary" />
-									</div>
-									<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
-										<Stack className="h-5 w-5 text-primary" />
-									</div>
+						<div className="relative z-10">
+							<div className="mb-6 flex gap-3">
+								<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
+									<GithubLogo aria-hidden className="h-5 w-5 text-primary" />
 								</div>
-								<h3 className="mb-3 font-semibold text-3xl text-primary">
-									Open Ecosystem
-								</h3>
-								<p className="text-lg text-muted-foreground">
-									Connect your favorite platforms. Show your identity to the
-									world.
-								</p>
+								<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
+									<Globe aria-hidden className="h-5 w-5 text-primary" />
+								</div>
+								<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
+									<Stack aria-hidden className="h-5 w-5 text-primary" />
+								</div>
 							</div>
-
-							<div className="shrink-0">
-								<Button className="relative flex items-center gap-2 overflow-hidden rounded-full px-6 py-3 font-medium">
-									<span className="relative z-10">Explore Integrations</span>
-									<ArrowUpRight className="relative z-10 h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-									<div className="absolute inset-0 translate-y-full bg-primary/20 transition-transform duration-300 group-hover/btn:translate-y-0" />
-								</Button>
-							</div>
+							<h3 className="mb-3 text-heading text-primary">
+								The platforms you already use
+							</h3>
+							<p className="max-w-md text-body-lg text-muted-foreground">
+								Instagram, TikTok, YouTube, Spotify and more. Pick a platform,
+								type your handle, and the address is filled in for you.
+							</p>
 						</div>
 					</div>
 				</div>

@@ -48,7 +48,7 @@ export default function LinksPage({
 		trpc.links.createLink.mutationOptions({
 			onSuccess: () => {
 				setIsAddOpen(false);
-				toast.success("Link created");
+				toast.success("Link added");
 			},
 			onSettled: () => {
 				queryClient.invalidateQueries(trpc.links.getAllLinks.queryOptions());
@@ -148,9 +148,9 @@ export default function LinksPage({
 			    hidden at lg, so the reserved space is only needed below it. */}
 			<div className="space-y-6 pb-20 lg:space-y-8 lg:pb-0">
 				<div className="space-y-1">
-					<h1 className="font-bold text-3xl tracking-tight">Links</h1>
+					<h1 className="text-title">Links</h1>
 					<p className="text-muted-foreground">
-						Everything on your public profile, grouped by where it appears.
+						Everything on your public page, grouped by where it shows up.
 					</p>
 				</div>
 

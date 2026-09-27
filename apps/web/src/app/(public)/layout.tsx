@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import Header from "@/features/layout/components/Header";
 import Providers from "@/features/layout/providers/Providers";
+import { APP_NAME } from "@/lib/constants/BRANDS";
+import { geistMono, geistSans } from "@/lib/fonts";
 import "../../index.css";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-	title: "zaplink",
-	description: "zaplink",
+	title: {
+		default: `${APP_NAME}: one link for everything you make`,
+		template: `%s | ${APP_NAME}`,
+	},
+	description:
+		"Claim a profile, add your links, and see who taps them. Free to start.",
 };
 
 export default function RootLayout({
@@ -20,8 +20,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<body className={`${geistSans.variable} antialiased`}>
+		<html
+			lang="en"
+			className={`${geistSans.variable} ${geistMono.variable}`}
+			suppressHydrationWarning
+		>
+			<body>
 				<Providers>
 					<Header />
 					{children}

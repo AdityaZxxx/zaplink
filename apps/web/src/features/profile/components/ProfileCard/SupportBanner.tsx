@@ -48,9 +48,9 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 					aria-label={isMinimized ? "Expand banner" : "Minimize banner"}
 				>
 					{isMinimized ? (
-						<CaretUp className="h-4 w-4" />
+						<CaretUp aria-hidden className="h-4 w-4" />
 					) : (
-						<CaretDown className="h-4 w-4" />
+						<CaretDown aria-hidden className="h-4 w-4" />
 					)}
 				</button>
 
@@ -78,8 +78,8 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 						</div>
 						<span
 							className={cn(
-								"font-bold tracking-tight transition-all duration-500",
-								isMinimized ? "text-sm" : "text-xl",
+								"font-semibold transition-all duration-500",
+								isMinimized ? "text-body" : "text-heading",
 							)}
 						>
 							{content.title}
@@ -95,7 +95,7 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 						)}
 					>
 						<div className="flex flex-col items-center overflow-hidden">
-							<p className="max-w-[280px] text-center text-sm leading-relaxed opacity-90">
+							<p className="max-w-[280px] text-center text-body opacity-90">
 								{content.description}
 							</p>
 							{/*
@@ -111,10 +111,10 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 								target="_blank"
 								rel="noopener noreferrer"
 								aria-label={`Learn more about ${content.title}`}
-								className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 font-bold text-black text-xs transition-transform hover:scale-105 active:scale-95"
+								className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 font-semibold text-black text-caption transition-transform hover:scale-105 active:scale-95"
 							>
-								Learn More
-								<Globe className="h-3.5 w-3.5" />
+								Learn more
+								<Globe aria-hidden className="h-3.5 w-3.5" />
 							</a>
 						</div>
 					</div>

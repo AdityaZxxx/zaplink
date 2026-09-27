@@ -68,7 +68,7 @@ export default function DashboardPage({
 			// No toast: the reverting tick already says it worked.
 			setTimeout(() => setCopied(false), 2000);
 		} catch {
-			toast.error("Could not copy to clipboard");
+			toast.error("Could not copy the link");
 		}
 	}
 
@@ -88,11 +88,11 @@ export default function DashboardPage({
 			 */}
 			<div className="space-y-6 pb-20 lg:space-y-8 lg:pb-0">
 				<div className="space-y-1">
-					<h1 className="font-bold text-3xl tracking-tight">
+					<h1 className="text-title">
 						Welcome back, {profile.displayName ?? profile.username}
 					</h1>
 					<p className="text-muted-foreground">
-						Here is what is happening with your profile.
+						How your profile did over the last 7 days.
 					</p>
 				</div>
 
@@ -100,7 +100,7 @@ export default function DashboardPage({
 					<KPICard
 						title="Total links"
 						value={links.length}
-						subtitle="across sections"
+						subtitle="on your page"
 						icon={<LinkIcon />}
 					/>
 					<KPICard
@@ -124,25 +124,25 @@ export default function DashboardPage({
 					<QuickAction
 						href="/dashboard/links"
 						icon={Plus}
-						title="Add links"
-						description="Share something new"
+						title="Add a link"
+						description="Anything you want people to reach"
 					/>
 					<QuickAction
 						href="/dashboard/profile"
 						icon={PencilSimple}
-						title="Customize profile"
-						description="Photo, banner and bio"
+						title="Edit profile"
+						description="Your photo, banner and bio"
 					/>
 				</div>
 
 				<section className="space-y-4">
 					<div className="flex items-center justify-between">
-						<h2 className="font-semibold text-lg tracking-tight">Your links</h2>
+						<h2 className="text-heading">Your links</h2>
 						<Link
 							href="/dashboard/links"
-							className="text-muted-foreground text-sm transition-colors duration-150 ease-out hover:text-foreground"
+							className="text-body text-muted-foreground transition-colors duration-150 ease-out hover:text-foreground"
 						>
-							View all
+							All links
 						</Link>
 					</div>
 
@@ -153,9 +153,9 @@ export default function DashboardPage({
 									<LinkIcon className="size-5" />
 								</span>
 								<h3 className="mt-4 font-semibold">No links yet</h3>
-								<p className="mt-1 max-w-[38ch] text-muted-foreground text-sm">
-									Your profile is empty. Add your first link and it will show up
-									here and on your public page.
+								<p className="mt-1 max-w-[38ch] text-body text-muted-foreground">
+									Your profile has nothing on it yet. Add a link and it shows up
+									up here and on your public page.
 								</p>
 								{/*
 								 * buttonVariants, not Button: pointing Button at an anchor puts
@@ -183,12 +183,12 @@ export default function DashboardPage({
 					<CardContent className="flex flex-col items-center justify-between gap-4 sm:flex-row">
 						<div className="space-y-1 text-center sm:text-left">
 							<h3 className="font-semibold">Share your profile</h3>
-							<p className="text-muted-foreground text-sm">
+							<p className="text-body text-muted-foreground">
 								<span className="font-medium text-foreground">
 									{profileUrl}
 								</span>
 								<br />
-								Every view and click is tracked on your analytics page.
+								Every view and click is counted on your analytics page.
 							</p>
 						</div>
 						<div className="flex w-full shrink-0 items-center gap-2 sm:w-auto">
@@ -203,7 +203,7 @@ export default function DashboardPage({
 								)}
 							>
 								<ShareNetwork className="size-4" />
-								Open
+								View profile
 							</Link>
 						</div>
 					</CardContent>
@@ -275,7 +275,7 @@ function QuickAction({
 			</span>
 			<span className="min-w-0 space-y-0.5">
 				<span className="block font-semibold">{title}</span>
-				<span className="block text-muted-foreground text-sm">
+				<span className="block text-body text-muted-foreground">
 					{description}
 				</span>
 			</span>
@@ -299,7 +299,7 @@ function LinkRow({ link }: { link: LinksData[number] }) {
 				</span>
 				<span className="min-w-0 flex-1">
 					<span className="block truncate font-medium">{link.title}</span>
-					<span className="block truncate text-muted-foreground text-sm">
+					<span className="block truncate text-body text-muted-foreground">
 						{link.url}
 					</span>
 				</span>

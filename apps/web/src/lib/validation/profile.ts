@@ -12,20 +12,23 @@ export const BIO_MAX = 160;
 
 export const displayNameRule = z
 	.string()
-	.min(1, "Display name is required")
+	.min(1, "Enter a display name")
 	.max(
 		DISPLAY_NAME_MAX,
-		`Display name must be ${DISPLAY_NAME_MAX} characters or fewer`,
+		`Shorten the display name to ${DISPLAY_NAME_MAX} characters or fewer`,
 	);
 
 export const usernameRule = z
 	.string()
-	.min(3, "Username must be at least 3 characters")
-	.max(USERNAME_MAX, `Username must be ${USERNAME_MAX} characters or fewer`);
+	.min(3, "Use at least 3 characters for the username")
+	.max(
+		USERNAME_MAX,
+		`Shorten the username to ${USERNAME_MAX} characters or fewer`,
+	);
 
 export const bioRule = z
 	.string()
-	.max(BIO_MAX, `Bio must be ${BIO_MAX} characters or fewer`)
+	.max(BIO_MAX, `Shorten the bio to ${BIO_MAX} characters or fewer`)
 	.optional();
 
 /** Every field the profile form edits. */

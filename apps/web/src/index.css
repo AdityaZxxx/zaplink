@@ -14,18 +14,92 @@
 @custom-variant data-vertical (&:where([data-orientation="vertical"]));
 
 @theme {
+	/*
+	 * One sans stack, declared once. `--font-geist-sans` is set by next/font on
+	 * <html>; the literal families behind it are the fallback for the first
+	 * paint, before the webfont arrives.
+	 */
 	--font-sans:
-		"Inter", "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+		var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+		BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+		"Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
+	--font-mono:
+		var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+		Consolas, "Liberation Mono", "Courier New", monospace;
+	--font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+	/*
+	 * The type ladder. Every size in the app comes from here, and each step
+	 * carries its own line height and tracking, so the pairing is a property of
+	 * the scale rather than something each call site has to remember.
+	 *
+	 *   display  48px  marketing hero only
+	 *   headline 36px  marketing section heading
+	 *   title    24px  page title
+	 *   heading  20px  section and card heading
+	 *   lead     18px  page description
+	 *   body-lg  16px  marketing paragraph
+	 *   body     14px  interface body
+	 *   caption  12px  meta, badge, helper
+	 *
+	 * Tracking tightens as the size grows and is zero at body sizes, which is
+	 * the point of putting it in the token.
+	 */
+	--text-display: 3rem;
+	--text-display--line-height: 1.05;
+	--text-display--letter-spacing: -0.03em;
+	--text-display--font-weight: 600;
+
+	--text-headline: 2.25rem;
+	--text-headline--line-height: 1.15;
+	--text-headline--letter-spacing: -0.025em;
+	--text-headline--font-weight: 600;
+
+	--text-title: 1.5rem;
+	--text-title--line-height: 1.25;
+	--text-title--letter-spacing: -0.02em;
+	--text-title--font-weight: 600;
+
+	--text-heading: 1.25rem;
+	--text-heading--line-height: 1.35;
+	--text-heading--letter-spacing: -0.01em;
+	--text-heading--font-weight: 600;
+
+	--text-lead: 1.125rem;
+	--text-lead--line-height: 1.6;
+
+	--text-body-lg: 1rem;
+	--text-body-lg--line-height: 1.6;
+
+	--text-body: 0.875rem;
+	--text-body--line-height: 1.55;
+
+	--text-caption: 0.75rem;
+	--text-caption--line-height: 1.45;
 }
 
-html,
-body {
-	@media (prefers-color-scheme: dark) {
-		color-scheme: dark;
-	}
+/*
+ * Keyed to the theme class rather than the OS: the app can be light while the
+ * machine is dark, and a `prefers-color-scheme` query on <html> would hand the
+ * browser dark scrollbars, form controls and default text colours anyway.
+ */
+:root {
+	color-scheme: light;
+}
 
-	letter-spacing: var(--tracking-normal);
+.dark {
+	color-scheme: dark;
+}
+
+html {
+	/*
+	 * On the root layout, not per component. macOS otherwise renders this face
+	 * heavier than every other platform at the same weight.
+	 */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-optical-sizing: auto;
 }
 
 :root {
@@ -67,12 +141,6 @@ body {
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
-	--font-sans:
-		ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-	--font-mono:
-		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-		"Courier New", monospace;
 	--radius: 0.625rem;
 	--shadow-x: 0;
 	--shadow-y: 1px;
@@ -135,12 +203,6 @@ body {
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(0.275 0 0);
 	--sidebar-ring: oklch(0.439 0 0);
-	--font-sans:
-		ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-	--font-mono:
-		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-		"Courier New", monospace;
 	--radius: 0.625rem;
 	--shadow-x: 0;
 	--shadow-y: 1px;
@@ -199,10 +261,6 @@ body {
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-ring: var(--sidebar-ring);
 
-	--font-sans: var(--font-sans);
-	--font-mono: var(--font-mono);
-	--font-serif: var(--font-serif);
-
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -223,6 +281,19 @@ body {
 		@apply border-border outline-ring/50;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-body text-foreground;
+	}
+
+	/*
+	 * Wrapping defaults, so no call site has to remember them. Balance evens out
+	 * a short heading, pretty keeps a lone word off the last line of a
+	 * paragraph. Both are no-ops on text that does not wrap.
+	 */
+	:is(h1, h2, h3, h4) {
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
 	}
 }

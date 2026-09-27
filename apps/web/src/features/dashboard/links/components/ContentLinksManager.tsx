@@ -45,9 +45,9 @@ export function ContentLinksManager({
 
 	return (
 		<LinksSection
-			title="Content blocks"
-			description="Your main links, grids and featured items."
-			actionLabel="Add block"
+			title="Links"
+			description="The main links on your page, in the order you set."
+			actionLabel="Add link"
 			onAdd={onAdd}
 		>
 			<DndContext

@@ -39,7 +39,7 @@ export const ProfileImageUploader = ({
 		const file = e.target.files?.[0];
 		if (file) {
 			if (!file.type.match("image.*")) {
-				toast.error("Please select an image file");
+				toast.error("Choose an image file.");
 				return;
 			}
 
@@ -92,7 +92,7 @@ export const ProfileImageUploader = ({
 
 				<div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black/50 text-white opacity-0 transition-opacity duration-150 ease-out group-focus-within:opacity-100 group-hover:opacity-100">
 					<Camera className="size-5" />
-					<span className="px-2 text-center font-medium text-xs">
+					<span className="px-2 text-center font-medium text-caption">
 						Change {label.toLowerCase()}
 					</span>
 					<input

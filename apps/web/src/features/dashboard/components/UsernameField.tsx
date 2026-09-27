@@ -25,7 +25,7 @@ export function UsernameField({ field }: { field: AnyFieldApi }) {
 				className="flex items-center rounded-2xl bg-input/50 transition-[color,box-shadow] duration-200 has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30"
 				aria-describedby={isInvalid ? `${id}-error` : `${id}-description`}
 			>
-				<span className="select-none ps-3 font-medium text-muted-foreground text-sm">
+				<span className="select-none ps-3 font-medium text-body text-muted-foreground">
 					{DOMAIN_NAME}/
 				</span>
 				<Input
@@ -34,7 +34,7 @@ export function UsernameField({ field }: { field: AnyFieldApi }) {
 					value={field.state.value}
 					onBlur={field.handleBlur}
 					onChange={(e) => field.handleChange(e.target.value)}
-					placeholder="username"
+					placeholder="yourname"
 					aria-invalid={isInvalid}
 					className="min-w-0 flex-1 bg-transparent ps-0 focus-visible:border-0! focus-visible:ring-0!"
 				/>

@@ -20,8 +20,8 @@ export function LinksSection({
 		<section className="rounded-2xl border border-border bg-card/50 p-5 md:p-6">
 			<header className="mb-4 flex flex-wrap items-start justify-between gap-3">
 				<div className="min-w-0 space-y-1">
-					<h2 className="font-semibold text-lg">{title}</h2>
-					<p className="text-muted-foreground text-sm">{description}</p>
+					<h2 className="text-heading">{title}</h2>
+					<p className="text-body text-muted-foreground">{description}</p>
 				</div>
 				<Button
 					type="button"

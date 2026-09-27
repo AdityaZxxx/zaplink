@@ -17,14 +17,15 @@ export const ClaimUsernameForm = () => {
 						{DOMAIN_NAME}/
 					</div>
 					<Input
-						placeholder="my-profile"
+						aria-label="Username"
+						placeholder="yourname"
 						value={username}
 						onChange={(e) => setUsername(e.target.value)}
 						className="h-12 border-input bg-background/50 pl-[110px] text-base transition-all placeholder:text-base focus:border-primary/50"
 					/>
 				</div>
 				<Button className="h-12 w-full rounded-full px-8 font-medium text-base md:w-auto">
-					Claim Now <ArrowRight className="ml-2 h-4 w-4" />
+					Claim username <ArrowRight className="ml-2 h-4 w-4" />
 				</Button>
 			</div>
 		</div>

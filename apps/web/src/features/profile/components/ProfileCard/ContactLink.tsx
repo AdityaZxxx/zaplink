@@ -50,8 +50,8 @@ export function ContactLink({ links, onLinkClick }: ContactLinkProps) {
 						className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-sm transition-all hover:scale-105 hover:bg-primary/90 hover:shadow-md active:scale-95"
 						title={link.title}
 					>
-						<Icon className="h-4 w-4" />
-						<span className="font-medium text-sm">{label}</span>
+						<Icon aria-hidden className="h-4 w-4" />
+						<span className="font-medium text-body">{label}</span>
 					</a>
 				);
 			})}

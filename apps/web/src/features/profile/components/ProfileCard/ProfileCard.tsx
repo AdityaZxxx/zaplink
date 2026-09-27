@@ -96,7 +96,7 @@ export default function ProfileCard({
 								className="object-cover"
 							/>
 						</div>
-						<span className="font-bold text-sm tracking-tight">
+						<span className="font-semibold text-body">
 							{profile.displayName}
 						</span>
 					</div>
@@ -143,23 +143,23 @@ export default function ProfileCard({
 										/>
 									) : (
 										<div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
-											<User className="h-12 w-12" />
+											<User aria-hidden className="h-12 w-12" />
 										</div>
 									)}
 								</div>
 							</div>
 
 							<div className="mt-4 space-y-1 text-center">
-								<h1 className="font-bold text-2xl text-foreground tracking-tight">
+								<h1 className="text-foreground text-title">
 									{profile.displayName}
 								</h1>
-								<p className="font-medium text-muted-foreground text-sm">
+								<p className="font-medium text-body text-muted-foreground">
 									@{profile.username}
 								</p>
 							</div>
 
 							{profile.bio && (
-								<p className="mt-4 max-w-[280px] text-center text-muted-foreground text-sm leading-relaxed">
+								<p className="mt-4 max-w-[280px] text-center text-body text-muted-foreground">
 									{profile.bio}
 								</p>
 							)}
@@ -206,9 +206,9 @@ export default function ProfileCard({
 							{links.length === 0 && (
 								<div className="flex flex-col items-center justify-center py-12 text-center opacity-50">
 									<div className="mb-3 rounded-full bg-muted/50 p-4">
-										<LinkSimple className="h-6 w-6" />
+										<LinkSimple aria-hidden className="h-6 w-6" />
 									</div>
-									<p className="text-sm">No links added yet</p>
+									<p className="text-body">No links added yet</p>
 								</div>
 							)}
 						</div>
@@ -228,10 +228,10 @@ export default function ProfileCard({
 					>
 						<a
 							href="/"
-							className="flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 font-medium text-[10px] backdrop-blur-sm transition-colors hover:bg-background"
+							className="flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 font-medium text-caption backdrop-blur-sm transition-colors hover:bg-background"
 						>
 							<span>Powered by</span>
-							<span className="font-bold">{APP_NAME}</span>
+							<span className="font-semibold">{APP_NAME}</span>
 						</a>
 					</div>
 				</div>

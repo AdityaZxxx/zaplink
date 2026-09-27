@@ -7,6 +7,7 @@ import {
 	Globe,
 	GridFour,
 	Link,
+	Phone,
 	Spinner,
 	SquaresFour,
 	Star,
@@ -31,7 +32,32 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
+import {
+	PLATFORM_CATEGORY_LABELS,
+	SUPPORT_PLATFORMS,
+} from "@/lib/constants/SUPPORT_PLATFORMS";
+
+/*
+ * The field asks for three different things, so it cannot keep one fixed label.
+ */
+const CONTACT_VALUE_LABELS: Record<string, string> = {
+	email: "Email address",
+	phone: "Phone number",
+	website: "Website",
+};
+
+/*
+ * Grouped once at module scope: the platform list is static, and rebuilding this
+ * on every render meant the category order depended on the reduce.
+ */
+const PLATFORMS_BY_CATEGORY = Object.values(SUPPORT_PLATFORMS).reduce(
+	(acc, platform) => {
+		acc[platform.category] ??= [];
+		acc[platform.category].push(platform);
+		return acc;
+	},
+	{} as Record<PlatformCategory, PlatformInfo[]>,
+);
 
 export interface AddLinkData {
 	title: string;
@@ -46,7 +72,10 @@ export interface AddLinkData {
 
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { PlatformInfo } from "@/lib/constants/SUPPORT_PLATFORMS";
+import type {
+	PlatformCategory,
+	PlatformInfo,
+} from "@/lib/constants/SUPPORT_PLATFORMS";
 import { useUploadThing } from "@/utils/uploadthing";
 import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
@@ -128,7 +157,7 @@ export function AddLinkDialog({
 				}
 
 				onAddLink({
-					title: title || "New Link",
+					title: title || "Untitled link",
 					url,
 					type: "custom",
 					displayMode,
@@ -137,7 +166,7 @@ export function AddLinkDialog({
 				resetForm();
 			} catch (error) {
 				console.error(error);
-				toast.error("Failed to upload thumbnail");
+				toast.error("Could not upload the image. Try again.");
 			} finally {
 				setIsUploading(false);
 			}
@@ -185,20 +214,20 @@ export function AddLinkDialog({
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[600px]">
 				<DialogHeader>
-					<DialogTitle>Add New Link</DialogTitle>
+					<DialogTitle>Add a link</DialogTitle>
 				</DialogHeader>
 				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
 					<TabsList className="grid w-full grid-cols-3">
 						<TabsTrigger value="custom">
-							<Link className="mr-2 h-4 w-4" />
-							URL Link
+							<Link aria-hidden className="mr-2 h-4 w-4" />
+							Custom link
 						</TabsTrigger>
 						<TabsTrigger value="contact">
-							<AddressBook className="mr-2 h-4 w-4" />
-							AddressBook
+							<AddressBook aria-hidden className="mr-2 h-4 w-4" />
+							Contact
 						</TabsTrigger>
 						<TabsTrigger value="platform">
-							<GridFour className="mr-2 h-4 w-4" />
+							<GridFour aria-hidden className="mr-2 h-4 w-4" />
 							Platform
 						</TabsTrigger>
 					</TabsList>
@@ -210,7 +239,7 @@ export function AddLinkDialog({
 								<Label htmlFor="title">Title</Label>
 								<Input
 									id="title"
-									placeholder="e.g. My Portfolio"
+									placeholder="My portfolio"
 									value={title}
 									onChange={(e) => setTitle(e.target.value)}
 								/>
@@ -219,7 +248,7 @@ export function AddLinkDialog({
 								<Label htmlFor="url">URL</Label>
 								<Input
 									id="url"
-									placeholder="https://..."
+									placeholder="https://example.com"
 									value={url}
 									onChange={(e) => setUrl(e.target.value)}
 									required
@@ -228,51 +257,51 @@ export function AddLinkDialog({
 
 							<div className="grid grid-cols-2 gap-4">
 								<div className="space-y-2">
-									<Label>Display Mode</Label>
+									<Label>Layout</Label>
 									<div className="grid grid-cols-2 gap-2 md:grid-cols-3">
 										<button
 											type="button"
 											onClick={() => setDisplayMode("standard")}
 											className={cn(
-												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-xs transition-all",
+												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-caption transition-all",
 												displayMode === "standard"
 													? "border-primary bg-primary/10 text-primary"
 													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
-											<TextAlignJustify className="h-4 w-4" />
+											<TextAlignJustify aria-hidden className="h-4 w-4" />
 											Standard
 										</button>
 										<button
 											type="button"
 											onClick={() => setDisplayMode("featured")}
 											className={cn(
-												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-xs transition-all",
+												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-caption transition-all",
 												displayMode === "featured"
 													? "border-primary bg-primary/10 text-primary"
 													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
-											<Star className="h-4 w-4" />
+											<Star aria-hidden className="h-4 w-4" />
 											Featured
 										</button>
 										<button
 											type="button"
 											onClick={() => setDisplayMode("grid")}
 											className={cn(
-												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-xs transition-all",
+												"flex flex-col items-center justify-center gap-1 rounded-lg border p-2 text-caption transition-all",
 												displayMode === "grid"
 													? "border-primary bg-primary/10 text-primary"
 													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
-											<Globe className="h-4 w-4" />
-											Globe
+											<SquaresFour aria-hidden className="h-4 w-4" />
+											Grid
 										</button>
 									</div>
 								</div>
 								<div className="space-y-2">
-									<Label>Thumbnail (Optional)</Label>
+									<Label>Thumbnail (optional)</Label>
 									<LinkThumbnailUploader
 										imageUrl={thumbnailUrl}
 										onImageChange={setThumbnailUrl}
@@ -287,14 +316,14 @@ export function AddLinkDialog({
 								disabled={isSubmitting || isUploading}
 							>
 								{(isSubmitting || isUploading) && (
-									<Spinner className="mr-2 h-4 w-4 animate-spin" />
+									<Spinner aria-hidden className="mr-2 h-4 w-4 animate-spin" />
 								)}
-								{isSubmitting || isUploading ? "Creating..." : "Add Link"}
+								{isSubmitting || isUploading ? "Adding" : "Add link"}
 							</Button>
 						</form>
 					</TabsContent>
 
-					{/* AddressBook Link Form */}
+					{/* Contact form */}
 					<TabsContent value="contact" className="space-y-4 pt-4">
 						<form onSubmit={handleSubmit} className="space-y-4">
 							<div className="grid grid-cols-3 gap-4">
@@ -310,24 +339,26 @@ export function AddLinkDialog({
 										<SelectContent>
 											<SelectItem value="email">
 												<div className="flex items-center gap-2">
-													<SquaresFour className="h-4 w-4" /> Email
+													<Envelope aria-hidden className="h-4 w-4" /> Email
 												</div>
 											</SelectItem>
 											<SelectItem value="phone">
 												<div className="flex items-center gap-2">
-													<SquaresFour className="h-4 w-4" /> SquaresFour
+													<Phone aria-hidden className="h-4 w-4" /> Phone
 												</div>
 											</SelectItem>
 											<SelectItem value="website">
 												<div className="flex items-center gap-2">
-													<Envelope className="h-4 w-4" /> Website
+													<Globe aria-hidden className="h-4 w-4" /> Website
 												</div>
 											</SelectItem>
 										</SelectContent>
 									</Select>
 								</div>
 								<div className="col-span-2 space-y-2">
-									<Label htmlFor="contactValue">Value</Label>
+									<Label htmlFor="contactValue">
+										{CONTACT_VALUE_LABELS[contactType]}
+									</Label>
 									<Input
 										id="contactValue"
 										placeholder={
@@ -346,17 +377,17 @@ export function AddLinkDialog({
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="contactTitle">Title (Optional)</Label>
+								<Label htmlFor="contactTitle">Title (optional)</Label>
 								<Input
 									id="contactTitle"
-									placeholder="e.g. AddressBook Me"
+									placeholder="e.g. Email me"
 									value={title}
 									onChange={(e) => setTitle(e.target.value)}
 								/>
 							</div>
 
 							<Button type="submit" className="w-full" disabled={isSubmitting}>
-								{isSubmitting ? "Creating..." : "Add AddressBook Info"}
+								{isSubmitting ? "Adding" : "Add contact"}
 							</Button>
 						</form>
 					</TabsContent>
@@ -365,36 +396,29 @@ export function AddLinkDialog({
 					<TabsContent value="platform" className="pt-4">
 						<ScrollArea className="h-[400px] pr-4">
 							<div className="space-y-6">
-								{Object.entries(
-									Object.values(SUPPORT_PLATFORMS).reduce(
-										(acc, platform) => {
-											const category = platform.category || "other";
-											if (!acc[category]) acc[category] = [];
-											acc[category].push(platform);
-											return acc;
-										},
-										{} as Record<
-											string,
-											(typeof SUPPORT_PLATFORMS)[keyof typeof SUPPORT_PLATFORMS][]
-										>,
-									),
+								{(
+									Object.entries(PLATFORMS_BY_CATEGORY) as [
+										PlatformCategory,
+										PlatformInfo[],
+									][]
 								).map(([category, platforms]) => (
 									<div key={category} className="space-y-3">
 										<div className="flex items-center justify-between px-1">
-											<h3 className="font-medium text-muted-foreground text-sm capitalize">
-												{category}
+											<h3 className="font-medium text-body text-muted-foreground">
+												{PLATFORM_CATEGORY_LABELS[category]}
 											</h3>
 											{platforms.length > 4 && (
 												<Button
 													variant="ghost"
 													size="sm"
-													className="h-6 text-muted-foreground text-xs hover:text-foreground"
+													className="h-6 text-caption text-muted-foreground hover:text-foreground"
 													onClick={() => toggleCategory(category)}
 												>
 													{expandedCategories[category]
 														? "Show less"
 														: `Show all (${platforms.length})`}
 													<CaretDown
+														aria-hidden
 														className={cn(
 															"ml-1 h-3 w-3 transition-transform",
 															expandedCategories[category] && "rotate-180",
@@ -414,8 +438,11 @@ export function AddLinkDialog({
 													onClick={() => handlePlatformSelect(platform)}
 													className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card p-3 transition-all hover:border-primary/50 hover:bg-accent"
 												>
-													<platform.icon className="h-6 w-6 text-muted-foreground" />
-													<span className="w-full truncate text-center font-medium text-[10px] text-foreground">
+													<platform.icon
+														aria-hidden
+														className="h-6 w-6 text-muted-foreground"
+													/>
+													<span className="w-full truncate text-center font-medium text-caption text-foreground">
 														{platform.name}
 													</span>
 												</button>

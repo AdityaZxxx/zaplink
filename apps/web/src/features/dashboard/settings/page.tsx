@@ -119,9 +119,9 @@ export default function SettingsPage({
 			    of a section sit under it. */}
 			<div className="space-y-6 pb-20 lg:space-y-8 lg:pb-0">
 				<div className="space-y-1">
-					<h1 className="font-bold text-3xl tracking-tight">Settings</h1>
+					<h1 className="text-title">Settings</h1>
 					<p className="text-muted-foreground">
-						Manage how your profile appears to visitors and in search results.
+						How your profile appears to visitors and in search results.
 					</p>
 				</div>
 
@@ -177,7 +177,7 @@ export default function SettingsPage({
 						>
 							{SETTINGS_NAV_GROUPS.map((group) => (
 								<div key={group.label}>
-									<h2 className="px-2.5 pb-2 font-medium text-muted-foreground text-xs">
+									<h2 className="px-2.5 pb-2 font-medium text-caption text-muted-foreground">
 										{group.label}
 									</h2>
 									<ul className="flex flex-col gap-0.5">
@@ -191,7 +191,7 @@ export default function SettingsPage({
 														aria-current={isActive ? "true" : undefined}
 														onClick={() => selectSection(item.id)}
 														className={cn(
-															"flex h-8 w-full items-center gap-2 overflow-hidden rounded-xl py-2 pr-3 pl-2.5 text-left text-sm",
+															"flex h-8 w-full items-center gap-2 overflow-hidden rounded-xl py-2 pr-3 pl-2.5 text-left text-body",
 															"outline-none transition-[color,background-color] duration-150 ease-out",
 															"focus-visible:ring-3 focus-visible:ring-ring/30",
 															isActive
@@ -216,13 +216,13 @@ export default function SettingsPage({
 							))}
 
 							<div>
-								<h2 className="px-2.5 pb-2 font-medium text-muted-foreground text-xs">
+								<h2 className="px-2.5 pb-2 font-medium text-caption text-muted-foreground">
 									Coming soon
 								</h2>
 								<ul className="flex flex-col gap-0.5">
 									{PLANNED_NAV_GROUP.map((item) => (
 										<li key={item.id}>
-											<div className="flex h-8 items-center gap-2 overflow-hidden rounded-xl py-2 pr-3 pl-2.5 text-muted-foreground/50 text-sm">
+											<div className="flex h-8 items-center gap-2 overflow-hidden rounded-xl py-2 pr-3 pl-2.5 text-body text-muted-foreground/50">
 												<item.icon className="size-4 shrink-0" />
 												<span className="truncate">{item.title}</span>
 												{/* The badge keeps the Badge component's own text-xs.

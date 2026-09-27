@@ -29,7 +29,7 @@ export function SocialIconsRow({ links, onLinkClick }: SocialIconsRowProps) {
 						className="group flex h-10 w-10 items-center justify-center rounded-full bg-secondary/50 text-muted-foreground transition-all hover:scale-110 hover:bg-background hover:text-foreground hover:shadow-md hover:ring-2 hover:ring-primary/20"
 						title={link.title}
 					>
-						<Icon className="h-5 w-5" />
+						<Icon aria-hidden className="h-5 w-5" />
 					</a>
 				);
 			})}

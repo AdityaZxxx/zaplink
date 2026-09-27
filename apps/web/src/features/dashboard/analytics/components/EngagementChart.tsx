@@ -85,12 +85,12 @@ function CustomTooltip({ active, payload, label }: TooltipContentProps) {
 
 	return (
 		<div className="min-w-40 rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/10 dark:ring-foreground/15">
-			<p className="mb-2 border-border border-b pb-1.5 font-medium text-xs">
+			<p className="mb-2 border-border border-b pb-1.5 font-medium text-caption">
 				{formatBucketLong(bucket)}
 			</p>
 			<div className="space-y-1.5">
 				{rows.map((row) => (
-					<div key={row.key} className="flex items-center gap-2 text-xs">
+					<div key={row.key} className="flex items-center gap-2 text-caption">
 						<span
 							aria-hidden
 							className="size-2 rounded-full"
@@ -111,9 +111,9 @@ function ChartEmptyState() {
 	return (
 		<div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
 			<ChartLineUp aria-hidden className="size-8 opacity-30" />
-			<p className="text-sm">No activity recorded in this period</p>
-			<p className="text-xs">
-				Pick a wider date range, or share your links to start collecting data.
+			<p className="text-body">No activity recorded in this period</p>
+			<p className="text-caption">
+				Pick a wider date range, or share your profile to start collecting data.
 			</p>
 		</div>
 	);
@@ -129,7 +129,7 @@ export function EngagementChart({
 		<Card className="lg:col-span-4">
 			<CardHeader>
 				<CardTitle>Engagement</CardTitle>
-				<CardDescription>Traffic over time.</CardDescription>
+				<CardDescription>Views and clicks over time.</CardDescription>
 				{/*
 				 * The legend lives in the header instead of a hand-aligned strip
 				 * above the plot. That removes the `pl-0` on CardContent plus a
@@ -141,7 +141,7 @@ export function EngagementChart({
 						{SERIES.map((series) => (
 							<span
 								key={series.key}
-								className="flex items-center gap-1.5 text-muted-foreground text-xs"
+								className="flex items-center gap-1.5 text-caption text-muted-foreground"
 							>
 								<span
 									aria-hidden

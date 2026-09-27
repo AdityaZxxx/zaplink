@@ -70,13 +70,16 @@ export default function OnboardingPage() {
 
 	const steps = [
 		{
-			title: "Profile Setup",
-			description: "Set your username and profile details",
+			title: "Set up your profile",
+			description: "Choose a username and how you appear.",
 		},
-		{ title: "First Link", description: "Add your first link to get started" },
 		{
-			title: "Confirm",
-			description: "Review your information before submitting",
+			title: "Add your links",
+			description: "Pick the platforms and addresses you want to show.",
+		},
+		{
+			title: "Review",
+			description: "Check it over, then publish.",
 		},
 	];
 
@@ -129,10 +132,12 @@ export default function OnboardingPage() {
 			<div className="fade-in slide-in-from-bottom-4 w-full max-w-xl animate-in duration-700">
 				{/* Header */}
 				<div className="mb-8 text-center">
-					<h1 className="mb-2 font-bold text-3xl text-white tracking-tight">
+					<h1 className="mb-2 text-title text-white">
 						{steps[currentStep].title}
 					</h1>
-					<p className="text-zinc-400">{steps[currentStep].description}</p>
+					<p className="text-body text-zinc-400">
+						{steps[currentStep].description}
+					</p>
 				</div>
 
 				{/* Progress Indicator */}

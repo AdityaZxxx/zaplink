@@ -54,7 +54,7 @@ export default function ProfilePageClient({
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
 			onSuccess: (updated) => {
-				toast.success("Profile updated");
+				toast.success("Changes saved");
 				// Seeded from the response, since the preview reads this same entry.
 				queryClient.setQueryData(
 					trpc.profile.getProfile.queryOptions().queryKey,
@@ -94,9 +94,9 @@ export default function ProfilePageClient({
 		>
 			<div className="space-y-6">
 				<div className="space-y-1">
-					<h1 className="font-bold text-3xl tracking-tight">Profile</h1>
+					<h1 className="text-title">Profile</h1>
 					<p className="text-muted-foreground">
-						How you look and what you say on your public page.
+						Your photo, banner, name and bio, as visitors see them.
 					</p>
 				</div>
 

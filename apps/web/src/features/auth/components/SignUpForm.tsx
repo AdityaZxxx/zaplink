@@ -34,7 +34,7 @@ export default function SignUpForm({
 				{
 					onSuccess: () => {
 						router.push("/onboarding");
-						toast.success("Sign up successful");
+						toast.success("Account created");
 					},
 					onError: (error) => {
 						toast.error(error.error.message || error.error.statusText);
@@ -50,10 +50,9 @@ export default function SignUpForm({
 
 	return (
 		<div className="mx-auto mt-10 w-full max-w-md p-6">
-			<h1 className="mb-2 text-center font-bold text-3xl">Join Zaplink</h1>
-			<p className="mb-6 text-center text-muted-foreground text-sm">
-				Sign up to create your personalized link page in seconds. Your brand,
-				your identity.
+			<h1 className="mb-2 text-center text-title">Create your account</h1>
+			<p className="mb-6 text-center text-body text-muted-foreground">
+				One account, one address, and every link you add to it.
 			</p>
 			<form
 				onSubmit={(event) => {
@@ -98,19 +97,15 @@ export default function SignUpForm({
 							className="w-full"
 							disabled={!state.canSubmit || state.isSubmitting}
 						>
-							{state.isSubmitting ? "Submitting..." : "Sign Up"}
+							{state.isSubmitting ? "Creating account" : "Create account"}
 						</Button>
 					)}
 				</form.Subscribe>
 			</form>
 
 			<div className="mt-4 text-center">
-				<Button
-					variant="link"
-					onClick={onSwitchToSignIn}
-					className="text-indigo-600 hover:text-indigo-800"
-				>
-					Already have an account? Sign In
+				<Button variant="link" onClick={onSwitchToSignIn}>
+					Already have an account? Sign in
 				</Button>
 			</div>
 		</div>

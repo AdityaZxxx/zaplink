@@ -91,7 +91,7 @@ function SidebarLogo() {
 					focusable={false}
 				/>
 			</div>
-			<span className="font-bold text-lg group-data-[collapsible=icon]:hidden">
+			<span className="text-heading group-data-[collapsible=icon]:hidden">
 				{APP_NAME}
 			</span>
 		</div>
@@ -133,7 +133,7 @@ function MobileMenu() {
 				onClick={() => setOpen(true)}
 			>
 				<List className="h-5 w-5" />
-				<span className="sr-only">Toggle Menu</span>
+				<span className="sr-only">Open navigation menu</span>
 			</Button>
 			<Drawer open={open} onOpenChange={setOpen}>
 				{/*

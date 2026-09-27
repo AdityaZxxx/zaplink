@@ -38,12 +38,15 @@ const SERP_LINK = "text-[#1a0dab] dark:text-[#8ab4f8]";
 const seoFormSchema = z.object({
 	seoTitle: z
 		.string()
-		.max(SEO_TITLE_MAX, `Title must be ${SEO_TITLE_MAX} characters or fewer`),
+		.max(
+			SEO_TITLE_MAX,
+			`Shorten the title to ${SEO_TITLE_MAX} characters or fewer`,
+		),
 	seoDescription: z
 		.string()
 		.max(
 			SEO_DESCRIPTION_MAX,
-			`Description must be ${SEO_DESCRIPTION_MAX} characters or fewer`,
+			`Shorten the description to ${SEO_DESCRIPTION_MAX} characters or fewer`,
 		),
 });
 
@@ -63,7 +66,7 @@ function CharacterCount({ value, max }: { value?: string; max: number }) {
 	return (
 		<span
 			className={cn(
-				"text-xs tabular-nums",
+				"text-caption tabular-nums",
 				// Colour, not a toast: the limit is a fact about the field, not a
 				// failure worth interrupting for.
 				remaining <= 0
@@ -82,7 +85,7 @@ export function SeoSettings({ profile }: SeoSettingsProps) {
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
 			onSuccess: (updated) => {
-				toast.success("Search settings updated");
+				toast.success("Changes saved");
 				// Seeded from the response rather than refetched, since every reader
 				// shares this one cache entry.
 				queryClient.setQueryData(
@@ -208,19 +211,19 @@ export function SeoSettings({ profile }: SeoSettingsProps) {
 
 					return (
 						<div className="rounded-2xl border bg-muted/40 p-4">
-							<p className="font-medium text-muted-foreground text-xs">
+							<p className="font-medium text-caption text-muted-foreground">
 								Search result preview
 							</p>
 							<div className="mt-3 space-y-1">
-								<p className={`truncate text-sm ${SERP_LINK}`}>
+								<p className={`truncate text-body ${SERP_LINK}`}>
 									{DOMAIN_NAME}/{profile.username}
 								</p>
 								<p className={`truncate text-lg leading-snug ${SERP_LINK}`}>
 									{resolvedTitle}
 								</p>
-								<p className="line-clamp-2 text-muted-foreground text-sm leading-relaxed">
+								<p className="line-clamp-2 text-body text-muted-foreground">
 									{seoDescription ||
-										"Nothing to show yet. Add a description to see it here."}
+										"Your bio appears here until you write one."}
 								</p>
 							</div>
 						</div>

@@ -35,7 +35,7 @@ export default function SignInForm({
 					onSuccess: () => {
 						// biome-ignore lint/suspicious/noExplicitAny: Dynamic route handling
 						router.push((callbackUrl || "/dashboard") as any);
-						toast.success("Sign in successful");
+						toast.success("Signed in");
 					},
 					onError: (error) => {
 						toast.error(error.error.message || error.error.statusText);
@@ -51,10 +51,9 @@ export default function SignInForm({
 
 	return (
 		<div className="mx-auto mt-10 w-full max-w-md p-6">
-			<h1 className="mb-2 text-center font-bold text-3xl">Welcome Back</h1>
-			<p className="mb-6 text-center text-muted-foreground text-sm">
-				Welcome back to Zaplink. Please enter your email address and password to
-				continue.
+			<h1 className="mb-2 text-center text-title">Sign in</h1>
+			<p className="mb-6 text-center text-body text-muted-foreground">
+				Use the email and password you signed up with.
 			</p>
 			<form
 				onSubmit={(event) => {
@@ -93,19 +92,15 @@ export default function SignInForm({
 							className="w-full"
 							disabled={!state.canSubmit || state.isSubmitting}
 						>
-							{state.isSubmitting ? "Submitting..." : "Sign In"}
+							{state.isSubmitting ? "Signing in" : "Sign in"}
 						</Button>
 					)}
 				</form.Subscribe>
 			</form>
 
 			<div className="mt-4 text-center">
-				<Button
-					variant="link"
-					onClick={onSwitchToSignUp}
-					className="text-indigo-600 hover:text-indigo-800"
-				>
-					Need an account? Sign Up
+				<Button variant="link" onClick={onSwitchToSignUp}>
+					Need an account? Sign up
 				</Button>
 			</div>
 		</div>

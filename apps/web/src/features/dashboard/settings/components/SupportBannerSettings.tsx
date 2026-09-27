@@ -95,7 +95,7 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 				htmlFor={switchId}
 				className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border p-4 transition-colors duration-150 ease-out hover:bg-muted/60 has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30"
 			>
-				<span className="font-medium text-sm">Show the banner</span>
+				<span className="font-medium text-body">Show a support banner</span>
 				<Switch
 					id={switchId}
 					checked={isEnabled}
@@ -158,10 +158,10 @@ export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
 											/>
 										</span>
 										<span className="min-w-0">
-											<span className="block font-medium text-sm">
+											<span className="block font-medium text-body">
 												{cause.title}
 											</span>
-											<span className="mt-0.5 block text-muted-foreground text-xs leading-relaxed">
+											<span className="mt-0.5 block text-caption text-muted-foreground">
 												{cause.description}
 											</span>
 										</span>

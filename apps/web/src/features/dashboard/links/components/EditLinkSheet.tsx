@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	Globe,
 	Spinner,
 	SquaresFour,
 	Star,
@@ -135,7 +136,7 @@ export function EditLinkSheet({
 			onOpenChange(false);
 		} catch (error) {
 			console.error(error);
-			toast.error("Failed to save changes");
+			toast.error("Could not save your changes. Try again.");
 		} finally {
 			setIsUploading(false);
 		}
@@ -147,9 +148,9 @@ export function EditLinkSheet({
 		<Sheet open={isOpen} onOpenChange={onOpenChange}>
 			<SheetContent className="w-full border-zinc-800 border-l bg-zinc-950 p-0 text-white sm:max-w-md">
 				<SheetHeader className="border-zinc-800 border-b px-6 py-4">
-					<SheetTitle>Edit Link</SheetTitle>
+					<SheetTitle>Edit link</SheetTitle>
 					<SheetDescription>
-						Make changes to your link details.
+						Change how this link appears on your page.
 					</SheetDescription>
 				</SheetHeader>
 
@@ -157,8 +158,8 @@ export function EditLinkSheet({
 					{link.type === "custom" && (
 						<Tabs defaultValue="content" className="w-full">
 							<TabsList className="grid w-full grid-cols-2 bg-zinc-900">
-								<TabsTrigger value="content">Content</TabsTrigger>
-								<TabsTrigger value="display">Display</TabsTrigger>
+								<TabsTrigger value="content">Details</TabsTrigger>
+								<TabsTrigger value="display">Layout</TabsTrigger>
 							</TabsList>
 
 							<TabsContent value="content" className="space-y-4 pt-4">
@@ -182,7 +183,7 @@ export function EditLinkSheet({
 
 							<TabsContent value="display" className="space-y-6 pt-4">
 								<div className="space-y-3">
-									<Label>Display Mode</Label>
+									<Label>Layout</Label>
 									<div className="grid grid-cols-3 gap-3">
 										<button
 											type="button"
@@ -194,8 +195,8 @@ export function EditLinkSheet({
 													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
 											)}
 										>
-											<TextAlignJustify className="h-6 w-6" />
-											<span className="text-xs">Standard</span>
+											<TextAlignJustify aria-hidden className="h-6 w-6" />
+											<span className="text-caption">Standard</span>
 										</button>
 										<button
 											type="button"
@@ -207,8 +208,8 @@ export function EditLinkSheet({
 													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
 											)}
 										>
-											<Star className="h-6 w-6" />
-											<span className="text-xs">Featured</span>
+											<Star aria-hidden className="h-6 w-6" />
+											<span className="text-caption">Featured</span>
 										</button>
 										<button
 											type="button"
@@ -220,8 +221,8 @@ export function EditLinkSheet({
 													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
 											)}
 										>
-											<Spinner className="h-6 w-6" />
-											<span className="text-xs">Spinner</span>
+											<SquaresFour className="h-6 w-6" />
+											<span className="text-caption">Grid</span>
 										</button>
 									</div>
 								</div>
@@ -233,8 +234,8 @@ export function EditLinkSheet({
 										onImageChange={setThumbnailUrl}
 										onFileChange={setThumbnailFile}
 									/>
-									<p className="text-[10px] text-zinc-500">
-										Recommended for Featured and Spinner modes. Max 4MB.
+									<p className="text-caption text-zinc-500">
+										Recommended for featured and grid layouts. Max 4 MB.
 									</p>
 								</div>
 							</TabsContent>
@@ -249,14 +250,14 @@ export function EditLinkSheet({
 									const platform = Object.values(SUPPORT_PLATFORMS).find(
 										(p) => p.name === link.platform?.name,
 									);
-									const Icon = platform?.icon || Spinner;
-									return <Icon className="h-8 w-8 text-zinc-400" />;
+									const Icon = platform?.icon || Globe;
+									return <Icon aria-hidden className="h-8 w-8 text-zinc-400" />;
 								})()}
 								<div>
-									<h3 className="font-medium text-white">
+									<h3 className="font-medium text-body text-white">
 										{link.platform?.name}
 									</h3>
-									<p className="text-xs text-zinc-500">Social Platform</p>
+									<p className="text-caption text-zinc-500">Platform link</p>
 								</div>
 							</div>
 
@@ -308,12 +309,12 @@ export function EditLinkSheet({
 								</div>
 							</div>
 							<div className="space-y-2">
-								<Label>Label (Optional)</Label>
+								<Label>Label (optional)</Label>
 								<Input
 									value={title}
 									onChange={(e) => setTitle(e.target.value)}
 									className="border-zinc-800 bg-zinc-900"
-									placeholder="e.g. Contact Me"
+									placeholder="e.g. Email me"
 								/>
 							</div>
 						</div>
@@ -334,9 +335,9 @@ export function EditLinkSheet({
 						className="bg-white text-black hover:bg-zinc-200"
 					>
 						{isUploading && (
-							<SquaresFour className="mr-2 h-4 w-4 animate-spin" />
+							<Spinner aria-hidden className="mr-2 h-4 w-4 animate-spin" />
 						)}
-						Save Changes
+						Save changes
 					</Button>
 				</SheetFooter>
 			</SheetContent>

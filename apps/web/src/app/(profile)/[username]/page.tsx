@@ -32,7 +32,7 @@ export async function generateMetadata({
 
 	// A notFound() page must not be indexable as somebody else's profile.
 	if (!profile) {
-		return { title: `${APP_NAME} — Page not found` };
+		return { title: `${APP_NAME}: profile not found` };
 	}
 
 	/*
@@ -80,12 +80,13 @@ export default async function PublicProfilePage({
 		return (
 			<div className="flex min-h-screen items-center justify-center bg-background">
 				<div className="text-center">
-					<User className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
-					<h1 className="mb-2 font-bold text-2xl text-foreground">
-						User Not Found
-					</h1>
-					<p className="text-muted-foreground">
-						The profile you're looking for doesn't exist.
+					<User
+						aria-hidden
+						className="mx-auto mb-4 h-16 w-16 text-muted-foreground"
+					/>
+					<h1 className="mb-2 text-foreground text-title">Profile not found</h1>
+					<p className="text-body text-muted-foreground">
+						No profile lives at this address.
 					</p>
 				</div>
 			</div>

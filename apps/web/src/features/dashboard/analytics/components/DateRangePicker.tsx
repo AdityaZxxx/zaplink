@@ -26,11 +26,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 export const DATE_RANGES = [
 	{ label: "Today", value: "today" },
 	{ label: "Yesterday", value: "yesterday" },
-	{ label: "Last 7 Days", value: "last7" },
-	{ label: "Last 30 Days", value: "last30" },
-	{ label: "Last 90 Days", value: "last90" },
-	{ label: "This Week", value: "thisWeek" },
-	{ label: "This Month", value: "thisMonth" },
+	{ label: "Last 7 days", value: "last7" },
+	{ label: "Last 30 days", value: "last30" },
+	{ label: "Last 90 days", value: "last90" },
+	{ label: "This week", value: "thisWeek" },
+	{ label: "This month", value: "thisMonth" },
 ] as const;
 
 export type DateRangeOption = (typeof DATE_RANGES)[number]["value"] | "custom";

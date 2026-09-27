@@ -1,10 +1,16 @@
 import { z } from "zod";
 
-export const emailRule = z.email("Invalid email address");
+/*
+ * Every message names the fix, not the rule that was broken: the reader is
+ * looking at a field, not a spec.
+ */
+export const emailRule = z.email(
+	"Enter an email address, such as you@example.com",
+);
 
 export const passwordRule = z
 	.string()
-	.min(8, "Password must be at least 8 characters");
+	.min(8, "Use a password with at least 8 characters");
 
 export const signInSchema = z.object({
 	email: emailRule,
@@ -12,7 +18,7 @@ export const signInSchema = z.object({
 });
 
 export const signUpSchema = z.object({
-	name: z.string().min(2, "Name must be at least 2 characters"),
+	name: z.string().min(2, "Enter a name with at least 2 characters"),
 	email: emailRule,
 	password: passwordRule,
 });

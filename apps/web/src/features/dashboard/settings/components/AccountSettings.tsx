@@ -27,7 +27,7 @@ export function AccountSettings({ profile }: AccountSettingsProps) {
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
 			onSuccess: (updated) => {
-				toast.success("Account updated");
+				toast.success("Changes saved");
 				// Seeded from the response rather than refetched, since every reader
 				// shares this one cache entry.
 				queryClient.setQueryData(

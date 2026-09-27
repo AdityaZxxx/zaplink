@@ -14,7 +14,7 @@ interface SaveBarProps {
 export function SaveBar({ isDirty, isSubmitting, onReset }: SaveBarProps) {
 	return (
 		<div className="flex items-center justify-between gap-3 border-t pt-4">
-			<p aria-live="polite" className="text-muted-foreground text-xs">
+			<p aria-live="polite" className="text-caption text-muted-foreground">
 				{isDirty ? "Unsaved changes" : null}
 			</p>
 			<div className="flex shrink-0 items-center gap-2">

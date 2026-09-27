@@ -8,6 +8,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useDebounce } from "@/hooks/use-debounce";
+import {
+	BIO_MAX,
+	DISPLAY_NAME_MAX,
+	USERNAME_MAX,
+} from "@/lib/validation/profile";
 import { trpc } from "@/utils/trpc/client";
 import type { OnboardingData } from "../page";
 import { ProfileImageUploader } from "./ProfileImageUploader";
@@ -84,17 +89,20 @@ export const UsernameAndProfileStep = ({
 		const profileSchema = z.object({
 			username: z
 				.string()
-				.min(3, "Username must be at least 3 characters")
-				.max(30, "Username must be 30 characters or less")
-				.regex(
-					/^[a-zA-Z0-9_]+$/,
-					"Username can only contain letters, numbers, and underscores",
-				),
+				.min(3, "Use at least 3 characters for the username")
+				.max(USERNAME_MAX, `Shorten the username to ${USERNAME_MAX} characters`)
+				.regex(/^[a-zA-Z0-9_]+$/, "Use letters, numbers and underscores only"),
 			displayName: z
 				.string()
-				.min(1, "Display name is required")
-				.max(30, "Display name must be 30 characters or less"),
-			bio: z.string().max(80, "Bio must be 80 characters or less").optional(),
+				.min(1, "Enter a display name")
+				.max(
+					DISPLAY_NAME_MAX,
+					`Shorten the display name to ${DISPLAY_NAME_MAX} characters`,
+				),
+			bio: z
+				.string()
+				.max(BIO_MAX, `Shorten the bio to ${BIO_MAX} characters`)
+				.optional(),
 		});
 
 		const result = profileSchema.safeParse({
@@ -135,7 +143,7 @@ export const UsernameAndProfileStep = ({
 								className="h-full w-full object-cover"
 							/>
 						) : (
-							<div className="flex items-center gap-2 font-medium text-sm text-zinc-500">
+							<div className="flex items-center gap-2 font-medium text-body text-zinc-500">
 								<svg
 									aria-hidden="true"
 									width="20"
@@ -151,7 +159,7 @@ export const UsernameAndProfileStep = ({
 									<circle cx="9" cy="9" r="2" />
 									<path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
 								</svg>
-								Tap to add banner
+								Tap to add a banner image
 							</div>
 						)}
 					</div>
@@ -178,37 +186,62 @@ export const UsernameAndProfileStep = ({
 								onImageChange={setAvatarUrl}
 								onFileChange={setAvatarFile}
 								endpoint="avatarUploader"
-								label="Upload"
+								label="Photo"
 								sizeClass="h-24 w-24 rounded-full border-4 border-zinc-950 shadow-xl"
 							/>
 						</div>
 
+						{/*
+						 * Each field keeps a visible label. The borderless, centered
+						 * treatment reads as a profile preview, which is why the
+						 * placeholder cannot be the only thing naming the field: it
+						 * disappears on the first keystroke.
+						 */}
 						{/* Inputs Section */}
 						<div className="w-full space-y-6 text-center">
 							{/* Display Name & Username Group */}
 							<div className="space-y-4">
-								<div className="group relative mx-auto max-w-xs">
+								<div className="mx-auto max-w-xs">
+									<div className="flex items-baseline justify-between gap-2 px-1">
+										<label
+											htmlFor="displayName"
+											className="text-caption text-zinc-500"
+										>
+											Display name
+										</label>
+										<span className="text-caption text-zinc-600 tabular-nums">
+											{displayName.length}/{DISPLAY_NAME_MAX}
+										</span>
+									</div>
 									<Input
 										id="displayName"
-										placeholder="Display Name"
+										placeholder="Your name"
 										value={displayName}
 										onChange={(e) => setDisplayName(e.target.value)}
-										className="h-12 rounded-xl border-transparent bg-transparent text-center font-bold text-xl transition-all placeholder:text-zinc-600 hover:border-zinc-700 hover:bg-zinc-800/50 focus:border-zinc-700 focus:bg-zinc-800/50 focus:ring-0"
-										maxLength={30}
+										className="h-12 rounded-xl border-transparent bg-transparent text-center text-heading transition-all placeholder:text-zinc-600 hover:border-zinc-700 hover:bg-zinc-800/50 focus:border-zinc-700 focus:bg-zinc-800/50 focus:ring-0"
+										maxLength={DISPLAY_NAME_MAX}
 									/>
-									<div className="mt-1 px-1 text-right text-xs text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
-										{displayName.length}/30
-									</div>
 								</div>
 
-								<div className="group relative mx-auto max-w-[200px]">
+								<div className="mx-auto max-w-[200px]">
+									<div className="flex items-baseline justify-between gap-2 px-1">
+										<label
+											htmlFor="username"
+											className="text-caption text-zinc-500"
+										>
+											Username
+										</label>
+										<span className="text-caption text-zinc-600 tabular-nums">
+											{username.length}/{USERNAME_MAX}
+										</span>
+									</div>
 									<div className="relative">
 										<span className="absolute top-1/2 left-3 -translate-y-1/2 font-medium text-zinc-500">
 											@
 										</span>
 										<Input
 											id="username"
-											placeholder="username"
+											placeholder="yourname"
 											value={username}
 											onChange={(e) => {
 												const value = e.target.value;
@@ -218,29 +251,34 @@ export const UsernameAndProfileStep = ({
 												}
 											}}
 											className="h-10 rounded-lg border-transparent bg-transparent pr-8 pl-8 text-center font-medium transition-all placeholder:text-zinc-600 hover:border-zinc-700 hover:bg-zinc-800/50 focus:border-zinc-700 focus:bg-zinc-800/50 focus:ring-0"
-											maxLength={30}
+											maxLength={USERNAME_MAX}
+											aria-describedby="username-status"
 										/>
 									</div>
 									{/* Status message */}
-									<div className="mt-1 px-1 text-center text-xs">
+									<p
+										id="username-status"
+										aria-live="polite"
+										className="mt-1 px-1 text-center text-caption"
+									>
 										{usernameStatus === "checking" && (
 											<span className="text-zinc-500">
-												Checking availability...
+												Checking that name...
 											</span>
 										)}
 										{usernameStatus === "available" && (
 											<span className="text-emerald-500">
-												Username is available!
+												That username is free
 											</span>
 										)}
 										{usernameStatus === "taken" && (
 											<span className="text-red-500">
-												Username is already taken
+												That username is taken. Try another.
 											</span>
 										)}
 										{usernameStatus === "too_short" && username.length > 0 && (
 											<span className="text-zinc-500">
-												At least 3 characters
+												Use at least 3 characters
 											</span>
 										)}
 										{(usernameStatus === "idle" ||
@@ -248,26 +286,31 @@ export const UsernameAndProfileStep = ({
 											(usernameStatus === "too_short" &&
 												username.length === 0)) && (
 											<span className="text-zinc-600">
-												{username.length}/30
+												Letters, numbers and underscores
 											</span>
 										)}
-									</div>
+									</p>
 								</div>
 							</div>
 
 							{/* Bio Section */}
-							<div className="group relative mx-auto max-w-sm">
+							<div className="mx-auto max-w-sm">
+								<div className="flex items-baseline justify-between gap-2 px-1">
+									<label htmlFor="bio" className="text-caption text-zinc-500">
+										Bio
+									</label>
+									<span className="text-caption text-zinc-600 tabular-nums">
+										{bio.length}/{BIO_MAX}
+									</span>
+								</div>
 								<Textarea
 									id="bio"
-									placeholder="Add a bio to your profile..."
+									placeholder="One line about what you make"
 									value={bio}
 									onChange={(e) => setBio(e.target.value)}
-									className="min-h-[80px] resize-none rounded-xl border-transparent bg-transparent text-center text-sm text-zinc-300 transition-all placeholder:text-zinc-600 hover:border-zinc-700 hover:bg-zinc-800/50 focus:border-zinc-700 focus:bg-zinc-800/50 focus:ring-0"
-									maxLength={80}
+									className="min-h-[80px] resize-none rounded-xl border-transparent bg-transparent text-center text-body text-zinc-300 transition-all placeholder:text-zinc-600 hover:border-zinc-700 hover:bg-zinc-800/50 focus:border-zinc-700 focus:bg-zinc-800/50 focus:ring-0"
+									maxLength={BIO_MAX}
 								/>
-								<div className="mt-1 px-1 text-right text-xs text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
-									{bio.length}/80
-								</div>
 							</div>
 
 							<div className="sticky bottom-0 z-50 -mx-6 -mb-8 border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
