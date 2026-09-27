@@ -8,6 +8,7 @@ import {
 	linkCustoms,
 	linkPlatforms,
 	links,
+	sql,
 } from "@zaplink/db";
 import { z } from "zod";
 import { linkColumns } from "../columns";
@@ -287,11 +288,37 @@ export const linksRouter = router({
 				});
 			}
 
-			const updates = input.orderedIds.map((id, index) =>
-				ctx.db.update(links).set({ sortOrder: index }).where(eq(links.id, id)),
+			if (input.orderedIds.length === 0) {
+				return { success: true };
+			}
+
+			/*
+			 * One statement, so the order is never half applied. This used to build an
+			 * UPDATE per id and run them through Promise.all with no transaction, so a
+			 * failure partway left the links with duplicate or missing positions and
+			 * nothing to roll back.
+			 *
+			 * The table and the two identifiers come from the schema rather than being
+			 * written out, so a rename cannot leave this statement quietly matching
+			 * nothing. Both columns of the values list are cast, because an uncast
+			 * parameter in a VALUES list resolves to text and sort_order is an integer.
+			 * An empty list is handled above, since `values` with no rows is a syntax
+			 * error.
+			 */
+			const submitted = sql.join(
+				input.orderedIds.map(
+					(id, index) => sql`(${sql.param(id)}::int, ${sql.param(index)}::int)`,
+				),
+				sql`, `,
 			);
 
-			await Promise.all(updates);
+			await ctx.db.execute(sql`
+			update ${links}
+			set sort_order = submitted.ord
+			from (values ${submitted}) as submitted(link_id, ord)
+			where ${links.id} = submitted.link_id
+				and ${links.profileId} = ${profileId}
+		`);
 
 			return { success: true };
 		}),

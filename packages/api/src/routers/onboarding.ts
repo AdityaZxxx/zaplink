@@ -41,9 +41,7 @@ export const onboardingRouter = router({
 		});
 
 		return {
-			isOnboardingComplete:
-				profile?.onboardingCompletedAt !== null &&
-				profile?.onboardingCompletedAt !== undefined,
+			isOnboardingComplete: profile?.onboardingCompletedAt != null,
 		};
 	}),
 

@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
 import type { LinksData, ProfileData } from "@/types/api";
 import { ContactLink } from "./ContactLink";
-import type { SupportCause } from "./causes";
 import { FeaturedLink } from "./FeaturedLink";
 import { GridLink } from "./GridLink";
 import { SocialIconsRow } from "./SocialIconsRow";
@@ -237,7 +236,7 @@ export default function ProfileCard({
 				</div>
 
 				{/* Support Banner */}
-				<SupportBanner cause={profile.supportBanner as SupportCause} />
+				<SupportBanner cause={profile.supportBanner} />
 			</div>
 		</div>
 	);

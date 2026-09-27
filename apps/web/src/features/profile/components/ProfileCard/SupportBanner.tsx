@@ -3,10 +3,16 @@
 import { CaretDown, CaretUp, Globe } from "@phosphor-icons/react";
 import { cn } from "cn";
 import { useEffect, useState } from "react";
-import { SUPPORT_CAUSES, type SupportCause } from "./causes";
+import type { ProfileData } from "@/types/api";
+import { SUPPORT_CAUSES } from "./causes";
 
+/*
+ * The column type rather than SupportCause, so the caller hands over what the
+ * row holds, null included, and the checks below do the narrowing. Taking the
+ * narrower type meant the caller had to assert the value into it.
+ */
 interface SupportBannerProps {
-	cause: SupportCause;
+	cause: ProfileData["supportBanner"];
 }
 
 export function SupportBanner({ cause }: SupportBannerProps) {
@@ -14,17 +20,19 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
-		if (cause !== "none") {
+		if (cause && cause !== "none") {
 			const timer = setTimeout(() => setIsVisible(true), 500);
 			return () => clearTimeout(timer);
 		}
 	}, [cause]);
 
-	if (cause === "none" || !(cause in SUPPORT_CAUSES)) {
+	// The `in` check is for a value from the database, which the union cannot
+	// vouch for. After it, cause is one of the four real ids.
+	if (!cause || cause === "none" || !(cause in SUPPORT_CAUSES)) {
 		return null;
 	}
 
-	const content = SUPPORT_CAUSES[cause as Exclude<SupportCause, "none">];
+	const content = SUPPORT_CAUSES[cause];
 	const Icon = content.icon;
 
 	return (
