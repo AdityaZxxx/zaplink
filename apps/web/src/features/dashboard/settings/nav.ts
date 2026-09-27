@@ -32,32 +32,42 @@ export type SettingsNavGroup = {
 	items: SettingsNavItem[];
 };
 
+/*
+ * `satisfies` rather than an annotation, so a new id added to the union with
+ * no content here fails the build instead of rendering an undefined section.
+ */
+export const SECTIONS = {
+	account: {
+		id: "account",
+		title: "Account",
+		icon: User,
+		description: "The name and address people use to find and recognize you.",
+	},
+	seo: {
+		id: "seo",
+		title: "Search and SEO",
+		icon: MagnifyingGlass,
+		description:
+			"Control the title and summary search engines show for your profile.",
+	},
+	"support-banner": {
+		id: "support-banner",
+		title: "Support banner",
+		icon: Flag,
+		description: "Show a banner for a cause at the foot of your public page.",
+	},
+} satisfies Record<SettingsSectionId, SettingsNavItem>;
+
+const SECTION_ORDER = [
+	"account",
+	"seo",
+	"support-banner",
+] as const satisfies readonly SettingsSectionId[];
+
 export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
 	{
 		label: "Your profile",
-		items: [
-			{
-				id: "account",
-				title: "Account",
-				icon: User,
-				description:
-					"The name and address people use to find and recognize you.",
-			},
-			{
-				id: "seo",
-				title: "Search and SEO",
-				icon: MagnifyingGlass,
-				description:
-					"Control the title and summary search engines show for your profile.",
-			},
-			{
-				id: "support-banner",
-				title: "Support banner",
-				icon: Flag,
-				description:
-					"Show a banner for a cause at the foot of your public page.",
-			},
-		],
+		items: SECTION_ORDER.map((id) => SECTIONS[id]),
 	},
 ];
 
@@ -82,18 +92,14 @@ export const PLANNED_NAV_GROUP: PlannedNavItem[] = [
 	},
 ];
 
-export const SETTINGS_SECTIONS: SettingsNavItem[] = SETTINGS_NAV_GROUPS.flatMap(
-	(group) => group.items,
+export const SETTINGS_SECTIONS: SettingsNavItem[] = SECTION_ORDER.map(
+	(id) => SECTIONS[id],
 );
 
 export const DEFAULT_SECTION_ID: SettingsSectionId = "account";
 
-export const SECTION_TITLES = Object.fromEntries(
-	SETTINGS_SECTIONS.map((section) => [section.id, section.title]),
-) as Record<SettingsSectionId, string>;
-
 export function isSettingsSectionId(
 	value: unknown,
 ): value is SettingsSectionId {
-	return SETTINGS_SECTIONS.some((section) => section.id === value);
+	return SECTION_ORDER.some((id) => id === value);
 }

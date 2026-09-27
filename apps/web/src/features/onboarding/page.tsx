@@ -83,8 +83,6 @@ export default function OnboardingPage() {
 		},
 	];
 
-	const _progressValue = ((currentStep + 1) / steps.length) * 100;
-
 	const handleNext = () => {
 		if (currentStep < steps.length - 1) {
 			setCurrentStep(currentStep + 1);
@@ -133,10 +131,10 @@ export default function OnboardingPage() {
 				{/* Header */}
 				<div className="mb-8 text-center">
 					<h1 className="mb-2 text-title text-white">
-						{steps[currentStep].title}
+						{steps[currentStep]?.title}
 					</h1>
 					<p className="text-body text-zinc-400">
-						{steps[currentStep].description}
+						{steps[currentStep]?.description}
 					</p>
 				</div>
 

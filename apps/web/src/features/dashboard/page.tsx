@@ -40,10 +40,14 @@ export default function DashboardPage({
 	initialLinks,
 	initialStats,
 }: DashboardPageProps) {
-	const { data: profile } = useQuery({
+	const { data: fetchedProfile } = useQuery({
 		...trpc.profile.getProfile.queryOptions(),
 		initialData: initialProfile,
 	});
+
+	// Null only if the profile is deleted mid-session, where the last row
+	// this page already rendered beats no row at all.
+	const profile = fetchedProfile ?? initialProfile;
 	const { data: links = initialLinks } = useQuery({
 		...trpc.links.getAllLinks.queryOptions(),
 		initialData: initialLinks,

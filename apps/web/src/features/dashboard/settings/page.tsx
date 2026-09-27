@@ -31,7 +31,7 @@ import {
 	DEFAULT_SECTION_ID,
 	isSettingsSectionId,
 	PLANNED_NAV_GROUP,
-	SECTION_TITLES,
+	SECTIONS,
 	SETTINGS_NAV_GROUPS,
 	SETTINGS_SECTIONS,
 	type SettingsSectionId,
@@ -54,10 +54,14 @@ export default function SettingsPage({
 		return isSettingsSectionId(fromHash) ? fromHash : DEFAULT_SECTION_ID;
 	});
 
-	const { data: profile } = useQuery({
+	const { data: fetchedProfile } = useQuery({
 		...trpc.profile.getProfile.queryOptions(),
 		initialData: initialProfile,
 	});
+
+	// Null only if the profile is deleted mid-session, where the last row
+	// this page already rendered beats no row at all.
+	const profile = fetchedProfile ?? initialProfile;
 
 	const { data: links = initialLinks } = useQuery({
 		...trpc.links.getAllLinks.queryOptions(),
@@ -86,9 +90,7 @@ export default function SettingsPage({
 		window.history.pushState(null, "", `#${id}`);
 	}, []);
 
-	const activeSection =
-		SETTINGS_SECTIONS.find((section) => section.id === activeId) ??
-		SETTINGS_SECTIONS[0];
+	const activeSection = SECTIONS[activeId];
 
 	const renderSection = (id: SettingsSectionId) => {
 		switch (id) {
@@ -154,7 +156,7 @@ export default function SettingsPage({
 									 */}
 									<SelectValue>
 										{(value: SettingsSectionId) =>
-											SECTION_TITLES[value] ?? null
+											SECTIONS[value]?.title ?? null
 										}
 									</SelectValue>
 								</SelectTrigger>
