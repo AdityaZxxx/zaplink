@@ -77,7 +77,10 @@ const menuItems: MenuItem[] = [
 
 function SidebarLogo() {
 	return (
-		<div className="flex items-center gap-2 px-2">
+		// No padding of its own. SidebarHeader already supplies it, and adding
+		// px-2 here pushed the tile onto a third leading edge that matched
+		// neither the group label below nor the menu icons.
+		<div className="flex items-center gap-2">
 			<div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
 				<Rabbit
 					weight="fill"
@@ -133,9 +136,15 @@ function MobileMenu() {
 				<span className="sr-only">Toggle Menu</span>
 			</Button>
 			<Drawer open={open} onOpenChange={setOpen}>
-				<DrawerContent className="h-[80vh]">
+				{/*
+				  h-[80vh] pinned the sheet to a fixed height regardless of content,
+				  so it carried a large empty area and would clip if the nav grew.
+				  A max-height lets it size to the items and still cap.
+				*/}
+				<DrawerContent className="h-auto max-h-[80vh]">
 					<DrawerHeader>
-						<DrawerTitle>Navigation Menu</DrawerTitle>
+						{/* Same word the desktop group label uses for this region. */}
+						<DrawerTitle>Navigation</DrawerTitle>
 					</DrawerHeader>
 					<div className="flex flex-col gap-2 p-4">
 						{menuItems.map((item) => {
@@ -225,6 +234,14 @@ export function DashboardSidebar({
 					</div>
 					<div className="flex-1" />
 					<div className="flex items-center gap-4">
+						{/*
+						  Bare <Link><Icon/></Link> gave these a 23px target in a
+						  row whose other controls are 32-36px, with no background,
+						  no focus ring and no accessible name. buttonVariants puts
+						  them in the same control zone as everything else. The link
+						  is styled rather than wrapped in Button, because Button
+						  would put role="button" on a navigation link.
+						*/}
 						<Link
 							href="/dashboard/notifications"
 							aria-label="Notifications"
