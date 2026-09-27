@@ -1,17 +1,8 @@
-import type { links } from "@zaplink/db";
 import Image from "next/image";
-
-type Link = typeof links.$inferSelect & {
-	custom?: {
-		displayMode: "standard" | "featured" | "grid" | null;
-		title: string | null;
-		iconUrl: string | null;
-		thumbnailUrl: string | null;
-	} | null;
-};
+import type { ProfileLink } from "@/types/api";
 
 interface FeaturedLinkProps {
-	link: Link;
+	link: ProfileLink;
 	onClick?: () => void;
 }
 

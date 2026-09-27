@@ -18,6 +18,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ProfileCard } from "@/features/profile/components";
+import type { LinksData, ProfileData } from "@/types/api";
 import { trpc } from "@/utils/trpc/client";
 import PageWithPreview from "../components/PageWithPreview";
 import { AccountSettings } from "./components/AccountSettings";
@@ -32,7 +33,6 @@ import {
 	SETTINGS_SECTIONS,
 	type SettingsSectionId,
 } from "./nav";
-import type { LinksData, ProfileData } from "./types";
 
 interface SettingsPageProps {
 	initialProfile: ProfileData;
@@ -121,9 +121,7 @@ export default function SettingsPage({
 			contentClassName="max-w-3xl"
 			preview={
 				<ProfileCard
-					// @ts-expect-error - Date vs string mismatch from API
 					profile={profile}
-					// @ts-expect-error - Date vs string mismatch from API
 					links={links}
 					className="h-full max-w-none rounded-none border-none shadow-none ring-0"
 				/>

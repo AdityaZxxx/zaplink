@@ -20,7 +20,6 @@ import {
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,8 +45,9 @@ export interface AddLinkData {
 }
 
 import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import type { PlatformInfo } from "@/lib/constants/SUPPORT_PLATFORMS";
 import { useUploadThing } from "@/utils/uploadthing";
-import { ScrollArea } from "../../../../components/ui/scroll-area";
 import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
 interface AddLinkDialogProps {
@@ -171,7 +171,7 @@ export function AddLinkDialog({
 		}
 	};
 
-	const handlePlatformSelect = (platform: any) => {
+	const handlePlatformSelect = (platform: PlatformInfo) => {
 		onAddLink({
 			title: platform.name,
 			url: platform.baseUrl,
@@ -182,11 +182,15 @@ export function AddLinkDialog({
 	};
 
 	return (
+		/*
+		 * No DialogTrigger. This dialog is opened by the per-section "Add
+		 * social", "Add block" and "Add contact" buttons, each of which sets the
+		 * tab it should open on. The trigger this used to render was a fourth,
+		 * unlabelled entry point that appeared in normal flow at the very bottom
+		 * of the page, styled as a default button while the three real ones were
+		 * outlines.
+		 */
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
-			<DialogTrigger render={<Button />}>
-				<SquaresFour className="mr-2 h-4 w-4" />
-				Add Link
-			</DialogTrigger>
 			<DialogContent className="sm:max-w-[600px]">
 				<DialogHeader>
 					<DialogTitle>Add New Link</DialogTitle>

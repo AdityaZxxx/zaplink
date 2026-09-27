@@ -18,8 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { DOMAIN_NAME } from "@/lib/constants/BRANDS";
+import type { ProfileData } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
-import type { ProfileData } from "../types";
 import { SettingsSaveBar } from "./SettingsSaveBar";
 
 /*

@@ -2,82 +2,59 @@
 
 import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { Spinner } from "@phosphor-icons/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type {
-	linkContacts,
-	linkCustoms,
-	linkPlatforms,
-	links,
-} from "@zaplink/db";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { ProfileCard } from "@/features/profile/components";
+import type { LinksData, ProfileData, ProfileLink } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import PageWithPreview from "../components/PageWithPreview";
-import { AddLinkDialog } from "./components/AddLinkDialog";
+import { type AddLinkData, AddLinkDialog } from "./components/AddLinkDialog";
 import { ContactManager } from "./components/ContactManager";
 import { ContentLinksManager } from "./components/ContentLinksManager";
-import { EditLinkSheet } from "./components/EditLinkSheet";
+import { EditLinkSheet, type LinkUpdate } from "./components/EditLinkSheet";
 import { SocialsManager } from "./components/SocialsManager";
 
-type Link = typeof links.$inferSelect & {
-	platform?: typeof linkPlatforms.$inferSelect | null;
-	custom?: typeof linkCustoms.$inferSelect | null;
-	contact?: typeof linkContacts.$inferSelect | null;
-};
+export type AddLinkType = "custom" | "platform" | "contact";
 
-export default function LinksPage() {
-	const router = useRouter();
-	const [localLinks, setLocalLinks] = useState<Link[]>([]);
+const linksQueryKey = trpc.links.getAllLinks.queryOptions().queryKey;
+
+interface LinksPageProps {
+	initialProfile: ProfileData;
+	initialLinks: LinksData;
+}
+
+export default function LinksPage({
+	initialProfile,
+	initialLinks,
+}: LinksPageProps) {
 	const [isAddOpen, setIsAddOpen] = useState(false);
-	const [editingLink, setEditingLink] = useState<Link | null>(null);
-	const [addLinkType, setAddLinkType] = useState<
-		"custom" | "platform" | "contact"
-	>("custom");
+	const [editingLink, setEditingLink] = useState<ProfileLink | null>(null);
+	const [addLinkType, setAddLinkType] = useState<AddLinkType>("custom");
 
-	const { data: profile, isLoading: isLoadingProfile } = useQuery(
-		trpc.profile.getProfile.queryOptions(),
-	);
-
-	const { data: fetchedLinks, isLoading: isLoadingLinks } = useQuery(
-		trpc.links.getAllLinks.queryOptions(),
-	);
-
-	// Sync local state with fetched links
-	useEffect(() => {
-		if (fetchedLinks) {
-			setLocalLinks(
-				fetchedLinks.map((link) => ({
-					...link,
-					createdAt: new Date(link.createdAt),
-					updatedAt: new Date(link.updatedAt),
-				})) as Link[],
-			);
-		}
-	}, [fetchedLinks]);
-
-	useEffect(() => {
-		if (!isLoadingProfile && !profile) {
-			router.push("/onboarding");
-		}
-	}, [profile, isLoadingProfile, router]);
+	/*
+	 * Seeded from the server render, which is what removed the local mirror of
+	 * the query. That mirror re-created every link on each refetch and had to
+	 * convert its timestamps back with `new Date(...)`, so two representations
+	 * of the same rows existed at once and the row identity churned on every
+	 * poll.
+	 */
+	const { data: profile } = useQuery({
+		...trpc.profile.getProfile.queryOptions(),
+		initialData: initialProfile,
+	});
+	const { data: links = initialLinks } = useQuery({
+		...trpc.links.getAllLinks.queryOptions(),
+		initialData: initialLinks,
+	});
 
 	const createLinkMutation = useMutation(
 		trpc.links.createLink.mutationOptions({
-			onSuccess: (newLink) => {
-				if (!newLink) return;
-				setLocalLinks((prev) => [
-					...prev,
-					{
-						...newLink,
-						createdAt: new Date(newLink.createdAt),
-						updatedAt: new Date(newLink.updatedAt),
-					} as Link,
-				]);
+			onSuccess: () => {
 				setIsAddOpen(false);
 				toast.success("Link created");
+			},
+			onSettled: () => {
 				queryClient.invalidateQueries(trpc.links.getAllLinks.queryOptions());
 			},
 		}),
@@ -85,7 +62,34 @@ export default function LinksPage() {
 
 	const updateLinkMutation = useMutation(
 		trpc.links.updateLink.mutationOptions({
-			onSuccess: () => {
+			/*
+			 * Patched into the cache rather than into a local mirror of the list.
+			 * The switch and the phone preview both read this one entry, so a
+			 * visibility toggle moved both on the first frame. Waiting for the
+			 * round trip left the switch showing the old state for seconds after
+			 * the click, which read as the control ignoring you.
+			 *
+			 * Only the real columns land optimistically. displayMode and
+			 * thumbnailUrl sit under `custom` on the row rather than at the top
+			 * level, so those arrive with the refetch that onSettled triggers.
+			 */
+			onMutate: async (next) => {
+				await queryClient.cancelQueries({ queryKey: linksQueryKey });
+				const previous = queryClient.getQueryData(linksQueryKey);
+				queryClient.setQueryData(linksQueryKey, (current) =>
+					current?.map((link) =>
+						link.id === next.id ? { ...link, ...next } : link,
+					),
+				);
+				return { previous };
+			},
+			onError: (error, _variables, context) => {
+				toast.error(error.message);
+				if (context?.previous) {
+					queryClient.setQueryData(linksQueryKey, context.previous);
+				}
+			},
+			onSettled: () => {
 				queryClient.invalidateQueries(trpc.links.getAllLinks.queryOptions());
 			},
 		}),
@@ -93,136 +97,96 @@ export default function LinksPage() {
 
 	const deleteLinkMutation = useMutation(
 		trpc.links.deleteLink.mutationOptions({
-			onSuccess: (deletedLink) => {
-				setLocalLinks((prev) => prev.filter((l) => l.id !== deletedLink.id));
+			onSuccess: () => {
 				toast.success("Link deleted");
+			},
+			onSettled: () => {
 				queryClient.invalidateQueries(trpc.links.getAllLinks.queryOptions());
 			},
 		}),
 	);
 
 	const reorderLinksMutation = useMutation(
-		trpc.links.updateLinksOrder.mutationOptions({
-			onSuccess: () => {
-				// Silent success
-			},
-		}),
+		trpc.links.updateLinksOrder.mutationOptions(),
 	);
 
-	// Handlers
-	const handleDragEnd = (event: DragEndEvent, items: Link[]) => {
+	function handleDragEnd(event: DragEndEvent, items: ProfileLink[]) {
 		const { active, over } = event;
+		if (!over || active.id === over.id) return;
 
-		if (over && active.id !== over.id) {
-			const oldIndex = items.findIndex((item) => item.id === active.id);
-			const newIndex = items.findIndex((item) => item.id === over.id);
-			const newOrderedItems = arrayMove(items, oldIndex, newIndex);
+		const oldIndex = items.findIndex((item) => item.id === active.id);
+		const newIndex = items.findIndex((item) => item.id === over.id);
+		const reordered = arrayMove(items, oldIndex, newIndex);
 
-			// Update local state
-			setLocalLinks((prev) => {
-				const otherLinks = prev.filter(
-					(l) => !items.find((i) => i.id === l.id),
-				);
-				return [...otherLinks, ...newOrderedItems];
-			});
-
-			// Sync with server (only for this zone)
-			reorderLinksMutation.mutate({
-				orderedIds: newOrderedItems.map((item) => item.id),
-			});
-		}
-	};
-
-	const handleUpdate = (id: number, data: Partial<Link>) => {
-		// Optimistic update
-		setLocalLinks((prev) =>
-			prev.map((l) => (l.id === id ? { ...l, ...data } : l)),
-		);
-		updateLinkMutation.mutate({ id, ...data });
-	};
-
-	const handleDelete = (id: number) => {
-		deleteLinkMutation.mutate({ id });
-	};
-
-	const handleAddLink = (data: any) => {
-		createLinkMutation.mutate({
-			title: data.title,
-			url: data.url,
-			type: data.type,
-			platformName: data.platformName,
-			displayMode: data.displayMode,
-			thumbnailUrl: data.thumbnailUrl,
-			contactType: data.contactType,
-			contactValue: data.contactValue,
-		} as any);
-	};
-
-	const openAddDialog = (type: "custom" | "platform" | "contact") => {
-		setAddLinkType(type);
-		setIsAddOpen(true);
-	};
-
-	// Filter Links for Zones
-	const socialLinks = localLinks.filter(
-		(l) => l.type === "platform" && l.platform?.category === "social",
-	);
-	const contactLinks = localLinks.filter((l) => l.type === "contact");
-	const contentLinks = localLinks.filter(
-		(l) => !socialLinks.includes(l) && !contactLinks.includes(l),
-	);
-
-	if (isLoadingProfile || isLoadingLinks) {
-		return (
-			<div className="flex h-screen w-full items-center justify-center">
-				<Spinner className="h-8 w-8 animate-spin text-primary" />
-			</div>
-		);
+		reorderLinksMutation.mutate({
+			orderedIds: reordered.map((item) => item.id),
+		});
 	}
 
-	if (!profile) return null;
+	function handleUpdate(id: number, data: Partial<ProfileLink> | LinkUpdate) {
+		updateLinkMutation.mutate({ id, ...data });
+	}
+
+	function handleAddLink(data: AddLinkData) {
+		createLinkMutation.mutate(data);
+	}
+
+	function openAddDialog(type: AddLinkType) {
+		setAddLinkType(type);
+		setIsAddOpen(true);
+	}
+
+	// Filter links for zones
+	const socialLinks = links.filter(
+		(link) => link.type === "platform" && link.platform?.category === "social",
+	);
+	const contactLinks = links.filter((link) => link.type === "contact");
+	const contentLinks = links.filter(
+		(link) => link.type !== "contact" && !socialLinks.includes(link),
+	);
 
 	return (
 		<PageWithPreview
 			preview={
 				<ProfileCard
-					profile={profile as any}
-					links={localLinks.filter((l) => !l.isHidden)}
+					profile={profile}
+					links={links.filter((link) => !link.isHidden)}
 					className="h-full max-w-none rounded-none border-none shadow-none ring-0"
 				/>
 			}
 		>
-			<div className="space-y-8 pb-20">
-				<div>
+			{/* pb-20, not pb-20 alone at every width: the preview button is
+			    hidden at lg, so the reserved space is only needed below it. */}
+			<div className="space-y-6 pb-20 lg:space-y-8 lg:pb-0">
+				<div className="space-y-1">
 					<h1 className="font-bold text-3xl tracking-tight">Links</h1>
-					<p className="text-muted-foreground">Manage your profile content.</p>
+					<p className="text-muted-foreground">
+						Everything on your public profile, grouped by where it appears.
+					</p>
 				</div>
 
-				{/* Zone A: Header (Socials) */}
 				<SocialsManager
 					links={socialLinks}
-					onDragEnd={(e) => handleDragEnd(e, socialLinks)}
+					onDragEnd={(event) => handleDragEnd(event, socialLinks)}
 					onAdd={() => openAddDialog("platform")}
-					onEdit={(link) => setEditingLink(link)}
-					onDelete={handleDelete}
+					onEdit={setEditingLink}
+					onDelete={(id) => deleteLinkMutation.mutate({ id })}
 				/>
 
-				{/* Zone B: Body (Content) */}
 				<ContentLinksManager
 					links={contentLinks}
-					onDragEnd={(e) => handleDragEnd(e, contentLinks)}
+					onDragEnd={(event) => handleDragEnd(event, contentLinks)}
 					onAdd={() => openAddDialog("custom")}
-					onEdit={(link) => setEditingLink(link)}
+					onEdit={setEditingLink}
 					onUpdate={handleUpdate}
-					onDelete={handleDelete}
+					onDelete={(id) => deleteLinkMutation.mutate({ id })}
 				/>
 
-				{/* Zone C: Footer (Contact) */}
 				<ContactManager
 					links={contactLinks}
 					onAdd={() => openAddDialog("contact")}
-					onEdit={(link) => setEditingLink(link)}
-					onDelete={handleDelete}
+					onEdit={setEditingLink}
+					onDelete={(id) => deleteLinkMutation.mutate({ id })}
 				/>
 
 				<AddLinkDialog

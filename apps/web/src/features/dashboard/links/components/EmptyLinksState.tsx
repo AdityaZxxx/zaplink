@@ -1,11 +1,21 @@
-import { CursorClick } from "@phosphor-icons/react/ssr";
+"use client";
+
+import { CursorClick } from "@phosphor-icons/react";
 
 export function EmptyLinksState() {
 	return (
-		<div className="flex h-32 flex-col items-center justify-center rounded-xl border border-dashed text-center text-muted-foreground">
-			<CursorClick className="mb-2 h-8 w-8 text-muted-foreground/30" />
-			<p>No links yet.</p>
-			<p className="text-sm">Click "Add Link" to get started.</p>
+		<div className="flex flex-col items-center justify-center rounded-2xl border border-border border-dashed px-6 py-10 text-center">
+			<span className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+				<CursorClick aria-hidden className="size-5" />
+			</span>
+			{/*
+			 * The lead line was text-sm and the follow-up was the default size,
+			 * so the less important sentence was set larger than the heading.
+			 */}
+			<p className="mt-3 font-medium text-sm">No links yet</p>
+			<p className="mt-1 max-w-[40ch] text-muted-foreground text-sm">
+				Add a block and it will appear here and on your public profile.
+			</p>
 		</div>
 	);
 }

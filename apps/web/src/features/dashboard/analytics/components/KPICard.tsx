@@ -16,6 +16,12 @@ interface KPICardProps {
 	subtitle: string;
 	icon: React.ReactNode;
 	change?: number;
+	/**
+	 * For laying the tile out in a grid. The dashboard puts its third tile on a
+	 * row of its own below md, and the tile has to be able to take that span
+	 * itself, since a wrapper div would break the grid item.
+	 */
+	className?: string;
 }
 
 /**
@@ -60,9 +66,10 @@ export function KPICard({
 	subtitle,
 	icon,
 	change,
+	className,
 }: KPICardProps) {
 	return (
-		<Card>
+		<Card className={className}>
 			{/*
 			 * CardHeader already switches to a two-column grid when a CardAction
 			 * is present, so the icon is placed there instead of overriding the

@@ -1,16 +1,8 @@
-import type { links } from "@zaplink/db";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-
-type Link = typeof links.$inferSelect & {
-	platform?: {
-		name: string;
-		category: string | null;
-		iconUrl: string | null;
-	} | null;
-};
+import type { ProfileLink } from "@/types/api";
 
 interface SocialIconsRowProps {
-	links: Link[];
+	links: ProfileLink[];
 	onLinkClick?: (linkId: number) => void;
 }
 

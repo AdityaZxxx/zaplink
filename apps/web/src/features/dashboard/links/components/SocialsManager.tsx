@@ -16,21 +16,17 @@ import {
 	useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Plus } from "@phosphor-icons/react";
-import type { linkPlatforms, links } from "@zaplink/db";
+import { Trash } from "@phosphor-icons/react";
 import { cn } from "cn";
-import { Button } from "@/components/ui/button";
-import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-
-type Link = typeof links.$inferSelect & {
-	platform?: typeof linkPlatforms.$inferSelect | null;
-};
+import type { ProfileLink } from "@/types/api";
+import { iconForLink } from "../lib/linkIcon";
+import { LinksSection } from "./LinksSection";
 
 interface SocialsManagerProps {
-	links: Link[];
+	links: ProfileLink[];
 	onDragEnd: (event: DragEndEvent) => void;
 	onAdd: () => void;
-	onEdit: (link: Link) => void;
+	onEdit: (link: ProfileLink) => void;
 	onDelete: (id: number) => void;
 }
 
@@ -39,9 +35,9 @@ function SocialItem({
 	onEdit,
 	onDelete,
 }: {
-	link: Link;
+	link: ProfileLink;
 	onEdit: () => void;
-	onDelete: (id: number) => void;
+	onDelete: () => void;
 }) {
 	const {
 		attributes,
@@ -58,53 +54,65 @@ function SocialItem({
 		zIndex: isDragging ? 50 : "auto",
 	};
 
-	const platform = Object.values(SUPPORT_PLATFORMS).find(
-		(p) => p.name === link.platform?.name,
-	);
-	const Icon = platform?.icon;
+	const Icon = iconForLink(link);
 
 	return (
-		// biome-ignore lint/a11y: cannot use button because of nested interactive elements
-		<div
-			ref={setNodeRef}
-			style={style}
-			className={cn(
-				"group relative flex h-14 w-14 cursor-pointer flex-col items-center justify-center rounded-xl border border-border bg-card/50 transition-all hover:border-border/70 hover:bg-card",
-				isDragging && "scale-110 border-primary bg-card shadow-xl",
-			)}
-			{...attributes}
-			{...listeners}
-			onClick={onEdit}
-			role="button"
-			tabIndex={0}
-			onKeyDown={(e) => {
-				if (e.key === "Enter" || e.key === " ") {
-					onEdit();
-				}
-			}}
-		>
-			{Icon && (
-				<Icon className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-foreground" />
-			)}
-
-			{/* Delete Badge */}
-			<button
-				type="button"
-				tabIndex={0}
-				onClick={(e) => {
-					e.stopPropagation();
-					onDelete(link.id);
-				}}
+		/*
+		 * The frame is a div with role="button" because it carries dnd-kit's
+		 * drag listeners, and the KeyboardSensor claims Enter and Space to
+		 * start a drag. A native button would activate on those same keys and
+		 * open the editor at the same time as a drag began. The delete control
+		 * is a sibling rather than a child for the same reason a nested button
+		 * would be illegal, so the two actions are separate tab stops.
+		 *
+		 * The delete affordance was a 24px circle of a bold "×" sitting half
+		 * outside the tile. It is now a real ghost button parked in the corner,
+		 * revealed on hover and on focus rather than always drawn.
+		 */
+		<div className="group/item relative">
+			{/* biome-ignore lint/a11y/useSemanticElements: a native button would activate on the same keys the dnd-kit KeyboardSensor uses to start a drag. */}
+			<div
+				ref={setNodeRef}
+				style={style}
+				className={cn(
+					"relative flex size-14 cursor-pointer flex-col items-center justify-center rounded-2xl border border-border bg-card transition-[border-color,background-color,box-shadow] duration-150 ease-out hover:border-ring/40 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30",
+					isDragging && "z-50 scale-105 border-ring bg-card shadow-lg",
+				)}
+				{...attributes}
+				{...listeners}
+				onClick={onEdit}
 				onKeyDown={(e) => {
 					if (e.key === "Enter" || e.key === " ") {
-						e.stopPropagation();
-						onDelete(link.id);
+						e.preventDefault();
+						onEdit();
 					}
 				}}
-				className="absolute -top-2 -right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm transition-colors hover:bg-destructive hover:text-destructive-foreground"
-				aria-label="Delete social link"
+				role="button"
+				tabIndex={0}
+				aria-label={`Edit ${link.title}`}
 			>
-				<span className="font-bold text-xs">×</span>
+				<Icon
+					aria-hidden
+					className="size-6 text-muted-foreground transition-colors duration-150 ease-out group-hover/item:text-foreground"
+				/>
+			</div>
+
+			{/*
+			 * `group/item` is on the wrapper, not the tile, so hovering either
+			 * one reveals this. It is also permanently visible below md, because
+			 * a hover-only control is one a touch device cannot see, and opacity
+			 * leaves it in the tap order, so it would be tappable while invisible.
+			 */}
+			<button
+				type="button"
+				onClick={(e) => {
+					e.stopPropagation();
+					onDelete();
+				}}
+				className="absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground opacity-100 shadow-sm transition-[opacity,color,background-color] duration-150 ease-out hover:bg-destructive hover:text-destructive-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/30 md:opacity-0 md:group-hover/item:opacity-100"
+				aria-label={`Delete ${link.title}`}
+			>
+				<Trash aria-hidden className="size-3" />
 			</button>
 		</div>
 	);
@@ -133,48 +141,39 @@ export function SocialsManager({
 	);
 
 	return (
-		<div className="rounded-2xl border border-border bg-card/50 p-6">
-			<div className="mb-4 flex items-center justify-between">
-				<div>
-					<h3 className="font-semibold text-foreground text-lg">
-						Social Icons
-					</h3>
-					<p className="text-muted-foreground text-sm">
-						Displayed in the header of your profile.
-					</p>
-				</div>
-				<Button onClick={onAdd} size="sm" variant="outline" className="gap-2">
-					<Plus className="h-4 w-4" />{" "}
-					<span className="hidden md:inline">Add Social</span>
-				</Button>
-			</div>
-
+		<LinksSection
+			title="Social icons"
+			description="Shown in the header of your profile."
+			actionLabel="Add social"
+			onAdd={onAdd}
+		>
 			<DndContext
 				sensors={sensors}
 				collisionDetection={closestCenter}
 				onDragEnd={onDragEnd}
 			>
 				<SortableContext
-					items={links.map((l) => l.id)}
+					items={links.map((link) => link.id)}
 					strategy={horizontalListSortingStrategy}
 				>
-					<div className="flex flex-wrap gap-3">
-						{links.map((link) => (
-							<SocialItem
-								key={link.id}
-								link={link}
-								onEdit={() => onEdit(link)}
-								onDelete={onDelete}
-							/>
-						))}
-						{links.length === 0 && (
-							<div className="flex h-14 w-full items-center justify-center rounded-xl border border-border border-dashed text-muted-foreground text-sm">
-								No social icons added
-							</div>
-						)}
-					</div>
+					{links.length === 0 ? (
+						<p className="rounded-2xl border border-border border-dashed px-4 py-6 text-center text-muted-foreground text-sm">
+							No social icons yet. Add one to appear under your name.
+						</p>
+					) : (
+						<div className="flex flex-wrap gap-3">
+							{links.map((link) => (
+								<SocialItem
+									key={link.id}
+									link={link}
+									onEdit={() => onEdit(link)}
+									onDelete={() => onDelete(link.id)}
+								/>
+							))}
+						</div>
+					)}
 				</SortableContext>
 			</DndContext>
-		</div>
+		</LinksSection>
 	);
 }

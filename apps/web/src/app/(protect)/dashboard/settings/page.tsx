@@ -1,9 +1,6 @@
 import { redirect } from "next/navigation";
 import SettingsPage from "@/features/dashboard/settings/page";
-import type {
-	LinksData,
-	ProfileData,
-} from "@/features/dashboard/settings/types";
+import type { LinksData, ProfileData } from "@/types/api";
 import { trpcServer } from "@/utils/trpc/server";
 
 export default async function Page() {

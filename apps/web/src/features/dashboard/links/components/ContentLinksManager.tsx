@@ -14,29 +14,17 @@ import {
 	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Plus } from "@phosphor-icons/react";
-import type {
-	linkContacts,
-	linkCustoms,
-	linkPlatforms,
-	links,
-} from "@zaplink/db";
-import { Button } from "@/components/ui/button";
+import type { ProfileLink } from "@/types/api";
 import { EmptyLinksState } from "./EmptyLinksState";
 import LinkItem from "./LinkItem";
-
-type Link = typeof links.$inferSelect & {
-	platform?: typeof linkPlatforms.$inferSelect | null;
-	custom?: typeof linkCustoms.$inferSelect | null;
-	contact?: typeof linkContacts.$inferSelect | null;
-};
+import { LinksSection } from "./LinksSection";
 
 interface ContentLinksManagerProps {
-	links: Link[];
+	links: ProfileLink[];
 	onDragEnd: (event: DragEndEvent) => void;
-	onUpdate: (id: number, data: Partial<Link>) => void;
+	onUpdate: (id: number, data: Partial<ProfileLink>) => void;
 	onDelete: (id: number) => void;
-	onEdit: (link: Link) => void;
+	onEdit: (link: ProfileLink) => void;
 	onAdd: () => void;
 }
 
@@ -56,36 +44,27 @@ export function ContentLinksManager({
 	);
 
 	return (
-		<div className="rounded-2xl border border-border bg-card/50 p-6">
-			<div className="mb-4 flex items-center justify-between">
-				<div>
-					<h3 className="font-semibold text-foreground text-lg">
-						Content Blocks
-					</h3>
-					<p className="text-muted-foreground text-sm">
-						Your main links, grids, and featured items.
-					</p>
-				</div>
-				<Button
-					onClick={onAdd}
-					size="sm"
-					className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-				>
-					<Plus className="h-4 w-4" />{" "}
-					<span className="hidden md:inline">Add Block</span>
-				</Button>
-			</div>
-
+		<LinksSection
+			title="Content blocks"
+			description="Your main links, grids and featured items."
+			actionLabel="Add block"
+			onAdd={onAdd}
+		>
 			<DndContext
 				sensors={sensors}
 				collisionDetection={closestCenter}
 				onDragEnd={onDragEnd}
 			>
 				<SortableContext
-					items={links.map((l) => l.id)}
+					items={links.map((link) => link.id)}
 					strategy={verticalListSortingStrategy}
 				>
-					<div className="space-y-3">
+					{/*
+					 * The gap lives here only. LinkItem also carried an mb-3, so
+					 * every row was separated by 24px: 12 from the list and 12
+					 * from the item that was already in a spaced list.
+					 */}
+					<div className="grid gap-3">
 						{links.map((link) => (
 							<LinkItem
 								key={link.id}
@@ -99,6 +78,6 @@ export function ContentLinksManager({
 					</div>
 				</SortableContext>
 			</DndContext>
-		</div>
+		</LinksSection>
 	);
 }

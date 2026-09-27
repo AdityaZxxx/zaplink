@@ -1,12 +1,8 @@
 import { AddressBook, Envelope, Globe, Phone } from "@phosphor-icons/react/ssr";
-import type { links } from "@zaplink/db";
-
-type Link = typeof links.$inferSelect & {
-	contact?: { type: string; value: string } | null;
-};
+import type { ProfileLink } from "@/types/api";
 
 interface ContactLinkProps {
-	links: Link[];
+	links: ProfileLink[];
 	onLinkClick?: (linkId: number) => void;
 }
 

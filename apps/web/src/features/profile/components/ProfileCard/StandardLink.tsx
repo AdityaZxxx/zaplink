@@ -1,23 +1,9 @@
 import { LinkSimple } from "@phosphor-icons/react/ssr";
-import type { links } from "@zaplink/db";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-
-type Link = typeof links.$inferSelect & {
-	platform?: {
-		name: string;
-		category: string | null;
-		iconUrl: string | null;
-	} | null;
-	custom?: {
-		displayMode: "standard" | "featured" | "grid" | null;
-		title: string | null;
-		iconUrl: string | null;
-		thumbnailUrl: string | null;
-	} | null;
-};
+import type { ProfileLink } from "@/types/api";
 
 interface StandardLinkProps {
-	link: Link;
+	link: ProfileLink;
 	onClick?: () => void;
 }
 

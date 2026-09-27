@@ -2,27 +2,35 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import type { links, profiles } from "@zaplink/db";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import PageWithPreview from "@/features/dashboard/components/PageWithPreview";
 import { ProfileCard } from "@/features/profile/components";
+import type { LinksData, ProfileData } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
 import ProfileForm, { type ProfileFormValues } from "./ProfileForm";
 
-type Profile = typeof profiles.$inferSelect;
-type Link = typeof links.$inferSelect;
-
 interface ProfilePageClientProps {
-	initialProfile: Profile;
-	initialLinks: Link[];
+	initialProfile: ProfileData;
+	initialLinks: LinksData;
 }
 
+/*
+ * The two forms that write the profile row. Kept identical to the account form
+ * in Settings so the same field cannot end up with two different rules; see
+ * ./ProfileForm for the limits, which come from the column widths.
+ */
 const profileSchema = z.object({
-	displayName: z.string().min(1, "Display name is required").max(50),
-	username: z.string().min(3, "Username must be at least 3 characters").max(30),
-	bio: z.string().max(160).optional(),
+	displayName: z
+		.string()
+		.min(1, "Display name is required")
+		.max(30, "Display name must be 30 characters or fewer"),
+	username: z
+		.string()
+		.min(3, "Username must be at least 3 characters")
+		.max(30, "Username must be 30 characters or fewer"),
+	bio: z.string().max(160, "Bio must be 160 characters or fewer").optional(),
 	avatarUrl: z.string().optional(),
 	bannerUrl: z.string().optional(),
 });
@@ -33,11 +41,15 @@ export default function ProfilePageClient({
 }: ProfilePageClientProps) {
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
-			onSuccess: () => {
-				toast.success("Profile updated successfully");
-				queryClient.invalidateQueries({
-					queryKey: ["profile"],
-				});
+			onSuccess: (updated) => {
+				toast.success("Profile updated");
+				// Seed the cache from the response instead of refetching: the
+				// procedure returns the row it just wrote, and the live preview
+				// reads from this same entry.
+				queryClient.setQueryData(
+					trpc.profile.getProfile.queryOptions().queryKey,
+					updated,
+				);
 			},
 			onError: (error) => {
 				toast.error(error.message);
@@ -48,11 +60,11 @@ export default function ProfilePageClient({
 	const form = useForm<ProfileFormValues>({
 		resolver: zodResolver(profileSchema),
 		defaultValues: {
-			displayName: initialProfile.displayName || "",
-			username: initialProfile.username || "",
-			bio: initialProfile.bio || "",
-			avatarUrl: initialProfile.avatarUrl || "",
-			bannerUrl: initialProfile.bannerUrl || "",
+			displayName: initialProfile.displayName ?? "",
+			username: initialProfile.username ?? "",
+			bio: initialProfile.bio ?? "",
+			avatarUrl: initialProfile.avatarUrl ?? "",
+			bannerUrl: initialProfile.bannerUrl ?? "",
 		},
 	});
 
@@ -81,10 +93,10 @@ export default function ProfilePageClient({
 			}
 		>
 			<div className="space-y-6">
-				<div>
+				<div className="space-y-1">
 					<h1 className="font-bold text-3xl tracking-tight">Profile</h1>
 					<p className="text-muted-foreground">
-						Manage your public profile information.
+						How you look and what you say on your public page.
 					</p>
 				</div>
 

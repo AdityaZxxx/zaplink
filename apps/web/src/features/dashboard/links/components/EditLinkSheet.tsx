@@ -6,7 +6,6 @@ import {
 	Star,
 	TextAlignJustify,
 } from "@phosphor-icons/react";
-import type { links } from "@zaplink/db";
 import { cn } from "cn";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -30,30 +29,29 @@ import {
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
+import type { ProfileLink } from "@/types/api";
 import { useUploadThing } from "@/utils/uploadthing";
 import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
-// Extended Link type
-type Link = typeof links.$inferSelect & {
-	platform?: {
-		name: string;
-		category: string | null;
-		iconUrl: string | null;
-	} | null;
-	custom?: {
-		displayMode: "standard" | "featured" | "grid" | null;
-		title: string | null;
-		iconUrl: string | null;
-		thumbnailUrl: string | null;
-	} | null;
-	contact?: { type: string; value: string } | null;
+/**
+ * The fields an edit can write. Flat, because the sheet sends one patch per
+ * save and the shape differs by link type, whereas `ProfileLink` nests those
+ * under `custom` and `contact`.
+ */
+export type LinkUpdate = {
+	title?: string;
+	url?: string;
+	displayMode?: "standard" | "featured" | "grid";
+	thumbnailUrl?: string;
+	contactType?: string;
+	contactValue?: string;
 };
 
 interface EditLinkSheetProps {
-	link: Link | null;
+	link: ProfileLink | null;
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	onUpdate: (id: number, data: any) => void;
+	onUpdate: (id: number, data: LinkUpdate) => void;
 }
 
 export function EditLinkSheet({
@@ -109,7 +107,7 @@ export function EditLinkSheet({
 				}
 			}
 
-			const updates: any = { title, url };
+			const updates: LinkUpdate = { title, url };
 
 			if (link.type === "custom") {
 				updates.displayMode = displayMode;

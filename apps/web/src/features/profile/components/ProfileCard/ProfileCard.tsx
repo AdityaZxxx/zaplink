@@ -1,17 +1,11 @@
 "use client";
 
 import { LinkSimple, User } from "@phosphor-icons/react";
-import type {
-	linkContacts,
-	linkCustoms,
-	linkPlatforms,
-	links,
-	profiles,
-} from "@zaplink/db";
 import { cn } from "cn";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
+import type { LinksData, ProfileData } from "@/types/api";
 import { ContactLink } from "./ContactLink";
 import type { SupportCause } from "./causes";
 import { FeaturedLink } from "./FeaturedLink";
@@ -20,12 +14,17 @@ import { SocialIconsRow } from "./SocialIconsRow";
 import { StandardLink } from "./StandardLink";
 import { SupportBanner } from "./SupportBanner";
 
-type Profile = typeof profiles.$inferSelect;
-type Link = typeof links.$inferSelect & {
-	platform?: typeof linkPlatforms.$inferSelect | null;
-	custom?: typeof linkCustoms.$inferSelect | null;
-	contact?: typeof linkContacts.$inferSelect | null;
-};
+/*
+ * Typed from the router's output rather than from the database row types.
+ *
+ * The database declares timestamp columns as `Date`, but a tRPC client decodes
+ * JSON, so every caller in the browser was holding strings and needed a
+ * suppression to hand them over. This card reads none of those columns, and
+ * declaring the shape it actually receives removes the mismatch for good rather
+ * than hiding it at each call site.
+ */
+type Profile = ProfileData;
+type Link = LinksData[number];
 
 interface ProfileCardProps {
 	profile: Profile;

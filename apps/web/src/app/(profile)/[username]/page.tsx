@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import PublicProfileClient from "@/features/profile/components/PublicProfileClient";
 import { APP_NAME, DOMAIN_NAME } from "@/lib/constants/BRANDS";
+import type { LinksData, ProfileData } from "@/types/api";
 import { trpcServer } from "@/utils/trpc/server";
 
 type PublicProfilePageProps = {
@@ -99,7 +100,13 @@ export default async function PublicProfilePage({
 
 	return (
 		<div className="w-full bg-none md:container md:mx-auto md:block md:px-4 md:py-6">
-			<PublicProfileClient profile={profile} links={userLinks} />
+			<PublicProfileClient
+				// A server caller hands back `Date` for timestamp columns where
+				// the client describes the strings a tRPC response carries.
+				// ProfileCard reads none of those columns.
+				profile={profile as unknown as ProfileData}
+				links={userLinks as unknown as LinksData}
+			/>
 		</div>
 	);
 }

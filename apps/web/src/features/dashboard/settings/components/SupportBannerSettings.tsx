@@ -12,8 +12,8 @@ import {
 	type SupportCause,
 	type SupportCauseId,
 } from "@/features/profile/components";
+import type { ProfileData } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
-import type { ProfileData } from "../types";
 
 interface SupportBannerSettingsProps {
 	profile: ProfileData;

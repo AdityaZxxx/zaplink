@@ -1,17 +1,20 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import type { links, profiles } from "@zaplink/db";
 import { useEffect } from "react";
 import { ProfileCard } from "@/features/profile/components";
+import type { LinksData, ProfileData } from "@/types/api";
 import { trpc } from "@/utils/trpc/client";
 
-type Profile = typeof profiles.$inferSelect;
-type Link = typeof links.$inferSelect;
-
 interface PublicProfileClientProps {
-	profile: Profile;
-	links: Link[];
+	/*
+	 * Cast-shaped rather than suppressed. This route is a server component, so
+	 * it hands back real `Date` objects for timestamp columns where the client
+	 * types describe the strings a tRPC response carries. ProfileCard reads
+	 * none of those columns, so the two are interchangeable here.
+	 */
+	profile: ProfileData;
+	links: LinksData;
 }
 
 export default function PublicProfileClient({
