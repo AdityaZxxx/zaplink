@@ -2,7 +2,7 @@
 
 import { Spinner } from "@phosphor-icons/react";
 import { useState } from "react";
-import type { ControllerRenderProps, useForm } from "react-hook-form";
+import type { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,11 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-	useFormField,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { UsernameField } from "@/features/dashboard/components/UsernameField";
 import { ProfileImageUploader } from "@/features/onboarding/components/ProfileImageUploader";
-import { DOMAIN_NAME } from "@/lib/constants/BRANDS";
 import { useUploadThing } from "@/utils/uploadthing";
 
 /*
@@ -252,47 +251,3 @@ export default function ProfileForm({
  * "zaplink.com/" at this font. The useFormField read is a hook, so it needs
  * its own component inside FormItem.
  */
-function UsernameField({
-	field,
-}: {
-	field: ControllerRenderProps<ProfileFormValues, "username">;
-}) {
-	return (
-		<FormItem>
-			<FormLabel>Username</FormLabel>
-			<UsernameInput field={field} />
-			<FormDescription>
-				Your profile lives at this address. Changing it breaks any link already
-				shared.
-			</FormDescription>
-			<FormMessage />
-		</FormItem>
-	);
-}
-
-function UsernameInput({
-	field,
-}: {
-	field: ControllerRenderProps<ProfileFormValues, "username">;
-}) {
-	const { formItemId, formDescriptionId, formMessageId, error } =
-		useFormField();
-
-	return (
-		<div className="flex items-center rounded-2xl bg-input/50 transition-[color,box-shadow] duration-200 has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30">
-			<span className="select-none ps-3 font-medium text-muted-foreground text-sm">
-				{DOMAIN_NAME}/
-			</span>
-			<Input
-				{...field}
-				id={formItemId}
-				aria-describedby={
-					error ? `${formDescriptionId} ${formMessageId}` : formDescriptionId
-				}
-				aria-invalid={!!error}
-				placeholder="username"
-				className="min-w-0 flex-1 bg-transparent ps-0 focus-visible:border-0! focus-visible:ring-0!"
-			/>
-		</div>
-	);
-}
