@@ -3,7 +3,7 @@
 import { CalendarBlank, Check } from "@phosphor-icons/react";
 import { cn } from "cn";
 import { format } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { DateRange as DayPickerDateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -69,27 +69,16 @@ export function DateRangePicker({
 		date,
 	);
 
-	// Sync props to local state when opening
-	useEffect(() => {
-		if (open) {
-			setTempRange(range);
-			setTempDate(date);
-		}
-	}, [open, range, date]);
-
 	const isCustomComplete = Boolean(tempDate?.from && tempDate?.to);
 
-	const label = useMemo(() => {
-		if (range === "custom") {
-			if (!date?.from) return "Custom range";
-			if (!date.to) return format(date.from, "LLL dd, y");
-			return `${format(date.from, "LLL dd, y")} – ${format(
-				date.to,
-				"LLL dd, y",
-			)}`;
-		}
-		return DATE_RANGES.find((r) => r.value === range)?.label ?? "Select range";
-	}, [range, date]);
+	const label =
+		range === "custom"
+			? !date?.from
+				? "Custom range"
+				: !date.to
+					? format(date.from, "LLL dd, y")
+					: `${format(date.from, "LLL dd, y")} – ${format(date.to, "LLL dd, y")}`
+			: (DATE_RANGES.find((r) => r.value === range)?.label ?? "Select range");
 
 	const trigger = (
 		<Button
@@ -121,9 +110,19 @@ export function DateRangePicker({
 		setTempRange("last7"); // Default fallback
 	};
 
+	// Reset the draft to the applied props each time the popover opens, so
+	// cancelling never leaks an unapplied selection
+	const handleOpenChange = (next: boolean) => {
+		if (next) {
+			setTempRange(range);
+			setTempDate(date);
+		}
+		setOpen(next);
+	};
+
 	if (isMobile) {
 		return (
-			<Drawer open={open} onOpenChange={setOpen}>
+			<Drawer open={open} onOpenChange={handleOpenChange}>
 				<DrawerTrigger render={trigger} />
 
 				<DrawerContent>
@@ -166,7 +165,7 @@ export function DateRangePicker({
 	}
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover open={open} onOpenChange={handleOpenChange}>
 			<PopoverTrigger render={trigger} />
 
 			<PopoverContent align={align} className="w-auto p-0">
