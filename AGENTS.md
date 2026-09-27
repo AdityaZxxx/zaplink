@@ -8,6 +8,7 @@
 
 - **Strict TypeScript, no `any`.** `tsc --noEmit` must pass.
 - **Server components by default.** Use `"use client"` only where interactivity is required.
+- **Follow shadcn/ui patterns.** Components in `components/ui/` are vendored — don't hand-edit; regenerate via `shadcn` CLI.
 - **Use `bun`, never `npm`.**
 
 ## Working Rules
