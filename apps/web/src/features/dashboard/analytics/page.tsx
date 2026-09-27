@@ -30,7 +30,7 @@ export default function AnalyticsPage() {
 		refetch,
 	} = useQuery(
 		trpc.analytics.getStats.queryOptions({
-			range: range !== "custom" ? (range as any) : undefined,
+			range: range !== "custom" ? range : undefined,
 			from: range === "custom" ? date?.from : undefined,
 			to: range === "custom" ? date?.to : undefined,
 		}),

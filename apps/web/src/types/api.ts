@@ -1,13 +1,14 @@
-import type { inferRouterOutputs } from "@trpc/server";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "@zaplink/api/routers/index";
 
+type RouterInputs = inferRouterInputs<AppRouter>;
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 
 /*
- * Typed from the router output, not the row types: the tRPC client decodes
- * timestamps to strings, while a server caller gets real Dates, so a server
- * component casts once at its own boundary. Outside any feature because the
- * dashboard, the settings sections and the public profile all render these rows.
+ * One shape for a row whether it arrived over HTTP or from a server caller,
+ * which only holds while the read queries leave timestamps out. Outside any
+ * feature because the dashboard, the settings sections and the public profile
+ * all render these rows.
  */
 export type ProfileData = NonNullable<RouterOutputs["profile"]["getProfile"]>;
 export type LinksData = RouterOutputs["links"]["getAllLinks"];
@@ -19,7 +20,16 @@ export type DashboardStats = NonNullable<
 >;
 
 /*
- * Deliberately narrower than a row, so iconForLink needs no timestamp columns.
+ * Derived from the router input so the analytics page's own preset list is
+ * checked against the enum the server accepts, rather than cast to it.
+ */
+export type StatsRange = NonNullable<
+	RouterInputs["analytics"]["getStats"]["range"]
+>;
+
+/*
+ * Deliberately narrower than a row, so iconForLink depends on the three fields
+ * it reads rather than on the shape of a link table.
  */
 export type LinkKind = {
 	type: string;

@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import DashboardPage from "@/features/dashboard/page";
-import type { DashboardStats, LinksData, ProfileData } from "@/types/api";
 import { trpcServer } from "@/utils/trpc/server";
 
 export default async function Page() {
@@ -18,9 +17,9 @@ export default async function Page() {
 
 	return (
 		<DashboardPage
-			initialProfile={profile as unknown as ProfileData}
-			initialLinks={links as unknown as LinksData}
-			initialStats={stats as DashboardStats}
+			initialProfile={profile}
+			initialLinks={links}
+			initialStats={stats}
 		/>
 	);
 }

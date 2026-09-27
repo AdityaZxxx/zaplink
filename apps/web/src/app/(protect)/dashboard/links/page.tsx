@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import LinksPage from "@/features/dashboard/links/page";
-import type { LinksData, ProfileData } from "@/types/api";
 import { trpcServer } from "@/utils/trpc/server";
 
 export default async function Page() {
@@ -14,10 +13,5 @@ export default async function Page() {
 		redirect("/onboarding");
 	}
 
-	return (
-		<LinksPage
-			initialProfile={profile as unknown as ProfileData}
-			initialLinks={links as unknown as LinksData}
-		/>
-	);
+	return <LinksPage initialProfile={profile} initialLinks={links} />;
 }

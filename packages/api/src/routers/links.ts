@@ -11,6 +11,7 @@ import {
 	profiles,
 } from "@zaplink/db";
 import { z } from "zod";
+import { linkColumns } from "../columns";
 import { protectedProcedure, publicProcedure, router } from "../index";
 
 export const linksRouter = router({
@@ -30,6 +31,7 @@ export const linksRouter = router({
 		const userLinks = await ctx.db.query.links.findMany({
 			where: eq(links.profileId, profileId),
 			orderBy: asc(links.sortOrder),
+			columns: linkColumns,
 			with: {
 				platform: true,
 				custom: true,
@@ -58,6 +60,7 @@ export const linksRouter = router({
 			const userLinks = await ctx.db.query.links.findMany({
 				where: and(eq(links.profileId, profileId), eq(links.isHidden, false)),
 				orderBy: asc(links.sortOrder),
+				columns: linkColumns,
 				with: {
 					platform: true,
 					custom: true,

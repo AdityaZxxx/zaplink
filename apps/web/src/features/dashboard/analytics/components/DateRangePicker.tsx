@@ -22,6 +22,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { StatsRange } from "@/types/api";
 
 export const DATE_RANGES = [
 	{ label: "Today", value: "today" },
@@ -31,9 +32,9 @@ export const DATE_RANGES = [
 	{ label: "Last 90 days", value: "last90" },
 	{ label: "This week", value: "thisWeek" },
 	{ label: "This month", value: "thisMonth" },
-] as const;
+] as const satisfies readonly { label: string; value: StatsRange }[];
 
-export type DateRangeOption = (typeof DATE_RANGES)[number]["value"] | "custom";
+export type DateRangeOption = StatsRange | "custom";
 
 interface DateRangePickerProps {
 	range: DateRangeOption;

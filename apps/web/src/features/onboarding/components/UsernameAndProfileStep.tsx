@@ -1,5 +1,6 @@
 import { Spinner } from "@phosphor-icons/react/ssr";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -137,10 +138,18 @@ export const UsernameAndProfileStep = ({
 				<div className="group relative h-32 cursor-pointer bg-zinc-800/50 transition-colors hover:bg-zinc-800">
 					<div className="absolute inset-0 flex items-center justify-center">
 						{bannerUrl ? (
-							<img
+							/*
+							 * `unoptimized` because this is always the blob URL of a
+							 * file just picked, which the default loader rejects, and
+							 * the browser already holds the bytes.
+							 */
+							<Image
 								src={bannerUrl}
-								alt="Banner"
-								className="h-full w-full object-cover"
+								alt="Banner preview"
+								fill
+								unoptimized
+								sizes="100vw"
+								className="object-cover"
 							/>
 						) : (
 							<div className="flex items-center gap-2 font-medium text-body text-zinc-500">

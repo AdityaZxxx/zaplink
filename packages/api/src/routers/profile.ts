@@ -1,12 +1,13 @@
 import { TRPCError } from "@trpc/server";
 import { and, asc, eq, links, ne, profiles } from "@zaplink/db";
 import { z } from "zod";
+import { linkSelect, profileSelect } from "../columns";
 import { protectedProcedure, publicProcedure, router } from "../index";
 
 export const profileRouter = router({
 	getProfile: protectedProcedure.query(async ({ ctx }) => {
 		const profile = await ctx.db
-			.select()
+			.select(profileSelect)
 			.from(profiles)
 			.where(eq(profiles.userId, ctx.session.user.id))
 			.limit(1);
@@ -18,7 +19,7 @@ export const profileRouter = router({
 		.input(z.object({ username: z.string() }))
 		.query(async ({ ctx, input }) => {
 			const profile = await ctx.db
-				.select()
+				.select(profileSelect)
 				.from(profiles)
 				.where(eq(profiles.username, input.username))
 				.limit(1);
@@ -28,7 +29,7 @@ export const profileRouter = router({
 			}
 
 			const userLinks = await ctx.db
-				.select()
+				.select(linkSelect)
 				.from(links)
 				.where(eq(links.profileId, profile[0].id))
 				.orderBy(asc(links.sortOrder));

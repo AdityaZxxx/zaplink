@@ -50,10 +50,9 @@ export default function UserMenu() {
 				render={
 					<Button variant="ghost" className="relative h-9 w-9 rounded-full">
 						<Avatar className="h-9 w-9 cursor-pointer">
-							{/* biome-ignore lint: lint/style/noNonNullAssertion */}
 							<AvatarImage
-								src={profile.avatarUrl!}
-								alt={profile.displayName!}
+								src={profile.avatarUrl ?? undefined}
+								alt={profile.displayName ?? "Profile photo"}
 							/>
 							<AvatarFallback>{profile.displayName?.charAt(0)}</AvatarFallback>
 						</Avatar>
@@ -63,8 +62,12 @@ export default function UserMenu() {
 			<DropdownMenuContent className="w-64 bg-card" align="end">
 				<div className="flex items-center gap-3 p-2">
 					<Avatar className="h-12 w-12">
-						{/* biome-ignore lint: lint/style/noNonNullAssertion */}
-						<AvatarImage src={profile.avatarUrl!} alt={profile.displayName!} />
+						{/*
+						 * Empty alt, unlike the trigger above: the display name is
+						 * already the visible text here, so naming it twice reads
+						 * as "Aditya, Aditya".
+						 */}
+						<AvatarImage src={profile.avatarUrl ?? undefined} alt="" />
 						<AvatarFallback>{profile.displayName?.charAt(0)}</AvatarFallback>
 					</Avatar>
 					<div className="grid flex-1 text-left text-body leading-tight">

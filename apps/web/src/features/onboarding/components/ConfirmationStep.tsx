@@ -18,15 +18,18 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { ProfileCard } from "@/features/profile/components";
+import type { LinksData, ProfileData } from "@/types/api";
 import { trpc } from "@/utils/trpc/client";
 import { useUploadThing } from "@/utils/uploadthing";
 import type { OnboardingData } from "../page";
 
-// The preview is local-only and never persisted, so one stable timestamp is
-// enough for every field. Allocating `new Date()` inside the memos changed the
-// object identity on each recompute, which gave the memos no benefit and
-// defeated React.memo on ProfileCard.
-const PREVIEW_TIMESTAMP = new Date();
+/*
+ * Negative so a preview link can never be confused for a persisted row. Link
+ * ids are a serial, so a negative one can never exist in the database, which
+ * means wiring onLinkClick to this preview later fails loudly instead of
+ * recording a click against link 0.
+ */
+const previewLinkId = (index: number) => -(index + 1);
 
 interface ConfirmationStepProps {
 	onBack: () => void;
@@ -64,7 +67,7 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 			return Math.random() * (max - min) + min;
 		};
 
-		const interval: any = setInterval(() => {
+		const interval: ReturnType<typeof setInterval> = setInterval(() => {
 			const timeLeft = animationEnd - Date.now();
 
 			if (timeLeft <= 0) {
@@ -161,44 +164,72 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 		return () => URL.revokeObjectURL(objectUrl);
 	}, [data.bannerFile]);
 
-	const previewProfile = useMemo(
+	/*
+	 * Memoized so a re-render that does not touch the preview, such as opening
+	 * the success dialog, keeps the same objects and lets React.memo skip the
+	 * card. Rebuilt inline, every one of those renders redrew the whole card.
+	 */
+	const previewProfile = useMemo<ProfileData>(
 		() => ({
-			id: "preview",
+			id: 0,
 			userId: "preview",
 			username: data.username,
 			displayName: data.displayName,
 			bio: data.bio,
 			avatarUrl: data.avatarFile ? previewAvatarUrl : data.avatarUrl,
 			bannerUrl: data.bannerFile ? previewBannerUrl : data.bannerUrl,
-			themeId: null,
-			createdAt: PREVIEW_TIMESTAMP,
-			updatedAt: PREVIEW_TIMESTAMP,
+			seoTitle: null,
+			seoDescription: null,
+			supportBanner: "none",
 		}),
 		[data, previewAvatarUrl, previewBannerUrl],
 	);
 
-	const previewLinks = useMemo(
+	/*
+	 * All three relations are filled in even though onboarding only makes
+	 * custom and platform links. Drizzle types a `one()` join as always
+	 * present when its key is not unique, and linkId is not unique in the join
+	 * tables. The card only reads the relation matching `type`, so the rest
+	 * are never observed.
+	 */
+	const previewLinks = useMemo<LinksData>(
 		() =>
-			data.links.map((link, i) => ({
-				id: `preview-${i}`,
-				url: link.url,
-				title: link.title,
-				order: i,
-				profileId: "preview",
-				createdAt: PREVIEW_TIMESTAMP,
-				updatedAt: PREVIEW_TIMESTAMP,
-				type: link.type,
-				platformName: link.platformName,
-			})),
+			data.links.map((link, index) => {
+				const id = previewLinkId(index);
+				return {
+					id,
+					profileId: 0,
+					type: link.type,
+					title: link.title,
+					url: link.url,
+					sortOrder: index,
+					isHidden: false,
+					platform: {
+						linkId: id,
+						name: link.platformName ?? "",
+						category: link.platformCategory ?? "social",
+						iconUrl: null,
+					},
+					custom: {
+						linkId: id,
+						displayMode: "standard",
+						title: null,
+						iconUrl: null,
+						thumbnailUrl: null,
+					},
+					contact: {
+						linkId: id,
+						type: "",
+						value: "",
+					},
+				};
+			}),
 		[data.links],
 	);
 
 	return (
 		<div className="space-y-6">
-			<ProfileCard
-				profile={previewProfile as any}
-				links={previewLinks as any}
-			/>
+			<ProfileCard profile={previewProfile} links={previewLinks} />
 
 			<div className="sticky bottom-0 z-50 flex items-center justify-between border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
 				<Button
