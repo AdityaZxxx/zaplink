@@ -1,7 +1,6 @@
 "use client";
 
-import type * as LabelPrimitive from "@radix-ui/react-label";
-import { Slot } from "@radix-ui/react-slot";
+import { useRender } from "@base-ui/react/use-render";
 import * as React from "react";
 import {
 	Controller,
@@ -14,6 +13,17 @@ import {
 } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { cn } from "cn";
+
+/*
+ * The base-rhea registry ships an empty `form` item, so this wrapper is kept
+ * and re-pointed at Base UI instead of regenerated. The public surface
+ * (Form, FormField, useFormField, FormItem, FormLabel, FormControl,
+ * FormDescription, FormMessage) is unchanged so the react-hook-form call
+ * sites do not have to move. `useRender` replaces Radix's Slot: it merges
+ * event handlers, joins className and style, and lets external props win,
+ * which is what FormControl relies on to forward id, aria-describedby and
+ * aria-invalid onto whatever control it wraps.
+ */
 
 const Form = FormProvider;
 
@@ -86,10 +96,7 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
 	);
 }
 
-function FormLabel({
-	className,
-	...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+function FormLabel({ className, ...props }: React.ComponentProps<"label">) {
 	const { error, formItemId } = useFormField();
 
 	return (
@@ -103,23 +110,27 @@ function FormLabel({
 	);
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+function FormControl({
+	children,
+	...props
+}: Omit<React.ComponentProps<"input">, "children"> & {
+	children: React.ReactElement;
+}) {
 	const { error, formItemId, formDescriptionId, formMessageId } =
 		useFormField();
 
-	return (
-		<Slot
-			data-slot="form-control"
-			id={formItemId}
-			aria-describedby={
-				!error
-					? `${formDescriptionId}`
-					: `${formDescriptionId} ${formMessageId}`
-			}
-			aria-invalid={!!error}
-			{...props}
-		/>
-	);
+	return useRender({
+		render: children,
+		props: {
+			"data-slot": "form-control",
+			id: formItemId,
+			"aria-describedby": !error
+				? `${formDescriptionId}`
+				: `${formDescriptionId} ${formMessageId}`,
+			"aria-invalid": !!error,
+			...props,
+		},
+	});
 }
 
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
