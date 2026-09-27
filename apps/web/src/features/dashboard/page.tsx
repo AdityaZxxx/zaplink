@@ -15,6 +15,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { KPICard } from "@/features/dashboard/analytics/components/KPICard";
 import { formatCompact } from "@/features/dashboard/analytics/lib/format";
@@ -170,9 +171,29 @@ export default function DashboardPage({
 									Your profile is empty. Add your first link and it will show up
 									here and on your public page.
 								</p>
+								{/*
+								 * The empty-state call to action, as a link that wears the
+								 * button recipe rather than a Link re-typing it. It had
+								 * lost the focus ring in the process, so a keyboard
+								 * visitor tabbed onto a control that gave no sign of
+								 * where they were.
+								 *
+								 * buttonVariants and not Button: this navigates, and Button
+								 * renders a real <button>. Pointed at a <Link> it makes
+								 * Base UI put role="button" on the anchor, which throws
+								 * away the link role and with it middle-click, "open in
+								 * new tab", and the way a screen reader announces the
+								 * control. The variants are the styling half of the
+								 * primitive and carry no semantics, so a caller can take
+								 * them without the semantics.
+								 *
+								 * The press scale is spelled out rather than inherited:
+								 * Button adds it as `active:not-disabled:`, and
+								 * :not-disabled never matches an anchor.
+								 */}
 								<Link
 									href="/dashboard/links"
-									className="mt-5 inline-flex h-8 items-center gap-1.5 rounded-2xl bg-primary px-3 font-medium text-primary-foreground text-sm transition-[background-color,scale] duration-150 ease-out hover:bg-primary/80 active:scale-[0.96]"
+									className={cn(buttonVariants(), "mt-5 active:scale-[0.96]")}
 								>
 									<Plus className="size-4" />
 									Add your first link
@@ -212,12 +233,20 @@ export default function DashboardPage({
 							 * real, so middle-click, copy-link and "open in new tab" all
 							 * work, and rel="noopener" is set where it belongs rather
 							 * than being left to the caller.
+							 *
+							 * It wears the button recipe rather than re-typing it, which
+							 * is what brings the focus ring this was missing. See the
+							 * empty-state call to action above for why that is
+							 * buttonVariants and not Button.
 							 */}
 							<Link
 								href={profilePath}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-primary px-3 font-medium text-primary-foreground text-sm transition-[background-color,scale] duration-150 ease-out hover:bg-primary/80 active:scale-[0.96] sm:flex-none"
+								className={cn(
+									buttonVariants(),
+									"flex-1 active:scale-[0.96] sm:flex-none",
+								)}
 							>
 								<ShareNetwork className="size-4" />
 								Open
@@ -243,11 +272,17 @@ function CopyButton({
 	onCopy: () => void;
 }) {
 	return (
-		<button
+		/*
+		 * The `outline` variant, which is what this was re-typing by hand. Same
+		 * border, same fill, same hover, plus the focus ring it was missing and
+		 * the disabled treatment it had no way to express.
+		 */
+		<Button
 			type="button"
+			variant="outline"
 			onClick={onCopy}
 			aria-label={copied ? "Link copied" : "Copy profile link"}
-			className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-2xl border border-border bg-background px-3 font-medium text-sm transition-[color,background-color,border-color,scale] duration-150 ease-out hover:bg-muted hover:text-foreground active:scale-[0.96] sm:flex-none"
+			className="flex-1 sm:flex-none"
 		>
 			<span className="relative flex size-4 items-center justify-center">
 				<Copy
@@ -271,7 +306,7 @@ function CopyButton({
 				/>
 			</span>
 			{copied ? "Copied" : "Copy link"}
-		</button>
+		</Button>
 	);
 }
 
