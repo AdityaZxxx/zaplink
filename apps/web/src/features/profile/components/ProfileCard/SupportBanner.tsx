@@ -148,10 +148,19 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 							<p className="max-w-[280px] text-center text-sm leading-relaxed opacity-90">
 								{content.description}
 							</p>
+							{/*
+							  biome-ignore lint/a11y/noAmbiguousAnchorText: the rule
+							  matches the anchor's text against a fixed word list and
+							  does not consider aria-label, so it cannot see that the
+							  accessible name is already "Learn more about <cause>".
+							  Keeping the visible text short is deliberate; every banner
+							  renders one link at a time, so the cause is adjacent.
+							*/}
 							<a
 								href={content.link}
 								target="_blank"
 								rel="noopener noreferrer"
+								aria-label={`Learn more about ${content.title}`}
 								className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 font-bold text-black text-xs transition-transform hover:scale-105 active:scale-95"
 							>
 								Learn More

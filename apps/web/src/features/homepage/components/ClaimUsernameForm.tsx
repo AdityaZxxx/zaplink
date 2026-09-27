@@ -13,7 +13,7 @@ export const ClaimUsernameForm = () => {
 		<div className="w-full max-w-md space-y-4">
 			<div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
 				<div className="group relative flex-1">
-					<div className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-4 select-none text-base text-primary">
+					<div className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 select-none text-base text-primary">
 						{DOMAIN_NAME}/
 					</div>
 					<Input

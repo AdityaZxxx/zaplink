@@ -101,7 +101,7 @@ function SocialItem({
 						onDelete(link.id);
 					}
 				}}
-				className="-top-2 -right-2 absolute flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm transition-colors hover:bg-destructive hover:text-destructive-foreground"
+				className="absolute -top-2 -right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm transition-colors hover:bg-destructive hover:text-destructive-foreground"
 				aria-label="Delete social link"
 			>
 				<span className="font-bold text-xs">×</span>

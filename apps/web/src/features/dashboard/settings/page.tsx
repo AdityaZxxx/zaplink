@@ -150,7 +150,7 @@ export default function SettingsPage() {
 					</p>
 				</div>
 				<div className="flex w-full flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-					<aside className="-mx-4 sticky top-0 z-10 bg-background px-4 py-2 lg:static lg:z-auto lg:mx-0 lg:w-64 lg:shrink-0 lg:bg-transparent lg:px-0 lg:py-0">
+					<aside className="sticky top-0 z-10 -mx-4 bg-background px-4 py-2 lg:static lg:z-auto lg:mx-0 lg:w-64 lg:shrink-0 lg:bg-transparent lg:px-0 lg:py-0">
 						<div className="lg:hidden">
 							<Select
 								value={activeTab}

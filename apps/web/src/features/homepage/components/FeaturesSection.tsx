@@ -10,7 +10,7 @@ export default function FeaturesSection() {
 	return (
 		<section className="relative overflow-hidden border-primary/5 border-t bg-background px-4 py-32">
 			{/* Ambient Background Glow */}
-			<div className="-translate-x-1/2 pointer-events-none absolute top-0 left-1/2 h-[500px] w-[1000px] rounded-full bg-primary/20 opacity-20 blur-[120px]" />
+			<div className="pointer-events-none absolute top-0 left-1/2 h-[500px] w-[1000px] -translate-x-1/2 rounded-full bg-primary/20 opacity-20 blur-[120px]" />
 
 			<div className="relative z-10 mx-auto max-w-7xl">
 				<div className="mb-16 text-center">
@@ -84,7 +84,7 @@ export default function FeaturesSection() {
 
 					{/* Card 2: Speed (Tall - Spans 5 cols) */}
 					<div className="group relative overflow-hidden rounded-[2.5rem] border border-border bg-secondary/50 p-8 backdrop-blur-md transition-all duration-500 hover:bg-secondary/80 md:col-span-5 md:p-12">
-						<div className="-right-20 -top-20 absolute h-64 w-64 rounded-full bg-yellow-500/20 opacity-0 blur-[80px] transition-opacity duration-700 group-hover:opacity-100" />
+						<div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-yellow-500/20 opacity-0 blur-[80px] transition-opacity duration-700 group-hover:opacity-100" />
 
 						<div className="relative z-10">
 							<h3 className="mb-3 font-semibold text-3xl text-primary">
@@ -115,9 +115,9 @@ export default function FeaturesSection() {
 						</div>
 
 						{/* Phone Mockup */}
-						<div className="-bottom-24 -translate-x-1/2 group-hover:-translate-y-4 absolute left-1/2 h-80 w-48 rounded-4xl border-4 border-border bg-background shadow-2xl transition-transform duration-500">
+						<div className="absolute -bottom-24 left-1/2 h-80 w-48 -translate-x-1/2 rounded-4xl border-4 border-border bg-background shadow-2xl transition-transform duration-500 group-hover:-translate-y-4">
 							<div className="relative h-full w-full overflow-hidden rounded-[1.7rem] bg-muted/50">
-								<div className="-translate-x-1/2 absolute top-4 left-1/2 h-4 w-16 rounded-full bg-foreground/10" />
+								<div className="absolute top-4 left-1/2 h-4 w-16 -translate-x-1/2 rounded-full bg-foreground/10" />
 								<div className="mt-12 space-y-3 px-4">
 									<div className="h-8 w-full animate-pulse rounded-lg bg-muted/50" />
 									<div className="h-24 w-full rounded-lg bg-muted/50" />
@@ -156,7 +156,7 @@ export default function FeaturesSection() {
 							<div className="shrink-0">
 								<Button className="relative flex items-center gap-2 overflow-hidden rounded-full px-6 py-3 font-medium">
 									<span className="relative z-10">Explore Integrations</span>
-									<ArrowUpRight className="group-hover/btn:-translate-y-0.5 relative z-10 h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" />
+									<ArrowUpRight className="relative z-10 h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
 									<div className="absolute inset-0 translate-y-full bg-primary/20 transition-transform duration-300 group-hover/btn:translate-y-0" />
 								</Button>
 							</div>

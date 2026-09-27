@@ -128,7 +128,7 @@ export default function DashboardPage() {
 					<Link href="/dashboard/links" className="group">
 						<div className="relative h-full overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg md:p-6">
 							<div className="absolute top-0 right-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
-								<Plus className="-translate-y-4 md:-translate-y-8 h-16 w-16 translate-x-4 rotate-12 transform text-primary md:h-24 md:w-24 md:translate-x-8" />
+								<Plus className="h-16 w-16 translate-x-4 -translate-y-4 rotate-12 transform text-primary md:h-24 md:w-24 md:translate-x-8 md:-translate-y-8" />
 							</div>
 							<div className="relative z-10 flex h-full flex-col justify-between">
 								<div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 transition-transform group-hover:scale-110 md:mb-4 md:h-12 md:w-12">
@@ -148,7 +148,7 @@ export default function DashboardPage() {
 					<Link href="/dashboard/profile" className="group">
 						<div className="relative h-full overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg md:p-6">
 							<div className="absolute top-0 right-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
-								<Palette className="-rotate-12 -translate-y-4 md:-translate-y-8 h-16 w-16 translate-x-4 transform text-primary md:h-24 md:w-24 md:translate-x-8" />
+								<Palette className="h-16 w-16 translate-x-4 -translate-y-4 -rotate-12 transform text-primary md:h-24 md:w-24 md:translate-x-8 md:-translate-y-8" />
 							</div>
 							<div className="relative z-10 flex h-full flex-col justify-between">
 								<div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 transition-transform group-hover:scale-110 md:mb-4 md:h-12 md:w-12">
