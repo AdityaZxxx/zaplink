@@ -1,20 +1,16 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { cn } from "cn";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SaveBar } from "@/features/dashboard/components/SaveBar";
@@ -35,18 +31,20 @@ const SEO_DESCRIPTION_MAX = 160;
  */
 const SERP_LINK = "text-[#1a0dab] dark:text-[#8ab4f8]";
 
+/*
+ * Not optional: blank is a real value here, meaning "fall back to the display
+ * name" or "fall back to the bio".
+ */
 const seoFormSchema = z.object({
 	seoTitle: z
 		.string()
-		.max(SEO_TITLE_MAX, `Title must be ${SEO_TITLE_MAX} characters or fewer`)
-		.optional(),
+		.max(SEO_TITLE_MAX, `Title must be ${SEO_TITLE_MAX} characters or fewer`),
 	seoDescription: z
 		.string()
 		.max(
 			SEO_DESCRIPTION_MAX,
 			`Description must be ${SEO_DESCRIPTION_MAX} characters or fewer`,
-		)
-		.optional(),
+		),
 });
 
 type SeoFormValues = z.infer<typeof seoFormSchema>;
@@ -54,6 +52,9 @@ type SeoFormValues = z.infer<typeof seoFormSchema>;
 interface SeoSettingsProps {
 	profile: ProfileData;
 }
+
+const TITLE_ID = "seo-title";
+const DESCRIPTION_ID = "seo-description";
 
 function CharacterCount({ value, max }: { value?: string; max: number }) {
 	const length = value?.length ?? 0;
@@ -78,20 +79,12 @@ function CharacterCount({ value, max }: { value?: string; max: number }) {
 }
 
 export function SeoSettings({ profile }: SeoSettingsProps) {
-	const form = useForm<SeoFormValues>({
-		resolver: zodResolver(seoFormSchema),
-		defaultValues: {
-			seoTitle: profile.seoTitle ?? "",
-			seoDescription: profile.seoDescription ?? "",
-		},
-	});
-
-	const [seoTitle, seoDescription] = form.watch(["seoTitle", "seoDescription"]);
-
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
 			onSuccess: (updated) => {
 				toast.success("Search settings updated");
+				// Seeded from the response rather than refetched, since every reader
+				// shares this one cache entry.
 				queryClient.setQueryData(
 					trpc.profile.getProfile.queryOptions().queryKey,
 					updated,
@@ -103,93 +96,147 @@ export function SeoSettings({ profile }: SeoSettingsProps) {
 		}),
 	);
 
-	// These must stay in step with the fallbacks in generateMetadata on the
-	// public profile route.
-	const resolvedTitle = seoTitle || profile.displayName || profile.username;
-	const resolvedDescription = seoDescription || profile.bio;
+	const form = useForm({
+		defaultValues: {
+			seoTitle: profile.seoTitle ?? "",
+			seoDescription: profile.seoDescription ?? "",
+		} satisfies SeoFormValues,
+		validators: { onSubmit: seoFormSchema },
+		onSubmit: ({ value }) => {
+			updateProfileMutation.mutate(value);
+		},
+	});
 
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit((values) =>
-					updateProfileMutation.mutate(values),
-				)}
-				className="space-y-5"
-			>
-				<FormField
-					control={form.control}
-					name="seoTitle"
-					render={({ field }) => (
-						<FormItem>
+		<form
+			onSubmit={(event) => {
+				event.preventDefault();
+				void form.handleSubmit();
+			}}
+			className="space-y-5"
+		>
+			<form.Field name="seoTitle">
+				{(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+
+					return (
+						<Field data-invalid={isInvalid}>
 							<div className="flex items-center justify-between gap-2">
-								<FormLabel>Meta title</FormLabel>
-								<CharacterCount value={field.value} max={SEO_TITLE_MAX} />
+								<FieldLabel htmlFor={TITLE_ID}>Meta title</FieldLabel>
+								<CharacterCount value={field.state.value} max={SEO_TITLE_MAX} />
 							</div>
-							<FormControl>
-								<Input
-									placeholder={profile.displayName ?? "Your name"}
-									{...field}
-								/>
-							</FormControl>
-							<FormDescription>
+							<Input
+								id={TITLE_ID}
+								name={field.name}
+								value={field.state.value ?? ""}
+								onBlur={field.handleBlur}
+								onChange={(e) => field.handleChange(e.target.value)}
+								placeholder={profile.displayName ?? "Your name"}
+								aria-invalid={isInvalid}
+								aria-describedby={`${TITLE_ID}-description`}
+							/>
+							<FieldDescription id={`${TITLE_ID}-description`}>
 								The headline in search results. Leave blank to use your display
 								name.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
-				<FormField
-					control={form.control}
-					name="seoDescription"
-					render={({ field }) => (
-						<FormItem>
-							<div className="flex items-center justify-between gap-2">
-								<FormLabel>Meta description</FormLabel>
-								<CharacterCount value={field.value} max={SEO_DESCRIPTION_MAX} />
-							</div>
-							<FormControl>
-								<Textarea
-									rows={3}
-									placeholder={
-										profile.bio ?? "A sentence about what you share."
-									}
-									{...field}
+							</FieldDescription>
+							{isInvalid && (
+								<FieldError
+									id={`${TITLE_ID}-error`}
+									errors={field.state.meta.errors}
 								/>
-							</FormControl>
-							<FormDescription>
+							)}
+						</Field>
+					);
+				}}
+			</form.Field>
+
+			<form.Field name="seoDescription">
+				{(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+
+					return (
+						<Field data-invalid={isInvalid}>
+							<div className="flex items-center justify-between gap-2">
+								<FieldLabel htmlFor={DESCRIPTION_ID}>
+									Meta description
+								</FieldLabel>
+								<CharacterCount
+									value={field.state.value}
+									max={SEO_DESCRIPTION_MAX}
+								/>
+							</div>
+							<Textarea
+								id={DESCRIPTION_ID}
+								name={field.name}
+								rows={3}
+								value={field.state.value ?? ""}
+								onBlur={field.handleBlur}
+								onChange={(e) => field.handleChange(e.target.value)}
+								placeholder={profile.bio ?? "A sentence about what you share."}
+								aria-invalid={isInvalid}
+								aria-describedby={`${DESCRIPTION_ID}-description`}
+							/>
+							<FieldDescription id={`${DESCRIPTION_ID}-description`}>
 								The summary under the title. Leave blank to use your bio.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+							</FieldDescription>
+							{isInvalid && (
+								<FieldError
+									id={`${DESCRIPTION_ID}-error`}
+									errors={field.state.meta.errors}
+								/>
+							)}
+						</Field>
+					);
+				}}
+			</form.Field>
 
-				<div className="rounded-2xl border bg-muted/40 p-4">
-					<p className="font-medium text-muted-foreground text-xs">
-						Search result preview
-					</p>
-					<div className="mt-3 space-y-1">
-						<p className={`truncate text-sm ${SERP_LINK}`}>
-							{DOMAIN_NAME}/{profile.username}
-						</p>
-						<p className={`truncate text-lg leading-snug ${SERP_LINK}`}>
-							{resolvedTitle}
-						</p>
-						<p className="line-clamp-2 text-muted-foreground text-sm leading-relaxed">
-							{resolvedDescription ??
-								"Nothing to show yet. Add a description to see it here."}
-						</p>
-					</div>
-				</div>
+			{/*
+			 * Must stay in step with generateMetadata on the public profile route,
+			 * or this previews a search result no visitor would ever get.
+			 */}
+			<form.Subscribe
+				selector={(state) => ({
+					seoTitle: state.values.seoTitle,
+					seoDescription: state.values.seoDescription,
+				})}
+			>
+				{({ seoTitle, seoDescription }) => {
+					const resolvedTitle =
+						seoTitle || profile.displayName || profile.username;
 
-				<SaveBar
-					isDirty={form.formState.isDirty}
-					isSubmitting={updateProfileMutation.isPending}
-					onReset={() => form.reset()}
-				/>
-			</form>
-		</Form>
+					return (
+						<div className="rounded-2xl border bg-muted/40 p-4">
+							<p className="font-medium text-muted-foreground text-xs">
+								Search result preview
+							</p>
+							<div className="mt-3 space-y-1">
+								<p className={`truncate text-sm ${SERP_LINK}`}>
+									{DOMAIN_NAME}/{profile.username}
+								</p>
+								<p className={`truncate text-lg leading-snug ${SERP_LINK}`}>
+									{resolvedTitle}
+								</p>
+								<p className="line-clamp-2 text-muted-foreground text-sm leading-relaxed">
+									{seoDescription ||
+										"Nothing to show yet. Add a description to see it here."}
+								</p>
+							</div>
+						</div>
+					);
+				}}
+			</form.Subscribe>
+
+			<form.Subscribe selector={(state) => state.isDirty}>
+				{(isDirty) => (
+					<SaveBar
+						isDirty={isDirty}
+						isSubmitting={updateProfileMutation.isPending}
+						onReset={() => form.reset()}
+					/>
+				)}
+			</form.Subscribe>
+		</form>
 	);
 }

@@ -1,18 +1,14 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { SaveBar } from "@/features/dashboard/components/SaveBar";
 import { UsernameField } from "@/features/dashboard/components/UsernameField";
@@ -25,21 +21,15 @@ interface AccountSettingsProps {
 	profile: ProfileData;
 }
 
-export function AccountSettings({ profile }: AccountSettingsProps) {
-	const form = useForm<AccountFormValues>({
-		resolver: zodResolver(accountFormSchema),
-		defaultValues: {
-			displayName: profile.displayName ?? "",
-			username: profile.username ?? "",
-		},
-	});
+const DISPLAY_NAME_ID = "account-display-name";
 
+export function AccountSettings({ profile }: AccountSettingsProps) {
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
 			onSuccess: (updated) => {
 				toast.success("Account updated");
 				// Seeded from the response rather than refetched, since every reader
-				// // shares this one cache entry.
+				// shares this one cache entry.
 				queryClient.setQueryData(
 					trpc.profile.getProfile.queryOptions().queryKey,
 					updated,
@@ -51,45 +41,75 @@ export function AccountSettings({ profile }: AccountSettingsProps) {
 		}),
 	);
 
-	const isSubmitting = updateProfileMutation.isPending;
+	const form = useForm({
+		defaultValues: {
+			displayName: profile.displayName ?? "",
+			username: profile.username ?? "",
+		} satisfies AccountFormValues,
+		validators: { onSubmit: accountFormSchema },
+		onSubmit: ({ value }) => {
+			updateProfileMutation.mutate(value);
+		},
+	});
 
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit((values) =>
-					updateProfileMutation.mutate(values),
-				)}
-				className="space-y-5"
-			>
-				<FormField
-					control={form.control}
-					name="displayName"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Display name</FormLabel>
-							<FormControl>
-								<Input placeholder="Your name" {...field} />
-							</FormControl>
-							<FormDescription>
+		<form
+			onSubmit={(event) => {
+				event.preventDefault();
+				void form.handleSubmit();
+			}}
+			className="space-y-5"
+		>
+			<form.Field name="displayName">
+				{(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+
+					return (
+						<Field data-invalid={isInvalid}>
+							<FieldLabel htmlFor={DISPLAY_NAME_ID}>Display name</FieldLabel>
+							<Input
+								id={DISPLAY_NAME_ID}
+								name={field.name}
+								value={field.state.value}
+								onBlur={field.handleBlur}
+								onChange={(e) => field.handleChange(e.target.value)}
+								placeholder="Your name"
+								aria-invalid={isInvalid}
+								aria-describedby={`${DISPLAY_NAME_ID}-description`}
+							/>
+							<FieldDescription id={`${DISPLAY_NAME_ID}-description`}>
 								Shown at the top of your profile and in the browser tab.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+							</FieldDescription>
+							{isInvalid && (
+								<FieldError
+									id={`${DISPLAY_NAME_ID}-error`}
+									errors={field.state.meta.errors}
+								/>
+							)}
+						</Field>
+					);
+				}}
+			</form.Field>
 
-				<FormField
-					control={form.control}
-					name="username"
-					render={({ field }) => <UsernameField field={field} />}
-				/>
+			<form.Field name="username">
+				{(field) => <UsernameField field={field} />}
+			</form.Field>
 
-				<SaveBar
-					isDirty={form.formState.isDirty}
-					isSubmitting={isSubmitting}
-					onReset={() => form.reset()}
-				/>
-			</form>
-		</Form>
+			{/*
+			 * isDirty has to be read through Subscribe. form.state is a plain
+			 * snapshot, so reading it during render does not re-run this
+			 * component when a field changes, and the bar stayed pristine.
+			 */}
+			<form.Subscribe selector={(state) => state.isDirty}>
+				{(isDirty) => (
+					<SaveBar
+						isDirty={isDirty}
+						isSubmitting={updateProfileMutation.isPending}
+						onReset={() => form.reset()}
+					/>
+				)}
+			</form.Subscribe>
+		</form>
 	);
 }

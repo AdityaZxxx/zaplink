@@ -1,209 +1,188 @@
 "use client";
 
-import { useState } from "react";
-import type { useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { useForm } from "@tanstack/react-form";
 import {
-	Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+	Field,
+	FieldDescription,
+	FieldError,
+	FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { SaveBar } from "@/features/dashboard/components/SaveBar";
 import { UsernameField } from "@/features/dashboard/components/UsernameField";
 import { ProfileImageUploader } from "@/features/onboarding/components/ProfileImageUploader";
 import type { ProfileFormValues } from "@/lib/validation/profile";
-import { BIO_MAX } from "@/lib/validation/profile";
-import { useUploadThing } from "@/utils/uploadthing";
+import { BIO_MAX, profileFormSchema } from "@/lib/validation/profile";
+
+/*
+ * Derives the form's type: the api carries thirteen generics that only useForm
+ * can fill in.
+ */
+export function useProfileForm({
+	defaultValues,
+	onSubmit,
+}: {
+	defaultValues: ProfileFormValues;
+	onSubmit: (values: ProfileFormValues) => void;
+}) {
+	return useForm({
+		defaultValues,
+		validators: { onSubmit: profileFormSchema },
+		onSubmit: ({ value }) => onSubmit(value),
+	});
+}
+
+export type ProfileFormApi = ReturnType<typeof useProfileForm>;
 
 interface ProfileFormProps {
-	form: ReturnType<typeof useForm<ProfileFormValues>>;
-	onSubmit: (values: ProfileFormValues) => void;
-	isSubmitting?: boolean;
+	form: ProfileFormApi;
+	isSubmitting: boolean;
+	onAvatarFileChange: (file: File) => void;
+	onBannerFileChange: (file: File) => void;
+	onReset: () => void;
 }
+
+const BIO_ID = "profile-bio";
+const NAME_ID = "profile-display-name";
 
 export default function ProfileForm({
 	form,
-	onSubmit,
-	isSubmitting: parentIsSubmitting,
+	isSubmitting,
+	onAvatarFileChange,
+	onBannerFileChange,
+	onReset,
 }: ProfileFormProps) {
-	const [avatarFile, setAvatarFile] = useState<File | null>(null);
-	const [bannerFile, setBannerFile] = useState<File | null>(null);
-	const [isUploading, setIsUploading] = useState(false);
-
-	const { startUpload: uploadAvatar } = useUploadThing("avatarUploader");
-	const { startUpload: uploadBanner } = useUploadThing("bannerUploader");
-
-	const handleFormSubmit = async (values: ProfileFormValues) => {
-		try {
-			setIsUploading(true);
-			let finalAvatarUrl = values.avatarUrl;
-			let finalBannerUrl = values.bannerUrl;
-
-			if (avatarFile) {
-				const res = await uploadAvatar([avatarFile]);
-				if (res?.[0]) {
-					finalAvatarUrl = res[0].url;
-				} else {
-					throw new Error("Failed to upload avatar");
-				}
-			}
-
-			if (bannerFile) {
-				const res = await uploadBanner([bannerFile]);
-				if (res?.[0]) {
-					finalBannerUrl = res[0].url;
-				} else {
-					throw new Error("Failed to upload banner");
-				}
-			}
-
-			// A blob URL here would be written to the database.
-			if (finalAvatarUrl?.startsWith("blob:")) {
-				throw new Error("Invalid avatar URL. Please try uploading again.");
-			}
-			if (finalBannerUrl?.startsWith("blob:")) {
-				throw new Error("Invalid banner URL. Please try uploading again.");
-			}
-
-			onSubmit({
-				...values,
-				avatarUrl: finalAvatarUrl,
-				bannerUrl: finalBannerUrl,
-			});
-		} catch (error) {
-			console.error("Upload failed:", error);
-			toast.error(
-				error instanceof Error ? error.message : "Failed to update profile",
-			);
-		} finally {
-			setIsUploading(false);
-		}
-	};
-
-	const isSubmitting = parentIsSubmitting || isUploading;
-	const isDirty = form.formState.isDirty;
-
 	return (
-		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit(handleFormSubmit)}
-				className="space-y-6"
-			>
-				<div className="grid gap-6 md:grid-cols-[6rem_1fr] md:items-start">
-					<FormField
-						control={form.control}
-						name="avatarUrl"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Avatar</FormLabel>
-								<FormControl>
-									<ProfileImageUploader
-										imageUrl={field.value || null}
-										onImageChange={field.onChange}
-										onFileChange={setAvatarFile}
-										label="Avatar"
-										endpoint="avatarUploader"
-										sizeClass="aspect-square size-24 rounded-full"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="bannerUrl"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Banner</FormLabel>
-								<FormControl>
-									<ProfileImageUploader
-										imageUrl={field.value || null}
-										onImageChange={field.onChange}
-										onFileChange={setBannerFile}
-										label="Banner"
-										endpoint="bannerUploader"
-										sizeClass="aspect-video w-full rounded-2xl"
-									/>
-								</FormControl>
-								<FormDescription>
-									The wide image at the top of your profile.
-								</FormDescription>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
-
-				<FormField
-					control={form.control}
-					name="displayName"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Display name</FormLabel>
-							<FormControl>
-								<Input placeholder="Your name" {...field} />
-							</FormControl>
-							<FormDescription>
-								Shown at the top of your profile and in the browser tab.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
+		<form
+			onSubmit={(event) => {
+				event.preventDefault();
+				void form.handleSubmit();
+			}}
+			className="space-y-6"
+		>
+			<div className="grid gap-6 md:grid-cols-[6rem_1fr] md:items-start">
+				<form.Field name="avatarUrl">
+					{(field) => (
+						<Field>
+							<FieldLabel htmlFor="profile-avatar">Avatar</FieldLabel>
+							<ProfileImageUploader
+								imageUrl={field.state.value || null}
+								onImageChange={field.handleChange}
+								onFileChange={onAvatarFileChange}
+								label="Avatar"
+								endpoint="avatarUploader"
+								sizeClass="aspect-square size-24 rounded-full"
+							/>
+						</Field>
 					)}
-				/>
+				</form.Field>
 
-				<FormField
-					control={form.control}
-					name="username"
-					render={({ field }) => <UsernameField field={field} />}
-				/>
+				<form.Field name="bannerUrl">
+					{(field) => (
+						<Field>
+							<FieldLabel htmlFor="profile-banner">Banner</FieldLabel>
+							<ProfileImageUploader
+								imageUrl={field.state.value || null}
+								onImageChange={field.handleChange}
+								onFileChange={onBannerFileChange}
+								label="Banner"
+								endpoint="bannerUploader"
+								sizeClass="aspect-video w-full rounded-2xl"
+							/>
+							<FieldDescription>
+								The wide image at the top of your profile.
+							</FieldDescription>
+						</Field>
+					)}
+				</form.Field>
+			</div>
 
-				<FormField
-					control={form.control}
-					name="bio"
-					render={({ field }) => (
-						<FormItem>
+			<form.Field name="displayName">
+				{(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+
+					return (
+						<Field data-invalid={isInvalid}>
+							<FieldLabel htmlFor={NAME_ID}>Display name</FieldLabel>
+							<Input
+								id={NAME_ID}
+								name={field.name}
+								value={field.state.value}
+								onBlur={field.handleBlur}
+								onChange={(e) => field.handleChange(e.target.value)}
+								placeholder="Your name"
+								aria-invalid={isInvalid}
+								aria-describedby={`${NAME_ID}-description`}
+							/>
+							<FieldDescription id={`${NAME_ID}-description`}>
+								Shown at the top of your profile and in the browser tab.
+							</FieldDescription>
+							{isInvalid && (
+								<FieldError
+									id={`${NAME_ID}-error`}
+									errors={field.state.meta.errors}
+								/>
+							)}
+						</Field>
+					);
+				}}
+			</form.Field>
+
+			<form.Field name="username">
+				{(field) => <UsernameField field={field} />}
+			</form.Field>
+
+			<form.Field name="bio">
+				{(field) => {
+					const isInvalid =
+						field.state.meta.isTouched && !field.state.meta.isValid;
+
+					return (
+						<Field data-invalid={isInvalid}>
 							<div className="flex items-center justify-between gap-2">
-								<FormLabel>Bio</FormLabel>
+								<FieldLabel htmlFor={BIO_ID}>Bio</FieldLabel>
 								<span className="text-muted-foreground text-xs tabular-nums">
-									{field.value?.length ?? 0}/{BIO_MAX}
+									{field.state.value?.length ?? 0}/{BIO_MAX}
 								</span>
 							</div>
-							<FormControl>
-								<Textarea
-									rows={3}
-									placeholder="Tell us about yourself"
-									{...field}
-								/>
-							</FormControl>
-							<FormDescription>
+							<Textarea
+								id={BIO_ID}
+								name={field.name}
+								rows={3}
+								value={field.state.value ?? ""}
+								onBlur={field.handleBlur}
+								onChange={(e) => field.handleChange(e.target.value)}
+								placeholder="Tell us about yourself"
+								aria-invalid={isInvalid}
+								aria-describedby="profile-bio-description"
+							/>
+							<FieldDescription id="profile-bio-description">
 								A sentence or two under your name.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+							</FieldDescription>
+							{isInvalid && (
+								<FieldError
+									id="profile-bio-error"
+									errors={field.state.meta.errors}
+								/>
+							)}
+						</Field>
+					);
+				}}
+			</form.Field>
 
-				<SaveBar
-					isDirty={isDirty}
-					isSubmitting={isSubmitting}
-					onReset={() => form.reset()}
-				/>
-			</form>
-		</Form>
+			{/* Read through Subscribe: form.state is a snapshot and will not
+			    re-render this on a field change. */}
+			<form.Subscribe selector={(state) => state.isDirty}>
+				{(isDirty) => (
+					<SaveBar
+						isDirty={isDirty}
+						isSubmitting={isSubmitting}
+						onReset={onReset}
+					/>
+				)}
+			</form.Subscribe>
+		</form>
 	);
 }
-
-/*
- * FormControl puts the id and aria-describedby on the wrapper div rather
- * than the input, and the pl-[95px] prefix this replaces was narrower than
- * "zaplink.com/" at this font. The useFormField read is a hook, so it needs
- * its own component inside FormItem.
- */

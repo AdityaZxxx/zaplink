@@ -1,23 +1,50 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import PageWithPreview from "@/features/dashboard/components/PageWithPreview";
+import { useProfileUploads } from "@/features/dashboard/profile/useProfileUploads";
 import {
 	PROFILE_CARD_PREVIEW_CLASS,
 	ProfileCard,
 } from "@/features/profile/components";
 import type { ProfileFormValues } from "@/lib/validation/profile";
-import { profileFormSchema } from "@/lib/validation/profile";
 import type { LinksData, ProfileData } from "@/types/api";
 import { queryClient, trpc } from "@/utils/trpc/client";
-import ProfileForm from "./ProfileForm";
+import ProfileForm, {
+	type ProfileFormApi,
+	useProfileForm,
+} from "./ProfileForm";
 
 interface ProfilePageClientProps {
 	initialProfile: ProfileData;
 	initialLinks: LinksData;
+}
+
+/*
+ * Subscribes rather than reading form.state.values once, so the preview
+ * follows typing instead of waiting for an unrelated re-render.
+ */
+function ProfilePreview({
+	form,
+	initialProfile,
+	links,
+}: {
+	form: ProfileFormApi;
+	initialProfile: ProfileData;
+	links: LinksData;
+}) {
+	return (
+		<form.Subscribe selector={(state) => state.values}>
+			{(values) => (
+				<ProfileCard
+					profile={{ ...initialProfile, ...values }}
+					links={links}
+					className={PROFILE_CARD_PREVIEW_CLASS}
+				/>
+			)}
+		</form.Subscribe>
+	);
 }
 
 export default function ProfilePageClient({
@@ -40,35 +67,28 @@ export default function ProfilePageClient({
 		}),
 	);
 
-	const form = useForm<ProfileFormValues>({
-		resolver: zodResolver(profileFormSchema),
+	const uploads = useProfileUploads((values) =>
+		updateProfileMutation.mutate(values),
+	);
+
+	const form = useProfileForm({
 		defaultValues: {
 			displayName: initialProfile.displayName ?? "",
 			username: initialProfile.username ?? "",
 			bio: initialProfile.bio ?? "",
 			avatarUrl: initialProfile.avatarUrl ?? "",
 			bannerUrl: initialProfile.bannerUrl ?? "",
-		},
+		} satisfies ProfileFormValues,
+		onSubmit: uploads.submit,
 	});
-
-	const watchedValues = form.watch();
-
-	const previewProfile = {
-		...initialProfile,
-		...watchedValues,
-	} as any;
-
-	const onSubmit = (values: ProfileFormValues) => {
-		updateProfileMutation.mutate(values);
-	};
 
 	return (
 		<PageWithPreview
 			preview={
-				<ProfileCard
-					profile={previewProfile}
-					links={initialLinks} // Links are managed in a separate page, so we use initial ones
-					className={PROFILE_CARD_PREVIEW_CLASS}
+				<ProfilePreview
+					form={form}
+					initialProfile={initialProfile}
+					links={initialLinks}
 				/>
 			}
 		>
@@ -82,8 +102,10 @@ export default function ProfilePageClient({
 
 				<ProfileForm
 					form={form}
-					onSubmit={onSubmit}
-					isSubmitting={updateProfileMutation.isPending}
+					isSubmitting={updateProfileMutation.isPending || uploads.isUploading}
+					onAvatarFileChange={uploads.setAvatarFile}
+					onBannerFileChange={uploads.setBannerFile}
+					onReset={() => form.reset()}
 				/>
 			</div>
 		</PageWithPreview>
