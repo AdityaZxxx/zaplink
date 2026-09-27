@@ -1,78 +1,78 @@
 # zaplink
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Next.js, Elysia, TRPC, and more.
+A link-in-bio style profile app: a public profile page per username, with a
+private dashboard for arranging links, analytics and settings.
 
 ## Features
 
-- **TypeScript** - For type safety and improved developer experience
-- **Next.js** - Full-stack React framework
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - Reusable UI components
-- **Elysia** - Type-safe, high-performance framework
-- **tRPC** - End-to-end type-safe APIs
-- **Bun** - Runtime environment
-- **Drizzle** - TypeScript-first ORM
-- **PostgreSQL** - Database engine
-- **Authentication** - Better-Auth
-- **Turborepo** - Optimized monorepo build system
-- **Husky** - Git hooks for code quality
-- **Biome** - Linting and formatting
+- **TypeScript 7** - the native compiler, for type safety and editor tooling
+- **Next.js** - App Router, React Server Components
+- **tRPC** - end-to-end type-safe API, mounted inside Next at `/api/trpc`
+- **Tailwind CSS** - utility-first CSS
+- **shadcn/ui on Base UI** - unstyled, accessible component primitives
+- **Bun** - runtime and package manager
+- **Turborepo** - monorepo build system
+- **Drizzle ORM** - TypeScript-first ORM
+- **Neon** - serverless PostgreSQL
+- **Better Auth** - authentication
+- **Biome** - linting and formatting
+- **Husky + lint-staged** - pre-commit formatting
 
 ## Getting Started
 
-First, install the dependencies:
+Install dependencies:
 
 ```bash
 bun install
 ```
-## Database Setup
 
-This project uses PostgreSQL with Drizzle ORM.
+Configure the environment. The web app reads `apps/web/.env`, which
+`packages/db` also loads for its own connection:
 
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/server/.env` file with your PostgreSQL connection details.
-
-3. Apply the schema to your database:
-```bash
-bun db:push
+```
+DATABASE_URL=postgresql://...
+BETTER_AUTH_SECRET=...
+BETTER_AUTH_URL=http://localhost:3000
 ```
 
-
-Then, run the development server:
+Apply the schema to your database:
 
 ```bash
-bun dev
+bun run db:push
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
+Then start the dev server:
 
+```bash
+bun run dev
+```
 
-
-
-
-
+The app is served at [http://localhost:3000](http://localhost:3000).
 
 ## Project Structure
 
 ```
 zaplink/
 ├── apps/
-│   ├── web/         # Frontend application (Next.js)
-│   └── server/      # Backend API (Elysia, TRPC)
-├── packages/
-│   ├── api/         # API layer / business logic
-│   ├── auth/        # Authentication configuration & logic
-│   └── db/          # Database schema & queries
+│   └── web/           # Next.js app: UI, route handlers, tRPC endpoint
+└── packages/
+    ├── api/           # tRPC routers, procedures and context
+    ├── auth/          # Better Auth configuration
+    └── db/            # Drizzle schema, migrations and client
 ```
+
+`tRPC` has no separate server. The routers in `packages/api` are served by a
+route handler at `apps/web/src/app/api/trpc/[trpc]/route.ts`, so there is one
+process and one port.
 
 ## Available Scripts
 
-- `bun dev`: Start all applications in development mode
-- `bun build`: Build all applications
-- `bun dev:web`: Start only the web application
-- `bun dev:server`: Start only the server
-- `bun check-types`: Check TypeScript types across all apps
-- `bun db:push`: Push schema changes to database
-- `bun db:studio`: Open database studio UI
-- `bun check`: Run Biome formatting and linting
+- `bun run dev`: Start all apps in development mode
+- `bun run dev:web`: Start only the web app
+- `bun run build`: Build all apps
+- `bun run check-types`: Type-check every workspace
+- `bun run check`: Lint and format with Biome
+- `bun run db:push`: Push the Drizzle schema to the database
+- `bun run db:generate`: Generate a migration from schema changes
+- `bun run db:migrate`: Apply generated migrations
+- `bun run db:studio`: Open Drizzle Studio
