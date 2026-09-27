@@ -1,9 +1,10 @@
 "use client";
 
-import { Spinner } from "@phosphor-icons/react";
+import { WarningCircle } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import type { DateRange as DayPickerDateRange } from "react-day-picker";
+import { Button } from "@/components/ui/button";
 import { trpc } from "@/utils/trpc/client";
 import {
 	type DateRangeOption,
@@ -15,12 +16,19 @@ import { TopLinksList } from "./components/TopLinksList";
 
 export default function AnalyticsPage() {
 	const [range, setRange] = useState<DateRangeOption>("last7");
-	const [date, setDate] = useState<DayPickerDateRange | undefined>({
-		from: new Date(new Date().setDate(new Date().getDate() - 7)),
-		to: new Date(),
+	const [date, setDate] = useState<DayPickerDateRange | undefined>(() => {
+		const to = new Date();
+		const from = new Date(to);
+		from.setDate(from.getDate() - 7);
+		return { from, to };
 	});
 
-	const { data: stats, isLoading } = useQuery(
+	const {
+		data: stats,
+		isLoading,
+		isError,
+		refetch,
+	} = useQuery(
 		trpc.analytics.getStats.queryOptions({
 			range: range !== "custom" ? (range as any) : undefined,
 			from: range === "custom" ? date?.from : undefined,
@@ -28,33 +36,24 @@ export default function AnalyticsPage() {
 		}),
 	);
 
-	if (isLoading) {
-		return (
-			<div className="flex h-[80vh] w-full flex-col items-center justify-center gap-4">
-				<Spinner className="h-10 w-10 animate-spin text-primary" />
-				<p className="animate-pulse text-muted-foreground">
-					Gathering insights...
-				</p>
-			</div>
-		);
-	}
-
-	if (!stats) return null;
+	/*
+	 * The header and the range picker used to unmount behind a full-page
+	 * spinner, which collapsed the layout and made the control that drives the
+	 * data disappear while it loaded. Only the data regions are placeheld now,
+	 * so the page keeps its final geometry from the first frame.
+	 */
+	const isPending = isLoading || (!stats && !isError);
 
 	return (
-		<div className="fade-in mx-auto max-w-7xl animate-in space-y-8 p-6 duration-500 md:p-8">
-			{/* Header Section */}
-			<div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+		<div className="mx-auto max-w-7xl space-y-8 p-6 md:p-8">
+			<header className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
 				<div>
-					<h1 className="font-bold text-3xl text-foreground tracking-tight">
-						Analytics
-					</h1>
+					<h1 className="font-bold text-3xl tracking-tight">Analytics</h1>
 					<p className="mt-1 text-muted-foreground text-sm">
 						Overview of your profile performance & engagement.
 					</p>
 				</div>
-
-				<div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+				<div className="w-full sm:w-auto">
 					<DateRangePicker
 						range={range}
 						setRange={setRange}
@@ -62,23 +61,49 @@ export default function AnalyticsPage() {
 						setDate={setDate}
 					/>
 				</div>
-			</div>
+			</header>
 
-			{/* KPI Cards Grid */}
-			<StatsOverview
-				totalViews={stats.totalViews}
-				totalClicks={stats.totalClicks}
-				ctr={stats.ctr}
-				viewsChange={stats.viewsChange}
-				clicksChange={stats.clicksChange}
-				ctrChange={stats.ctrChange}
-			/>
+			{isError ? (
+				<div className="flex min-h-72 flex-col items-center justify-center gap-3 text-center">
+					<WarningCircle
+						aria-hidden
+						className="size-8 text-destructive opacity-60"
+					/>
+					<p className="font-medium text-sm">Could not load analytics</p>
+					<p className="max-w-72 text-muted-foreground text-xs">
+						Something went wrong fetching your stats. Try again, and if it
+						persists the data may still be settling.
+					</p>
+					<Button
+						onClick={() => void refetch()}
+						size="sm"
+						variant="outline"
+						className="mt-1"
+					>
+						Retry
+					</Button>
+				</div>
+			) : (
+				<>
+					<StatsOverview
+						loading={isPending}
+						totalViews={stats?.totalViews ?? 0}
+						totalClicks={stats?.totalClicks ?? 0}
+						ctr={stats?.ctr ?? 0}
+						viewsChange={stats?.viewsChange}
+						clicksChange={stats?.clicksChange}
+						ctrChange={stats?.ctrChange}
+					/>
 
-			{/* Main Chart Section */}
-			<div className="grid gap-8 lg:grid-cols-7">
-				<EngagementChart data={stats.chartData} />
-				<TopLinksList links={stats.topLinks} />
-			</div>
+					<div className="grid gap-6 lg:grid-cols-7">
+						<EngagementChart
+							data={stats?.chartData ?? []}
+							loading={isPending}
+						/>
+						<TopLinksList links={stats?.topLinks ?? []} loading={isPending} />
+					</div>
+				</>
+			)}
 		</div>
 	);
 }

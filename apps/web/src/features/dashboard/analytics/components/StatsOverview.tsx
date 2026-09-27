@@ -1,6 +1,9 @@
 "use client";
 
 import { CursorClick, Eye, TrendUp } from "@phosphor-icons/react";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatCompact } from "../lib/format";
 import { KPICard } from "./KPICard";
 
 interface StatsOverviewProps {
@@ -10,15 +13,14 @@ interface StatsOverviewProps {
 	viewsChange?: number;
 	clicksChange?: number;
 	ctrChange?: number;
+	loading?: boolean;
 }
 
-// Helper function to format numbers with K/M/B suffixes
-const formatNumber = (num: number) => {
-	if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}  B`;
-	if (num >= 1000000) return `${(num / 1000000).toFixed(1)}  M`;
-	if (num >= 1000) return `${(num / 1000).toFixed(1)}  K`;
-	return num.toString();
-};
+const TILES = [
+	{ title: "Total Views", icon: Eye },
+	{ title: "Total Clicks", icon: CursorClick },
+	{ title: "Click-through rate", icon: TrendUp },
+] as const;
 
 export function StatsOverview({
 	totalViews,
@@ -27,32 +29,54 @@ export function StatsOverview({
 	viewsChange,
 	clicksChange,
 	ctrChange,
+	loading = false,
 }: StatsOverviewProps) {
+	/*
+	 * The skeleton reproduces the real tile's box -- same header row height,
+	 * same figure and delta lines -- so the layout is already final when the
+	 * numbers land and nothing reflows.
+	 */
+	if (loading) {
+		return (
+			<div className="grid gap-4 md:grid-cols-3">
+				{TILES.map(({ title }) => (
+					<Card key={title}>
+						<div className="flex h-7 items-center justify-between px-5">
+							<Skeleton className="h-3.5 w-24" />
+							<Skeleton className="rounded-lg" />
+						</div>
+						<div className="space-y-2 px-5">
+							<Skeleton className="h-8 w-28" />
+							<Skeleton className="h-3 w-32" />
+						</div>
+					</Card>
+				))}
+			</div>
+		);
+	}
+
 	return (
 		<div className="grid gap-4 md:grid-cols-3">
 			<KPICard
-				title="Total Views"
-				value={formatNumber(totalViews)}
-				subtitle="vs last period"
-				icon={<Eye className="h-4 w-4" />}
+				title={TILES[0].title}
+				value={formatCompact(totalViews)}
+				subtitle="vs previous period"
+				icon={<Eye />}
 				change={viewsChange}
-				colorTheme="blue"
 			/>
 			<KPICard
-				title="Total Clicks"
-				value={formatNumber(totalClicks)}
-				subtitle="vs last period"
-				icon={<CursorClick className="h-4 w-4" />}
+				title={TILES[1].title}
+				value={formatCompact(totalClicks)}
+				subtitle="vs previous period"
+				icon={<CursorClick />}
 				change={clicksChange}
-				colorTheme="purple"
 			/>
 			<KPICard
-				title="CTR Rate"
+				title={TILES[2].title}
 				value={`${ctr.toFixed(1)}%`}
-				subtitle="vs last period"
-				icon={<TrendUp className="h-4 w-4" />}
+				subtitle="vs previous period"
+				icon={<TrendUp />}
 				change={ctrChange}
-				colorTheme="green"
 			/>
 		</div>
 	);
