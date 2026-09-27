@@ -2,6 +2,18 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import {
+	AddressBook,
+	ChartBar,
+	DotsSixVertical,
+	Envelope,
+	Globe,
+	Link as LinkIcon,
+	Phone,
+	SquaresFour,
+	Star,
+	Trash,
+} from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import type {
 	linkContacts,
@@ -9,23 +21,11 @@ import type {
 	linkPlatforms,
 	links,
 } from "@zaplink/db";
-import {
-	BarChart3,
-	Contact,
-	Globe,
-	Grid,
-	GripVertical,
-	Link as LinkIcon,
-	Mail,
-	Phone,
-	Star,
-	Trash2,
-} from "lucide-react";
+import { cn } from "cn";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc/client";
 
 // Extended Link type to include relations
@@ -100,13 +100,13 @@ export default function LinkItem({
 		if (link.type === "contact" && link.contact?.type) {
 			switch (link.contact.type) {
 				case "email":
-					return <Mail className="h-5 w-5 text-muted-foreground" />;
+					return <Envelope className="h-5 w-5 text-muted-foreground" />;
 				case "phone":
 					return <Phone className="h-5 w-5 text-muted-foreground" />;
 				case "website":
 					return <Globe className="h-5 w-5 text-muted-foreground" />;
 				default:
-					return <Contact className="h-5 w-5 text-muted-foreground" />;
+					return <AddressBook className="h-5 w-5 text-muted-foreground" />;
 			}
 		}
 
@@ -130,7 +130,7 @@ export default function LinkItem({
 						{...listeners}
 						className="flex w-8 shrink-0 cursor-grab touch-none items-center justify-center border-border border-r bg-muted/30 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:cursor-grabbing md:w-10"
 					>
-						<GripVertical className="h-4 w-4 md:h-5 md:w-5" />
+						<DotsSixVertical className="h-4 w-4 md:h-5 md:w-5" />
 					</div>
 
 					{/* Icon/Thumbnail Section */}
@@ -177,7 +177,7 @@ export default function LinkItem({
 							)}
 							{link.custom?.displayMode === "grid" && (
 								<span className="flex shrink-0 items-center gap-1 rounded-full bg-blue-500/10 px-1.5 py-0.5 font-medium text-[9px] text-blue-500 uppercase tracking-wider md:px-2 md:text-[10px]">
-									<Grid className="h-2.5 w-2.5 md:h-3 md:w-3" />{" "}
+									<SquaresFour className="h-2.5 w-2.5 md:h-3 md:w-3" />{" "}
 									<span className="hidden sm:inline">Grid</span>
 								</span>
 							)}
@@ -192,7 +192,7 @@ export default function LinkItem({
 				<div className="flex w-full items-center justify-end gap-4 border-border border-t bg-muted/20 px-4 py-2 md:w-auto md:justify-start md:border-t-0 md:border-l md:bg-transparent md:p-0 md:px-4">
 					{clickData && clickData.clickCount > 0 && (
 						<span className="flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-1.5 py-0.5 font-medium text-[9px] text-emerald-500 uppercase tracking-wider md:px-2 md:text-[10px]">
-							<BarChart3 className="h-4 w-4" />{" "}
+							<ChartBar className="h-4 w-4" />{" "}
 							<span>{clickData.clickCount.toLocaleString()}</span>
 						</span>
 					)}
@@ -200,7 +200,7 @@ export default function LinkItem({
 						checked={!link.isHidden}
 						onCheckedChange={handleVisibilityChange}
 						aria-label="Toggle visibility"
-						className="scale-90 cursor-pointer data-[state=checked]:bg-green-500 md:scale-100"
+						className="scale-90 cursor-pointer data-checked:bg-green-500 md:scale-100"
 					/>
 					<Button
 						variant="ghost"
@@ -209,7 +209,7 @@ export default function LinkItem({
 						className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
 						aria-label="Delete link"
 					>
-						<Trash2 className="h-4 w-4" />
+						<Trash className="h-4 w-4" />
 					</Button>
 				</div>
 			</div>

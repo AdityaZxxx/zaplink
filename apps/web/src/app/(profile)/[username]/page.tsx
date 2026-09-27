@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import { User } from "@phosphor-icons/react/ssr";
 import PublicProfileClient from "@/features/profile/components/PublicProfileClient";
 import { trpcServer } from "@/utils/trpc/server";
 

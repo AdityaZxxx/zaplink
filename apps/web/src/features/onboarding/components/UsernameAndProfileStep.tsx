@@ -1,6 +1,6 @@
+import { Spinner } from "@phosphor-icons/react/ssr";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -66,7 +66,7 @@ export const UsernameAndProfileStep = ({
 	);
 
 	// Determine username status
-	const usernameStatus = useMemo(() => {
+	const usernameStatus = (() => {
 		if (!username || username.length < 3) return "too_short";
 		if (!/^[a-zA-Z0-9_]+$/.test(username)) return "invalid";
 		if (username !== debouncedUsername) return "typing";
@@ -74,7 +74,7 @@ export const UsernameAndProfileStep = ({
 		if (usernameCheck?.available === true) return "available";
 		if (usernameCheck?.available === false) return "taken";
 		return "idle";
-	}, [username, debouncedUsername, isCheckingUsername, usernameCheck]);
+	})();
 
 	const isUsernameAvailable = usernameStatus === "available";
 
@@ -172,7 +172,7 @@ export const UsernameAndProfileStep = ({
 				<CardContent className="relative px-6 pt-0 pb-8">
 					<form onSubmit={handleSubmit} className="flex flex-col items-center">
 						{/* Avatar Section - Overlapping Banner */}
-						<div className="-mt-12 relative z-10 mb-6">
+						<div className="relative z-10 -mt-12 mb-6">
 							<ProfileImageUploader
 								imageUrl={avatarUrl}
 								onImageChange={setAvatarUrl}
@@ -203,7 +203,7 @@ export const UsernameAndProfileStep = ({
 
 								<div className="group relative mx-auto max-w-[200px]">
 									<div className="relative">
-										<span className="-translate-y-1/2 absolute top-1/2 left-3 font-medium text-zinc-500">
+										<span className="absolute top-1/2 left-3 -translate-y-1/2 font-medium text-zinc-500">
 											@
 										</span>
 										<Input
@@ -270,7 +270,7 @@ export const UsernameAndProfileStep = ({
 								</div>
 							</div>
 
-							<div className="-mx-6 -mb-8 sticky bottom-0 z-50 border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
+							<div className="sticky bottom-0 z-50 -mx-6 -mb-8 border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
 								<Button
 									type="submit"
 									disabled={
@@ -283,7 +283,7 @@ export const UsernameAndProfileStep = ({
 								>
 									{isCheckingUsername ? (
 										<>
-											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											<Spinner className="mr-2 h-4 w-4 animate-spin" />
 											Checking...
 										</>
 									) : (

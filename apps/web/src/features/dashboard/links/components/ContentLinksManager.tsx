@@ -14,13 +14,13 @@ import {
 	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { Plus } from "@phosphor-icons/react";
 import type {
 	linkContacts,
 	linkCustoms,
 	linkPlatforms,
 	links,
 } from "@zaplink/db";
-import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyLinksState } from "./EmptyLinksState";
 import LinkItem from "./LinkItem";

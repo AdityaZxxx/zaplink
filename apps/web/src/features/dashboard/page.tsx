@@ -1,18 +1,18 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import {
-	BarChart3,
+	ChartBar,
 	Copy,
 	Link as LinkIcon,
 	Palette,
 	Plus,
-	Share2,
-} from "lucide-react";
+	ShareNetwork,
+} from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileCard } from "@/features/profile/components";
 import { trpc } from "@/utils/trpc/client";
@@ -94,7 +94,7 @@ export default function DashboardPage() {
 							<CardTitle className="font-medium text-muted-foreground text-sm">
 								Total Views
 							</CardTitle>
-							<BarChart3 className="h-4 w-4 text-muted-foreground" />
+							<ChartBar className="h-4 w-4 text-muted-foreground" />
 						</CardHeader>
 						<CardContent className="p-4 pt-0 md:p-6 md:pt-0">
 							<div className="font-bold text-2xl text-foreground md:text-3xl">
@@ -128,7 +128,7 @@ export default function DashboardPage() {
 					<Link href="/dashboard/links" className="group">
 						<div className="relative h-full overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg md:p-6">
 							<div className="absolute top-0 right-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
-								<Plus className="-translate-y-4 md:-translate-y-8 h-16 w-16 translate-x-4 rotate-12 transform text-primary md:h-24 md:w-24 md:translate-x-8" />
+								<Plus className="h-16 w-16 translate-x-4 -translate-y-4 rotate-12 transform text-primary md:h-24 md:w-24 md:translate-x-8 md:-translate-y-8" />
 							</div>
 							<div className="relative z-10 flex h-full flex-col justify-between">
 								<div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 transition-transform group-hover:scale-110 md:mb-4 md:h-12 md:w-12">
@@ -148,7 +148,7 @@ export default function DashboardPage() {
 					<Link href="/dashboard/profile" className="group">
 						<div className="relative h-full overflow-hidden rounded-xl border border-border bg-card p-4 transition-all duration-300 hover:border-primary/50 hover:shadow-lg md:p-6">
 							<div className="absolute top-0 right-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
-								<Palette className="-rotate-12 -translate-y-4 md:-translate-y-8 h-16 w-16 translate-x-4 transform text-primary md:h-24 md:w-24 md:translate-x-8" />
+								<Palette className="h-16 w-16 translate-x-4 -translate-y-4 -rotate-12 transform text-primary md:h-24 md:w-24 md:translate-x-8 md:-translate-y-8" />
 							</div>
 							<div className="relative z-10 flex h-full flex-col justify-between">
 								<div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 transition-transform group-hover:scale-110 md:mb-4 md:h-12 md:w-12">
@@ -173,14 +173,17 @@ export default function DashboardPage() {
 						<h2 className="font-semibold text-foreground text-lg tracking-tight md:text-xl">
 							Your Links
 						</h2>
-						<Button
-							variant="ghost"
-							size="sm"
-							asChild
-							className="h-8 text-muted-foreground text-xs hover:text-foreground md:h-9 md:text-sm"
+						<Link
+							href="/dashboard/links"
+							className={buttonVariants({
+								variant: "ghost",
+								size: "sm",
+								className:
+									"h-8 text-muted-foreground text-xs hover:text-foreground md:h-9 md:text-sm",
+							})}
 						>
-							<Link href="/dashboard/links">View All</Link>
-						</Button>
+							View All
+						</Link>
 					</div>
 
 					{links.length === 0 ? (
@@ -194,12 +197,13 @@ export default function DashboardPage() {
 							<p className="mb-4 text-muted-foreground text-xs md:text-sm">
 								Your profile is empty. Add your first link to get started.
 							</p>
-							<Button asChild size="sm">
-								<Link href="/dashboard/links">
-									<Plus className="mr-2 h-4 w-4" />
-									Add Link
-								</Link>
-							</Button>
+							<Link
+								href="/dashboard/links"
+								className={buttonVariants({ size: "sm" })}
+							>
+								<Plus className="mr-2 h-4 w-4" />
+								Add Link
+							</Link>
 						</div>
 					) : (
 						<div className="grid gap-3">
@@ -219,16 +223,6 @@ export default function DashboardPage() {
 											{link.url}
 										</p>
 									</div>
-									<Button
-										variant="ghost"
-										size="icon"
-										asChild
-										className="h-8 w-8 text-muted-foreground hover:text-foreground md:h-9 md:w-9"
-									>
-										{/* <Link href={link.url} target="_blank">
-											<ExternalLink className="h-4 w-4" />
-										</Link> */}
-									</Button>
 								</div>
 							))}
 						</div>
@@ -261,7 +255,7 @@ export default function DashboardPage() {
 								size="sm"
 								className="flex-1 sm:flex-none"
 							>
-								<Share2 className="mr-2 h-3.5 w-3.5 md:h-4 md:w-4" />
+								<ShareNetwork className="mr-2 h-3.5 w-3.5 md:h-4 md:w-4" />
 								Open
 							</Button>
 						</div>

@@ -1,9 +1,16 @@
 "use client";
 
+import {
+	CreditCard,
+	FileText,
+	Flag,
+	MagnifyingGlass,
+	Shield,
+	User,
+} from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
-import { CreditCard, FileText, Flag, Search, Shield, User } from "lucide-react";
+import { cn } from "cn";
 import { useEffect, useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -14,7 +21,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ProfileCard } from "@/features/profile/components";
-import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc/client";
 import PageWithPreview from "../components/PageWithPreview";
 import { AccountSettings } from "./components/AccountSettings";
@@ -30,7 +36,7 @@ const SETTINGS_NAV_ITEMS = [
 	},
 	{
 		title: "SEO",
-		icon: Search,
+		icon: MagnifyingGlass,
 		id: "seo",
 		description: "Manage your SEO settings.",
 	},
@@ -144,11 +150,19 @@ export default function SettingsPage() {
 					</p>
 				</div>
 				<div className="flex w-full flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-					<aside className="-mx-4 sticky top-0 z-10 bg-background px-4 py-2 lg:static lg:z-auto lg:mx-0 lg:w-64 lg:shrink-0 lg:bg-transparent lg:px-0 lg:py-0">
+					{/*
+					 * top-14, not top-0: the dashboard header in Sidebar.tsx is
+					 * sticky and permanently occupies the first 3.5rem, so this
+					 * section nav has to pin below it rather than under it.
+					 */}
+					<aside className="sticky top-14 z-10 -mx-4 bg-background px-4 py-2 lg:static lg:top-auto lg:z-auto lg:mx-0 lg:w-64 lg:shrink-0 lg:bg-transparent lg:px-0 lg:py-0">
 						<div className="lg:hidden">
 							<Select
 								value={activeTab}
 								onValueChange={(value) => {
+									// A select can be cleared, but this one always drives an
+									// active section, so there is nothing to fall back to.
+									if (!value) return;
 									setActiveTab(value);
 									window.location.hash = value;
 								}}

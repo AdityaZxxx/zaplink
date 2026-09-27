@@ -1,5 +1,5 @@
+import { AddressBook, Envelope, Globe, Phone } from "@phosphor-icons/react/ssr";
 import type { links } from "@zaplink/db";
-import { Contact, Globe, Mail, Phone } from "lucide-react";
 
 type Link = typeof links.$inferSelect & {
 	contact?: { type: string; value: string } | null;
@@ -16,13 +16,13 @@ export function ContactLink({ links, onLinkClick }: ContactLinkProps) {
 	const getIcon = (type: string) => {
 		switch (type) {
 			case "email":
-				return Mail;
+				return Envelope;
 			case "phone":
 				return Phone;
 			case "website":
 				return Globe;
 			default:
-				return Contact;
+				return AddressBook;
 		}
 	};
 

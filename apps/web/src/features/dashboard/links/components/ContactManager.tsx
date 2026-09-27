@@ -1,20 +1,20 @@
 "use client";
 
+import {
+	AddressBook,
+	Envelope,
+	Globe,
+	PencilSimple,
+	Phone,
+	Plus,
+	Trash,
+} from "@phosphor-icons/react";
 import type {
 	linkContacts,
 	linkCustoms,
 	linkPlatforms,
 	links,
 } from "@zaplink/db";
-import {
-	Contact,
-	Globe,
-	Mail,
-	Pencil,
-	Phone,
-	Plus,
-	Trash2,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Link = typeof links.$inferSelect & {
@@ -39,13 +39,13 @@ export function ContactManager({
 	const getIcon = (type: string) => {
 		switch (type) {
 			case "email":
-				return Mail;
+				return Envelope;
 			case "phone":
 				return Phone;
 			case "website":
 				return Globe;
 			default:
-				return Contact;
+				return AddressBook;
 		}
 	};
 
@@ -92,7 +92,7 @@ export function ContactManager({
 									className="h-8 w-8 text-muted-foreground hover:text-foreground"
 									onClick={() => onEdit(link)}
 								>
-									<Pencil className="h-4 w-4" />
+									<PencilSimple className="h-4 w-4" />
 								</Button>
 								<Button
 									size="icon"
@@ -100,7 +100,7 @@ export function ContactManager({
 									className="h-8 w-8 text-muted-foreground hover:text-destructive"
 									onClick={() => onDelete(link.id)}
 								>
-									<Trash2 className="h-4 w-4" />
+									<Trash className="h-4 w-4" />
 								</Button>
 							</div>
 						</div>

@@ -1,13 +1,13 @@
 "use client";
 
-import type { links } from "@zaplink/db";
 import {
-	AlignJustify,
-	Grid,
-	Link as LinkIcon,
-	Loader2,
+	Spinner,
+	SquaresFour,
 	Star,
-} from "lucide-react";
+	TextAlignJustify,
+} from "@phosphor-icons/react";
+import type { links } from "@zaplink/db";
+import { cn } from "cn";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-import { cn } from "@/lib/utils";
 import { useUploadThing } from "@/utils/uploadthing";
 import { LinkThumbnailUploader } from "./LinkThumbnailUploader";
 
@@ -200,7 +199,7 @@ export function EditLinkSheet({
 													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
 											)}
 										>
-											<AlignJustify className="h-6 w-6" />
+											<TextAlignJustify className="h-6 w-6" />
 											<span className="text-xs">Standard</span>
 										</button>
 										<button
@@ -226,8 +225,8 @@ export function EditLinkSheet({
 													: "border-zinc-800 bg-zinc-900 text-zinc-400 hover:bg-zinc-800",
 											)}
 										>
-											<Grid className="h-6 w-6" />
-											<span className="text-xs">Grid</span>
+											<Spinner className="h-6 w-6" />
+											<span className="text-xs">Spinner</span>
 										</button>
 									</div>
 								</div>
@@ -240,7 +239,7 @@ export function EditLinkSheet({
 										onFileChange={setThumbnailFile}
 									/>
 									<p className="text-[10px] text-zinc-500">
-										Recommended for Featured and Grid modes. Max 4MB.
+										Recommended for Featured and Spinner modes. Max 4MB.
 									</p>
 								</div>
 							</TabsContent>
@@ -255,7 +254,7 @@ export function EditLinkSheet({
 									const platform = Object.values(SUPPORT_PLATFORMS).find(
 										(p) => p.name === link.platform?.name,
 									);
-									const Icon = platform?.icon || LinkIcon;
+									const Icon = platform?.icon || Spinner;
 									return <Icon className="h-8 w-8 text-zinc-400" />;
 								})()}
 								<div>
@@ -290,7 +289,10 @@ export function EditLinkSheet({
 							<div className="grid grid-cols-3 gap-4">
 								<div className="space-y-2">
 									<Label>Type</Label>
-									<Select value={contactType} onValueChange={setContactType}>
+									<Select
+										value={contactType}
+										onValueChange={(value) => setContactType(value ?? "email")}
+									>
 										<SelectTrigger className="border-zinc-800 bg-zinc-900">
 											<SelectValue />
 										</SelectTrigger>
@@ -336,7 +338,9 @@ export function EditLinkSheet({
 						disabled={isUploading}
 						className="bg-white text-black hover:bg-zinc-200"
 					>
-						{isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+						{isUploading && (
+							<SquaresFour className="mr-2 h-4 w-4 animate-spin" />
+						)}
 						Save Changes
 					</Button>
 				</SheetFooter>

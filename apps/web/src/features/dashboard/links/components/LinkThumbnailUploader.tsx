@@ -1,6 +1,6 @@
 "use client";
 
-import { Image as ImageIcon, UploadCloud } from "lucide-react";
+import { CloudArrowUp, Image as ImageIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -75,7 +75,7 @@ export function LinkThumbnailUploader({
 							className="object-cover transition-opacity group-hover:opacity-50"
 						/>
 						<div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-							<UploadCloud className="h-8 w-8 text-primary" />
+							<CloudArrowUp className="h-8 w-8 text-primary" />
 						</div>
 					</>
 				) : (

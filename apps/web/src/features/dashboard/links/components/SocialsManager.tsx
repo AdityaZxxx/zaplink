@@ -16,11 +16,11 @@ import {
 	useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Plus } from "@phosphor-icons/react";
 import type { linkPlatforms, links } from "@zaplink/db";
-import { Plus } from "lucide-react";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
-import { cn } from "@/lib/utils";
 
 type Link = typeof links.$inferSelect & {
 	platform?: typeof linkPlatforms.$inferSelect | null;
@@ -101,7 +101,7 @@ function SocialItem({
 						onDelete(link.id);
 					}
 				}}
-				className="-top-2 -right-2 absolute flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm transition-colors hover:bg-destructive hover:text-destructive-foreground"
+				className="absolute -top-2 -right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-muted text-muted-foreground shadow-sm transition-colors hover:bg-destructive hover:text-destructive-foreground"
 				aria-label="Delete social link"
 			>
 				<span className="font-bold text-xs">×</span>

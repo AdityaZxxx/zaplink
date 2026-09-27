@@ -2,15 +2,15 @@
 
 import {
 	Bell,
-	ChartAreaIcon,
-	HomeIcon,
-	LinkIcon,
-	MenuIcon,
-	Settings,
-	UserIcon,
-} from "lucide-react";
+	ChartLineUp,
+	Gear,
+	House,
+	Link as LinkIcon,
+	List,
+	Rabbit,
+	User,
+} from "@phosphor-icons/react";
 import type { Route } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -22,7 +22,7 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Drawer,
 	DrawerContent,
@@ -56,12 +56,12 @@ const menuItems: MenuItem[] = [
 	{
 		title: "Dashboard",
 		url: "/dashboard",
-		icon: HomeIcon,
+		icon: House,
 	},
 	{
 		title: "Profile",
 		url: "/dashboard/profile",
-		icon: UserIcon,
+		icon: User,
 	},
 	{
 		title: "Links",
@@ -71,15 +71,25 @@ const menuItems: MenuItem[] = [
 	{
 		title: "Analytics",
 		url: "/dashboard/analytics",
-		icon: ChartAreaIcon,
+		icon: ChartLineUp,
 	},
 ];
 
 function SidebarLogo() {
 	return (
-		<div className="flex items-center gap-2 px-2">
+		// No padding of its own. SidebarHeader already supplies it, and adding
+		// px-2 here pushed the tile onto a third leading edge that matched
+		// neither the group label below nor the menu icons.
+		<div className="flex items-center gap-2">
 			<div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-				<Image src="/logo.jpg" alt={APP_NAME} width={40} height={40} />
+				<Rabbit
+					weight="fill"
+					className="h-5 w-5 text-primary-foreground"
+					// Decorative: the app name sits right next to it, so
+					// announcing the icon too would read "Zaplink Zaplink".
+					aria-hidden
+					focusable={false}
+				/>
 			</div>
 			<span className="font-bold text-lg group-data-[collapsible=icon]:hidden">
 				{APP_NAME}
@@ -94,14 +104,18 @@ function SidebarMenuItemComponent({ item }: { item: MenuItem }) {
 
 	return (
 		<SidebarMenuItem>
-			<SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-				<Link href={item.url}>
-					<item.icon />
-					<span className="group-data-[collapsible=icon]:hidden">
-						{item.title}
-					</span>
-				</Link>
-			</SidebarMenuButton>
+			<SidebarMenuButton
+				render={
+					<Link href={item.url}>
+						<item.icon />
+						<span className="group-data-[collapsible=icon]:hidden">
+							{item.title}
+						</span>
+					</Link>
+				}
+				isActive={isActive}
+				tooltip={item.title}
+			/>
 		</SidebarMenuItem>
 	);
 }
@@ -118,29 +132,36 @@ function MobileMenu() {
 				className="md:hidden"
 				onClick={() => setOpen(true)}
 			>
-				<MenuIcon className="h-5 w-5" />
+				<List className="h-5 w-5" />
 				<span className="sr-only">Toggle Menu</span>
 			</Button>
 			<Drawer open={open} onOpenChange={setOpen}>
-				<DrawerContent className="h-[80vh]">
+				{/*
+				  h-[80vh] pinned the sheet to a fixed height regardless of content,
+				  so it carried a large empty area and would clip if the nav grew.
+				  A max-height lets it size to the items and still cap.
+				*/}
+				<DrawerContent className="h-auto max-h-[80vh]">
 					<DrawerHeader>
-						<DrawerTitle>Navigation Menu</DrawerTitle>
+						{/* Same word the desktop group label uses for this region. */}
+						<DrawerTitle>Navigation</DrawerTitle>
 					</DrawerHeader>
 					<div className="flex flex-col gap-2 p-4">
 						{menuItems.map((item) => {
 							const isActive = pathname === item.url;
 							return (
-								<Button
+								<Link
 									key={item.title}
-									variant={isActive ? "default" : "ghost"}
-									className="justify-start gap-2"
-									asChild
+									href={item.url}
+									onClick={() => setOpen(false)}
+									className={buttonVariants({
+										variant: isActive ? "default" : "ghost",
+										className: "justify-start gap-2",
+									})}
 								>
-									<Link href={item.url} onClick={() => setOpen(false)}>
-										<item.icon className="h-5 w-5" />
-										{item.title}
-									</Link>
-								</Button>
+									<item.icon className="h-5 w-5" />
+									{item.title}
+								</Link>
 							);
 						})}
 					</div>
@@ -192,7 +213,19 @@ export function DashboardSidebar({
 		<SidebarProvider defaultOpen={defaultOpen}>
 			<AppSidebar />
 			<main className="flex w-full flex-1 flex-col">
-				<header className="flex h-14 items-center gap-4 border-b bg-background px-4">
+				{/*
+				 * Sticky so the breadcrumb and account controls stay put while a
+				 * long page scrolls. bg-background is already opaque, so nothing
+				 * shows through the bar as content passes under it.
+				 *
+				 * z-[5] is a deliberate sandwich, not a default. It has to clear
+				 * page content that brings its own stacking context -- the
+				 * dashboard cards use `relative z-10` -- while staying under the
+				 * sidebar, which is `fixed z-10` on desktop and a `z-50` Sheet on
+				 * mobile. A plain z-10 would tie with the desktop sidebar and,
+				 * being later in the DOM, paint the bar over it.
+				 */}
+				<header className="sticky top-0 z-[5] flex h-14 shrink-0 items-center gap-4 border-b bg-background px-4">
 					<div className="flex items-center gap-2">
 						<SidebarTrigger className="hidden md:flex" />
 						<Breadcrumb>
@@ -213,11 +246,27 @@ export function DashboardSidebar({
 					</div>
 					<div className="flex-1" />
 					<div className="flex items-center gap-4">
-						<Link href="/dashboard/notifications">
-							<Bell className="h-5 w-5" />
+						{/*
+						  Bare <Link><Icon/></Link> gave these a 23px target in a
+						  row whose other controls are 32-36px, with no background,
+						  no focus ring and no accessible name. buttonVariants puts
+						  them in the same control zone as everything else. The link
+						  is styled rather than wrapped in Button, because Button
+						  would put role="button" on a navigation link.
+						*/}
+						<Link
+							href="/dashboard/notifications"
+							aria-label="Notifications"
+							className={buttonVariants({ variant: "ghost", size: "icon" })}
+						>
+							<Bell />
 						</Link>
-						<Link href="/dashboard/settings">
-							<Settings className="h-5 w-5" />
+						<Link
+							href="/dashboard/settings"
+							aria-label="Settings"
+							className={buttonVariants({ variant: "ghost", size: "icon" })}
+						>
+							<Gear />
 						</Link>
 						<MobileMenu />
 						<UserMenu />

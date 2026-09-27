@@ -1,7 +1,7 @@
 "use client";
 
+import { Spinner } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { trpc } from "@/utils/trpc/client";
 
 export function AccountSettings() {
@@ -12,7 +12,7 @@ export function AccountSettings() {
 	if (isLoading) {
 		return (
 			<div className="flex h-40 items-center justify-center">
-				<Loader2 className="h-8 w-8 animate-spin text-primary" />
+				<Spinner className="h-8 w-8 animate-spin text-primary" />
 			</div>
 		);
 	}

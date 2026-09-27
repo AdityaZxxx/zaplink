@@ -15,12 +15,24 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { queryClient, trpc } from "@/utils/trpc/client";
 
-const SUPPORT_CAUSES = [
+type SupportBanner =
+	| "none"
+	| "stop_genocide"
+	| "black_lives_matter"
+	| "climate_action"
+	| "mental_health";
+
+type SupportCause = Exclude<SupportBanner, "none">;
+
+const SUPPORT_CAUSES: { value: SupportCause; label: string }[] = [
 	{ value: "stop_genocide", label: "Stop Genocide" },
 	{ value: "black_lives_matter", label: "Black Lives Matter" },
 	{ value: "climate_action", label: "Climate Action" },
 	{ value: "mental_health", label: "Mental Health Awareness" },
 ];
+
+const isSupportCause = (value: string): value is SupportCause =>
+	SUPPORT_CAUSES.some((cause) => cause.value === value);
 
 export function SupportBannerSettings() {
 	const { data: profile } = useQuery(trpc.profile.getProfile.queryOptions());
@@ -85,17 +97,14 @@ export function SupportBannerSettings() {
 		});
 	};
 
-	const handleValueChange = (
-		value:
-			| "none"
-			| "stop_genocide"
-			| "black_lives_matter"
-			| "climate_action"
-			| "mental_health",
-	) => {
-		setOptimisticValue(value);
+	const handleValueChange = (value: string | null) => {
+		// The select only offers causes, so a null value means nothing is selected,
+		// which for a support banner is the same as turning it off.
+		const nextValue: SupportBanner =
+			value !== null && isSupportCause(value) ? value : "none";
+		setOptimisticValue(nextValue);
 		updateProfileMutation.mutate({
-			supportBanner: value,
+			supportBanner: nextValue,
 		});
 	};
 

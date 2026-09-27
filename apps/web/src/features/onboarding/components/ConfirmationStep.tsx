@@ -1,13 +1,13 @@
+import {
+	ArrowSquareOut,
+	CheckCircle,
+	Copy,
+	Layout,
+} from "@phosphor-icons/react/ssr";
 import { useMutation } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
-import {
-	CheckCircle2,
-	Copy,
-	ExternalLink,
-	LayoutDashboard,
-} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,12 @@ import { ProfileCard } from "@/features/profile/components";
 import { trpc } from "@/utils/trpc/client";
 import { useUploadThing } from "@/utils/uploadthing";
 import type { OnboardingData } from "../page";
+
+// The preview is local-only and never persisted, so one stable timestamp is
+// enough for every field. Allocating `new Date()` inside the memos changed the
+// object identity on each recompute, which gave the memos no benefit and
+// defeated React.memo on ProfileCard.
+const PREVIEW_TIMESTAMP = new Date();
 
 interface ConfirmationStepProps {
 	onBack: () => void;
@@ -123,6 +129,38 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 		toast.success("Link copied to clipboard!");
 	};
 
+	const [previewAvatarUrl, setPreviewAvatarUrl] = useState<string | null>(null);
+	const [previewBannerUrl, setPreviewBannerUrl] = useState<string | null>(null);
+
+	// Object URLs are a side effect, so they are created in an effect rather
+	// than during render. Each URL is revoked when its file is replaced and
+	// again on unmount, so the Blob is never pinned for the page lifetime.
+	useEffect(() => {
+		if (!data.avatarFile) {
+			setPreviewAvatarUrl(null);
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(data.avatarFile);
+		setPreviewAvatarUrl(objectUrl);
+
+		// Cleanup
+		return () => URL.revokeObjectURL(objectUrl);
+	}, [data.avatarFile]);
+
+	useEffect(() => {
+		if (!data.bannerFile) {
+			setPreviewBannerUrl(null);
+			return;
+		}
+
+		const objectUrl = URL.createObjectURL(data.bannerFile);
+		setPreviewBannerUrl(objectUrl);
+
+		// Cleanup
+		return () => URL.revokeObjectURL(objectUrl);
+	}, [data.bannerFile]);
+
 	const previewProfile = useMemo(
 		() => ({
 			id: "preview",
@@ -130,17 +168,13 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 			username: data.username,
 			displayName: data.displayName,
 			bio: data.bio,
-			avatarUrl: data.avatarFile
-				? URL.createObjectURL(data.avatarFile)
-				: data.avatarUrl,
-			bannerUrl: data.bannerFile
-				? URL.createObjectURL(data.bannerFile)
-				: data.bannerUrl,
+			avatarUrl: data.avatarFile ? previewAvatarUrl : data.avatarUrl,
+			bannerUrl: data.bannerFile ? previewBannerUrl : data.bannerUrl,
 			themeId: null,
-			createdAt: new Date(),
-			updatedAt: new Date(),
+			createdAt: PREVIEW_TIMESTAMP,
+			updatedAt: PREVIEW_TIMESTAMP,
 		}),
-		[data],
+		[data, previewAvatarUrl, previewBannerUrl],
 	);
 
 	const previewLinks = useMemo(
@@ -151,8 +185,8 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 				title: link.title,
 				order: i,
 				profileId: "preview",
-				createdAt: new Date(),
-				updatedAt: new Date(),
+				createdAt: PREVIEW_TIMESTAMP,
+				updatedAt: PREVIEW_TIMESTAMP,
 				type: link.type,
 				platformName: link.platformName,
 			})),
@@ -190,12 +224,11 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 			<Dialog open={showSuccessModal} onOpenChange={() => {}}>
 				<DialogContent
 					className="border-zinc-800 bg-zinc-900 text-center text-white sm:max-w-md"
-					onInteractOutside={(e) => e.preventDefault()}
 					showCloseButton={false}
 				>
 					<DialogHeader>
 						<div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-green-500/20 bg-green-500/10">
-							<CheckCircle2 className="h-10 w-10 text-green-500" />
+							<CheckCircle className="h-10 w-10 text-green-500" />
 						</div>
 						<DialogTitle className="text-center font-bold text-2xl">
 							Your Zaplink is Live!
@@ -220,14 +253,14 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 							className="h-12 w-full gap-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
 							onClick={() => window.open(`/${data.username}`, "_blank")}
 						>
-							<ExternalLink className="h-4 w-4" />
+							<ArrowSquareOut className="h-4 w-4" />
 							Visit Page
 						</Button>
 						<Button
 							className="h-12 w-full gap-2 bg-white text-black hover:bg-zinc-200"
 							onClick={() => router.push("/dashboard")}
 						>
-							<LayoutDashboard className="h-4 w-4" />
+							<Layout className="h-4 w-4" />
 							Go to Editor
 						</Button>
 					</div>

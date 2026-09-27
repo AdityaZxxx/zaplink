@@ -1,10 +1,10 @@
 "use client";
 
+import { CalendarBlank, Check } from "@phosphor-icons/react";
+import { cn } from "cn";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Check } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { DateRange as DayPickerDateRange } from "react-day-picker";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -22,7 +22,6 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
 
 export const DATE_RANGES = [
 	{ label: "Today", value: "today" },
@@ -70,27 +69,16 @@ export function DateRangePicker({
 		date,
 	);
 
-	// Sync props to local state when opening
-	useEffect(() => {
-		if (open) {
-			setTempRange(range);
-			setTempDate(date);
-		}
-	}, [open, range, date]);
-
 	const isCustomComplete = Boolean(tempDate?.from && tempDate?.to);
 
-	const label = useMemo(() => {
-		if (range === "custom") {
-			if (!date?.from) return "Custom range";
-			if (!date.to) return format(date.from, "LLL dd, y");
-			return `${format(date.from, "LLL dd, y")} – ${format(
-				date.to,
-				"LLL dd, y",
-			)}`;
-		}
-		return DATE_RANGES.find((r) => r.value === range)?.label ?? "Select range";
-	}, [range, date]);
+	const label =
+		range === "custom"
+			? !date?.from
+				? "Custom range"
+				: !date.to
+					? format(date.from, "LLL dd, y")
+					: `${format(date.from, "LLL dd, y")} – ${format(date.to, "LLL dd, y")}`
+			: (DATE_RANGES.find((r) => r.value === range)?.label ?? "Select range");
 
 	const trigger = (
 		<Button
@@ -99,7 +87,7 @@ export function DateRangePicker({
 			className="h-9 w-full justify-between sm:w-[260px]"
 		>
 			<div className="flex items-center gap-2 truncate">
-				<CalendarIcon className="h-4 w-4" />
+				<CalendarBlank className="h-4 w-4" />
 				<span className="truncate">{label}</span>
 			</div>
 		</Button>
@@ -122,63 +110,88 @@ export function DateRangePicker({
 		setTempRange("last7"); // Default fallback
 	};
 
+	// Reset the draft to the applied props each time the popover opens, so
+	// cancelling never leaks an unapplied selection
+	const handleOpenChange = (next: boolean) => {
+		if (next) {
+			setTempRange(range);
+			setTempDate(date);
+		}
+		setOpen(next);
+	};
+
 	if (isMobile) {
 		return (
-			<Drawer open={open} onOpenChange={setOpen}>
-				<DrawerTrigger asChild>{trigger}</DrawerTrigger>
+			<Drawer open={open} onOpenChange={handleOpenChange}>
+				<DrawerTrigger render={trigger} />
 
 				<DrawerContent>
 					<DrawerHeader>
 						<DrawerTitle>Date range</DrawerTitle>
 					</DrawerHeader>
 
-					<div className="grid grid-cols-2 gap-2 px-4 pb-4">
-						<PresetList
-							currentRange={tempRange}
-							onSelect={handlePresetSelect}
-							onCustomSelect={() => setTempRange("custom")}
-							isMobile
-						/>
-					</div>
-
-					{/* Calendar */}
-					{tempRange === "custom" && (
-						<div className="mx-auto px-4 pb-2">
-							<Calendar
-								mode="range"
-								selected={tempDate}
-								onSelect={setTempDate}
-								numberOfMonths={1}
-								disabled={{ after: new Date() }}
-								className="rounded-md border"
+					{/*
+					 * Scrollable, because the drawer clips its own overflow and the
+					 * preset grid plus a calendar overflows the capped sheet height
+					 * on a short phone. Without this the calendar was simply cut off.
+					 */}
+					<div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+						<div className="grid grid-cols-2 gap-2 px-4 pb-4">
+							<PresetList
+								currentRange={tempRange}
+								onSelect={handlePresetSelect}
+								onCustomSelect={() => setTempRange("custom")}
+								isMobile
 							/>
 						</div>
-					)}
 
-					<DrawerFooter>
-						<DrawerClose asChild>
-							<Button variant="ghost">Cancel</Button>
-						</DrawerClose>
-						<Button disabled={!isCustomComplete} onClick={handleApply}>
-							Apply
-						</Button>
-					</DrawerFooter>
+						{tempRange === "custom" && (
+							<div className="mx-auto px-4 pb-2">
+								<Calendar
+									mode="range"
+									selected={tempDate}
+									onSelect={setTempDate}
+									numberOfMonths={1}
+									disabled={{ after: new Date() }}
+									className="rounded-md bg-muted/40"
+								/>
+							</div>
+						)}
+					</div>
+
+					{/*
+					 * Only for a custom range. A preset applies the moment it is
+					 * tapped, so with a preset active the footer's Apply sat there
+					 * permanently disabled next to a Cancel that only closed the
+					 * sheet. The desktop branch already gated its actions the same
+					 * way.
+					 */}
+					{tempRange === "custom" && (
+						<DrawerFooter>
+							<DrawerClose render={<Button variant="ghost">Cancel</Button>} />
+							<Button disabled={!isCustomComplete} onClick={handleApply}>
+								Apply
+							</Button>
+						</DrawerFooter>
+					)}
 				</DrawerContent>
 			</Drawer>
 		);
 	}
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>{trigger}</PopoverTrigger>
-
-			<PopoverContent
-				align={align}
-				className="w-auto p-0"
-				collisionPadding={16}
-			>
+		<Popover open={open} onOpenChange={handleOpenChange}>
+			<PopoverTrigger render={trigger} />
+			{/*
+			 * `p-0` so the two panes meet, with `overflow-hidden` letting the
+			 * popover's own 24px radius clip them. An inset pane would need a
+			 * concentric 16px radius at this 8px padding; flush panes need none.
+			 */}
+			<PopoverContent align={align} className="w-auto overflow-hidden p-0">
 				<div className="flex">
-					<div className="flex flex-col gap-1 border-r p-2">
+					{/* bg-muted, not bg-background: nested inside bg-popover the
+					    latter is darker in dark mode and reads as a hole. */}
+					<div className="flex flex-col gap-0.5 border-border border-r bg-muted/50 p-2">
 						<PresetList
 							currentRange={tempRange}
 							onSelect={handlePresetSelect}
@@ -186,7 +199,13 @@ export function DateRangePicker({
 						/>
 					</div>
 
-					<div className="bg-background p-2">
+					{/*
+					 * No `autoFocus`: the calendar sits after the preset list in
+					 * reading order, so focusing it on open skipped past every
+					 * preset for keyboard users. Base UI moves focus to the first
+					 * focusable in the popup, which is the first preset.
+					 */}
+					<div className="p-2">
 						<Calendar
 							mode="range"
 							selected={tempDate}
@@ -196,8 +215,6 @@ export function DateRangePicker({
 							}}
 							numberOfMonths={calendarMonths}
 							disabled={{ after: new Date() }}
-							className="rounded-md border"
-							autoFocus
 						/>
 
 						{tempRange === "custom" && (
@@ -285,7 +302,7 @@ interface CalendarActionsProps {
 
 function CalendarActions({ onReset, onApply, canApply }: CalendarActionsProps) {
 	return (
-		<div className="mt-2 flex justify-end gap-2 border-t pt-2">
+		<div className="mt-2 flex items-center justify-end gap-2 border-border border-t pt-2">
 			<Button variant="ghost" size="sm" onClick={onReset}>
 				Reset
 			</Button>

@@ -1,16 +1,16 @@
 "use client";
 
 import {
-	ChevronDown,
-	ChevronUp,
+	CaretDown,
+	CaretUp,
 	Globe,
+	HandHeart,
 	Heart,
-	HeartHandshake,
 	Leaf,
 	Users,
-} from "lucide-react";
+} from "@phosphor-icons/react";
+import { cn } from "cn";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 
 export type SupportCause =
 	| "none"
@@ -27,7 +27,7 @@ const CAUSE_CONTENT = {
 	stop_genocide: {
 		title: "Stop Genocide",
 		description: "Support humanitarian aid and global peace efforts.",
-		icon: HeartHandshake,
+		icon: HandHeart,
 		color: "bg-red-500",
 		textColor: "text-white",
 		link: "https://www.un.org/en/genocideprevention/",
@@ -98,9 +98,9 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 					aria-label={isMinimized ? "Expand banner" : "Minimize banner"}
 				>
 					{isMinimized ? (
-						<ChevronUp className="h-4 w-4" />
+						<CaretUp className="h-4 w-4" />
 					) : (
-						<ChevronDown className="h-4 w-4" />
+						<CaretDown className="h-4 w-4" />
 					)}
 				</button>
 
@@ -148,10 +148,19 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 							<p className="max-w-[280px] text-center text-sm leading-relaxed opacity-90">
 								{content.description}
 							</p>
+							{/*
+							  biome-ignore lint/a11y/noAmbiguousAnchorText: the rule
+							  matches the anchor's text against a fixed word list and
+							  does not consider aria-label, so it cannot see that the
+							  accessible name is already "Learn more about <cause>".
+							  Keeping the visible text short is deliberate; every banner
+							  renders one link at a time, so the cause is adjacent.
+							*/}
 							<a
 								href={content.link}
 								target="_blank"
 								rel="noopener noreferrer"
+								aria-label={`Learn more about ${content.title}`}
 								className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 font-bold text-black text-xs transition-transform hover:scale-105 active:scale-95"
 							>
 								Learn More

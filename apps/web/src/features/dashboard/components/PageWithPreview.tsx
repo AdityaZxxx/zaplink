@@ -1,6 +1,7 @@
 "use client";
 
-import { Eye } from "lucide-react";
+import { Eye } from "@phosphor-icons/react";
+import { cn } from "cn";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +10,6 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
 import { ScrollArea } from "../../../components/ui/scroll-area";
 
 interface PageWithPreviewProps {
@@ -58,12 +58,14 @@ export default function PageWithPreview({
 			{/* Mobile Preview Button */}
 			<div className="fixed right-6 bottom-6 z-50 lg:hidden">
 				<Dialog open={showPreview} onOpenChange={setShowPreview}>
-					<DialogTrigger asChild>
-						<Button size="lg" className="rounded-full shadow-xl">
-							<Eye className="mr-2 h-4 w-4" />
-							Preview
-						</Button>
-					</DialogTrigger>
+					<DialogTrigger
+						render={
+							<Button size="lg" className="rounded-full shadow-xl">
+								<Eye className="mr-2 h-4 w-4" />
+								Preview
+							</Button>
+						}
+					/>
 					<DialogTitle className="sr-only">Preview</DialogTitle>
 					<DialogContent className="h-[90vh] w-[90vw] max-w-md overflow-hidden rounded-3xl p-0">
 						{preview}

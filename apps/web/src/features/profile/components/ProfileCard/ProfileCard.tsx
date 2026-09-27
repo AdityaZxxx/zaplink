@@ -1,5 +1,6 @@
 "use client";
 
+import { LinkSimple, User } from "@phosphor-icons/react";
 import type {
 	linkContacts,
 	linkCustoms,
@@ -7,11 +8,10 @@ import type {
 	links,
 	profiles,
 } from "@zaplink/db";
-import { Link2, User } from "lucide-react";
+import { cn } from "cn";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
-import { cn } from "@/lib/utils";
 import { ContactLink } from "./ContactLink";
 import { FeaturedLink } from "./FeaturedLink";
 import { GridLink } from "./GridLink";
@@ -215,7 +215,7 @@ export default function ProfileCard({
 							{links.length === 0 && (
 								<div className="flex flex-col items-center justify-center py-12 text-center opacity-50">
 									<div className="mb-3 rounded-full bg-muted/50 p-4">
-										<Link2 className="h-6 w-6" />
+										<LinkSimple className="h-6 w-6" />
 									</div>
 									<p className="text-sm">No links added yet</p>
 								</div>

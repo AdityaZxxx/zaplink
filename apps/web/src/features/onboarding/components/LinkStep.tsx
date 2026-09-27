@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash } from "@phosphor-icons/react/ssr";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -197,7 +197,7 @@ export const LinkStep = ({
 							</div>
 						</ScrollArea>
 
-						<div className="-mx-6 -mb-6 sticky bottom-0 z-50 flex items-center justify-between border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
+						<div className="sticky bottom-0 z-50 -mx-6 -mb-6 flex items-center justify-between border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
 							<Button
 								type="button"
 								variant="ghost"
@@ -250,7 +250,7 @@ export const LinkStep = ({
 													onClick={() => togglePlatform("custom")}
 													className="text-zinc-500 hover:text-red-400"
 												>
-													<Trash2 className="h-4 w-4" />
+													<Trash className="h-4 w-4" />
 												</button>
 											</div>
 											<div className="space-y-3">
@@ -291,7 +291,7 @@ export const LinkStep = ({
 												onClick={() => togglePlatform(key)}
 												className="text-zinc-500 hover:text-red-400"
 											>
-												<Trash2 className="h-4 w-4" />
+												<Trash className="h-4 w-4" />
 											</button>
 										</div>
 										<div className="relative">
@@ -314,7 +314,7 @@ export const LinkStep = ({
 							})}
 						</div>
 
-						<div className="-mx-6 -mb-6 sticky bottom-0 z-50 flex gap-3 border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
+						<div className="sticky bottom-0 z-50 -mx-6 -mb-6 flex gap-3 border-zinc-800 border-t bg-zinc-950/80 px-6 py-4 backdrop-blur-xl">
 							<Button
 								type="button"
 								variant="ghost"

@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Spinner } from "@phosphor-icons/react";
 import { useState } from "react";
 import type { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -229,7 +229,7 @@ export default function ProfileForm({
 						type="submit"
 						disabled={!form.formState.isDirty || isSubmitting}
 					>
-						{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+						{isSubmitting && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
 						Save Changes
 					</Button>
 				</div>
