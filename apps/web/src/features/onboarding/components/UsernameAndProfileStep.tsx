@@ -1,6 +1,6 @@
 import { Spinner } from "@phosphor-icons/react/ssr";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -66,7 +66,7 @@ export const UsernameAndProfileStep = ({
 	);
 
 	// Determine username status
-	const usernameStatus = useMemo(() => {
+	const usernameStatus = (() => {
 		if (!username || username.length < 3) return "too_short";
 		if (!/^[a-zA-Z0-9_]+$/.test(username)) return "invalid";
 		if (username !== debouncedUsername) return "typing";
@@ -74,7 +74,7 @@ export const UsernameAndProfileStep = ({
 		if (usernameCheck?.available === true) return "available";
 		if (usernameCheck?.available === false) return "taken";
 		return "idle";
-	}, [username, debouncedUsername, isCheckingUsername, usernameCheck]);
+	})();
 
 	const isUsernameAvailable = usernameStatus === "available";
 
