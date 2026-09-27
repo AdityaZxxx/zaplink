@@ -1,10 +1,75 @@
 import { User } from "@phosphor-icons/react/ssr";
+import type { Metadata } from "next";
+import { cache } from "react";
 import PublicProfileClient from "@/features/profile/components/PublicProfileClient";
+import { APP_NAME, DOMAIN_NAME } from "@/lib/constants/BRANDS";
 import { trpcServer } from "@/utils/trpc/server";
 
 type PublicProfilePageProps = {
 	params: Promise<{ username: string }>;
 };
+
+type Trpc = Awaited<ReturnType<typeof trpcServer>>;
+
+/*
+ * generateMetadata and the page both need the profile, and Next runs them in
+ * the same request. `cache` collapses them into one query instead of two, and
+ * is scoped to the request so nothing leaks between visitors.
+ */
+const getProfileByUsername = cache((api: Trpc, username: string) =>
+	api.profile.getProfileByUsername({ username }),
+);
+
+const getPublicLinks = cache((api: Trpc, username: string) =>
+	api.links.getPublicLinks({ username }),
+);
+
+export async function generateMetadata({
+	params,
+}: PublicProfilePageProps): Promise<Metadata> {
+	const { username } = await params;
+	const api = await trpcServer();
+	const profile = await getProfileByUsername(api, username);
+
+	// A missing profile renders the not-found view, which should not be
+	// indexable as somebody else's page.
+	if (!profile) {
+		return { title: `${APP_NAME} — Page not found` };
+	}
+
+	/*
+	 * The fallbacks below are the contract the SEO settings preview in the
+	 * dashboard draws against. Change one and change the other: the panel shows
+	 * what a search engine will show, so a blank field has to resolve the same
+	 * way here as it does there.
+	 */
+	const title = profile.seoTitle || profile.displayName || profile.username;
+	const description =
+		profile.seoDescription ||
+		profile.bio ||
+		`${profile.displayName || profile.username} on ${APP_NAME}`;
+	const url = `https://${DOMAIN_NAME}/${profile.username}`;
+
+	return {
+		title,
+		description,
+		alternates: { canonical: url },
+		openGraph: {
+			type: "profile",
+			title,
+			description,
+			url,
+			siteName: APP_NAME,
+			...(profile.avatarUrl ? { images: [profile.avatarUrl] } : {}),
+		},
+		twitter: {
+			card: "summary",
+			title,
+			description,
+			...(profile.avatarUrl ? { images: [profile.avatarUrl] } : {}),
+		},
+	};
+}
 
 export default async function PublicProfilePage({
 	params,
@@ -12,8 +77,8 @@ export default async function PublicProfilePage({
 	const { username } = await params;
 	const api = await trpcServer();
 	const [profile, userLinks] = await Promise.all([
-		api.profile.getProfileByUsername({ username }),
-		api.links.getPublicLinks({ username }),
+		getProfileByUsername(api, username),
+		getPublicLinks(api, username),
 	]);
 
 	if (!profile) {

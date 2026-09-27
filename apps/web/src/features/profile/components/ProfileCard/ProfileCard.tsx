@@ -13,11 +13,12 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { APP_NAME } from "@/lib/constants/BRANDS";
 import { ContactLink } from "./ContactLink";
+import type { SupportCause } from "./causes";
 import { FeaturedLink } from "./FeaturedLink";
 import { GridLink } from "./GridLink";
 import { SocialIconsRow } from "./SocialIconsRow";
 import { StandardLink } from "./StandardLink";
-import { SupportBanner, type SupportCause } from "./SupportBanner";
+import { SupportBanner } from "./SupportBanner";
 
 type Profile = typeof profiles.$inferSelect;
 type Link = typeof links.$inferSelect & {

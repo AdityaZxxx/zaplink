@@ -1,62 +1,13 @@
 "use client";
 
-import {
-	CaretDown,
-	CaretUp,
-	Globe,
-	HandHeart,
-	Heart,
-	Leaf,
-	Users,
-} from "@phosphor-icons/react";
+import { CaretDown, CaretUp, Globe } from "@phosphor-icons/react";
 import { cn } from "cn";
 import { useEffect, useState } from "react";
-
-export type SupportCause =
-	| "none"
-	| "stop_genocide"
-	| "black_lives_matter"
-	| "climate_action"
-	| "mental_health";
+import { SUPPORT_CAUSES, type SupportCause } from "./causes";
 
 interface SupportBannerProps {
 	cause: SupportCause;
 }
-
-const CAUSE_CONTENT = {
-	stop_genocide: {
-		title: "Stop Genocide",
-		description: "Support humanitarian aid and global peace efforts.",
-		icon: HandHeart,
-		color: "bg-red-500",
-		textColor: "text-white",
-		link: "https://www.un.org/en/genocideprevention/",
-	},
-	black_lives_matter: {
-		title: "Black Lives Matter",
-		description: "Support the movement for racial justice and equality.",
-		icon: Users,
-		color: "bg-zinc-900",
-		textColor: "text-white",
-		link: "https://blacklivesmatter.com/",
-	},
-	climate_action: {
-		title: "Climate Action",
-		description: "Take action to protect our planet and future.",
-		icon: Leaf,
-		color: "bg-emerald-600",
-		textColor: "text-white",
-		link: "https://www.un.org/en/climatechange",
-	},
-	mental_health: {
-		title: "Mental Health Awareness",
-		description: "Prioritize mental well-being and support others.",
-		icon: Heart,
-		color: "bg-indigo-600",
-		textColor: "text-white",
-		link: "https://www.who.int/health-topics/mental-health",
-	},
-};
 
 export function SupportBanner({ cause }: SupportBannerProps) {
 	const [isMinimized, setIsMinimized] = useState(false);
@@ -70,11 +21,11 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 		}
 	}, [cause]);
 
-	if (cause === "none" || !CAUSE_CONTENT[cause as keyof typeof CAUSE_CONTENT]) {
+	if (cause === "none" || !(cause in SUPPORT_CAUSES)) {
 		return null;
 	}
 
-	const content = CAUSE_CONTENT[cause as keyof typeof CAUSE_CONTENT];
+	const content = SUPPORT_CAUSES[cause as Exclude<SupportCause, "none">];
 	const Icon = content.icon;
 
 	return (

@@ -16,12 +16,19 @@ interface PageWithPreviewProps {
 	children: React.ReactNode;
 	preview: React.ReactNode;
 	className?: string;
+	/**
+	 * Width of the scrolling column. Defaults to max-w-2xl, which suits a
+	 * single-column form. A page that splits that same column into a nav plus a
+	 * panel has to spend the difference, so it passes something wider.
+	 */
+	contentClassName?: string;
 }
 
 export default function PageWithPreview({
 	children,
 	preview,
 	className,
+	contentClassName,
 }: PageWithPreviewProps) {
 	const [showPreview, setShowPreview] = useState(false);
 
@@ -35,7 +42,11 @@ export default function PageWithPreview({
 			{/* Main Content Area (Left) */}
 			<ScrollArea className="h-[calc(100vh-3.5rem)] flex-1">
 				<div className="p-4 md:p-8">
-					<div className="mx-auto max-w-2xl space-y-8">{children}</div>
+					<div
+						className={cn("mx-auto space-y-8", contentClassName ?? "max-w-2xl")}
+					>
+						{children}
+					</div>
 				</div>
 			</ScrollArea>
 

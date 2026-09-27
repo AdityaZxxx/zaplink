@@ -1,153 +1,236 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { cn } from "cn";
+import { useId, useState } from "react";
 import { toast } from "sonner";
-
-import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import {
+	isSupportCauseId,
+	SUPPORT_CAUSE_IDS,
+	SUPPORT_CAUSES,
+	type SupportCause,
+	type SupportCauseId,
+} from "@/features/profile/components";
 import { queryClient, trpc } from "@/utils/trpc/client";
+import type { ProfileData } from "../types";
 
-type SupportBanner =
-	| "none"
-	| "stop_genocide"
-	| "black_lives_matter"
-	| "climate_action"
-	| "mental_health";
+interface SupportBannerSettingsProps {
+	profile: ProfileData;
+}
 
-type SupportCause = Exclude<SupportBanner, "none">;
+const profileQueryKey = trpc.profile.getProfile.queryOptions().queryKey;
 
-const SUPPORT_CAUSES: { value: SupportCause; label: string }[] = [
-	{ value: "stop_genocide", label: "Stop Genocide" },
-	{ value: "black_lives_matter", label: "Black Lives Matter" },
-	{ value: "climate_action", label: "Climate Action" },
-	{ value: "mental_health", label: "Mental Health Awareness" },
-];
+export function SupportBannerSettings({ profile }: SupportBannerSettingsProps) {
+	const value = profile.supportBanner ?? "none";
+	const isEnabled = isSupportCauseId(value);
 
-const isSupportCause = (value: string): value is SupportCause =>
-	SUPPORT_CAUSES.some((cause) => cause.value === value);
+	/*
+	 * The last cause the visitor actually chose, so turning the banner off and
+	 * back on restores their cause instead of silently swapping it for the first
+	 * one in the list.
+	 *
+	 * Seeded with a real cause id rather than the stored value. A profile whose
+	 * banner is off stores "none", which is not a cause, and initialising from it
+	 * left the picker with nothing highlighted and made switching the banner back
+	 * on a no-op that wrote "none" over "none".
+	 */
+	const [lastCause, setLastCause] = useState<SupportCauseId>(
+		isSupportCauseId(value) ? value : SUPPORT_CAUSE_IDS[0],
+	);
 
-export function SupportBannerSettings() {
-	const { data: profile } = useQuery(trpc.profile.getProfile.queryOptions());
-	const [optimisticValue, setOptimisticValue] = useState<string | null>(null);
+	// Stable across renders and unique if the section is ever mounted twice.
+	const switchId = useId();
 
-	// Sync optimistic value with server data when it changes
-	useEffect(() => {
-		if (profile) {
-			setOptimisticValue(profile.supportBanner);
-		}
-	}, [profile]);
+	// Which cause the picker marks as selected. While the banner is off the grid
+	// is collapsed, so this only decides what a later re-enable restores.
+	const highlighted = isEnabled ? value : lastCause;
 
-	const isEnabled = optimisticValue && optimisticValue !== "none";
-
+	/*
+	 * Deliberately no onSuccess toast. The switch position and the selected cause
+	 * are already the feedback, and a toast on every tap is noise on a control
+	 * people toggle repeatedly while they decide.
+	 */
 	const updateProfileMutation = useMutation(
 		trpc.profile.updateProfile.mutationOptions({
-			onMutate: async (newData) => {
-				// Cancel any outgoing refetches
-				await queryClient.cancelQueries({
-					queryKey: trpc.profile.getProfile.queryOptions().queryKey,
-				});
-
-				// Snapshot the previous value
-				const previousProfile = queryClient.getQueryData(
-					trpc.profile.getProfile.queryOptions().queryKey,
+			/*
+			 * The profile preview in this page reads the same cache entry, so the
+			 * write happens before the response and the banner appears in the
+			 * phone preview on the first frame rather than after a round trip.
+			 */
+			onMutate: async (next) => {
+				await queryClient.cancelQueries({ queryKey: profileQueryKey });
+				const previous = queryClient.getQueryData(profileQueryKey);
+				queryClient.setQueryData(profileQueryKey, (current) =>
+					current && next.supportBanner
+						? { ...current, supportBanner: next.supportBanner }
+						: current,
 				);
-
-				// Optimistically update to the new value
-				if (newData.supportBanner) {
-					setOptimisticValue(newData.supportBanner);
-				}
-
-				return { previousProfile };
-			},
-			onSuccess: () => {
-				toast.success("Support banner updated");
+				return { previous };
 			},
 			onError: (error, _variables, context) => {
 				toast.error(error.message);
-				// Rollback to the previous value
-				if (context?.previousProfile) {
-					queryClient.setQueryData(
-						trpc.profile.getProfile.queryOptions().queryKey,
-						context.previousProfile,
-					);
-					setOptimisticValue(
-						(context.previousProfile as any).supportBanner || "none",
-					);
+				if (context?.previous) {
+					queryClient.setQueryData(profileQueryKey, context.previous);
 				}
 			},
 			onSettled: () => {
-				queryClient.invalidateQueries(trpc.profile.getProfile.queryOptions());
+				queryClient.invalidateQueries({ queryKey: profileQueryKey });
 			},
 		}),
 	);
 
-	const handleToggle = (checked: boolean) => {
-		const newValue = checked ? "stop_genocide" : "none";
-		setOptimisticValue(newValue);
-		updateProfileMutation.mutate({
-			supportBanner: newValue as any,
-		});
-	};
+	const isPending = updateProfileMutation.isPending;
 
-	const handleValueChange = (value: string | null) => {
-		// The select only offers causes, so a null value means nothing is selected,
-		// which for a support banner is the same as turning it off.
-		const nextValue: SupportBanner =
-			value !== null && isSupportCause(value) ? value : "none";
-		setOptimisticValue(nextValue);
-		updateProfileMutation.mutate({
-			supportBanner: nextValue,
-		});
-	};
+	function selectCause(next: SupportCause) {
+		if (isSupportCauseId(next)) setLastCause(next);
+		updateProfileMutation.mutate({ supportBanner: next });
+	}
+
+	function handleToggle(checked: boolean) {
+		if (checked) {
+			selectCause(lastCause);
+		} else {
+			// Remember the cause being switched off so it can come back.
+			if (isEnabled) setLastCause(value);
+			selectCause("none");
+		}
+	}
 
 	return (
-		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<div className="space-y-1">
-					<h3 className="font-medium text-lg">Support Banner</h3>
-					<p className="text-muted-foreground text-sm">
-						Show your support for important causes on your profile.
-					</p>
-				</div>
+		/*
+		 * aria-busy, not disabled, while the save is in flight. Disabling a
+		 * control that currently holds focus makes the browser blur it, so a
+		 * keyboard visitor who pressed Space on the switch lost their place and
+		 * had to tab back from the top after every toggle. Announcing the busy
+		 * state keeps the control, and the focus, where they were.
+		 *
+		 * Two writes landing out of order is the cheaper failure: each one sets a
+		 * single enum field, so the worst case is a briefly stale value that the
+		 * onSettled refetch corrects.
+		 */
+		<div className="space-y-4" aria-busy={isPending}>
+			{/*
+			 * A <label> wrapping the switch, so the whole row is the hit target
+			 * and the visible text is the accessible name. A bare switch beside a
+			 * heading gave a 32x20px target and no name at all.
+			 *
+			 * The explicit htmlFor is not redundant with the wrapping. Base UI's
+			 * switch renders a real checkbox input as its labelable control, so
+			 * the implicit association already activates it, but naming the
+			 * relationship attaches the accessible name to the control rather than
+			 * only to the wrapper.
+			 */}
+			<label
+				htmlFor={switchId}
+				className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border p-4 transition-colors duration-150 ease-out hover:bg-muted/60 has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30"
+			>
+				<span className="font-medium text-sm">Show the banner</span>
 				<Switch
-					checked={!!isEnabled}
+					id={switchId}
+					checked={isEnabled}
 					onCheckedChange={handleToggle}
-					disabled={updateProfileMutation.isPending}
 				/>
-			</div>
+			</label>
 
-			<div className="space-y-4">
-				{isEnabled && (
-					<div className="fade-in slide-in-from-top-2 grid animate-in gap-2 pt-2 duration-300">
-						<Label htmlFor="cause" className="font-medium text-sm">
-							Select a Cause
-						</Label>
-						<Select
-							value={optimisticValue || "none"}
-							onValueChange={handleValueChange}
-							disabled={updateProfileMutation.isPending}
-						>
-							<SelectTrigger className="w-full sm:w-[300px]">
-								<SelectValue placeholder="Select a cause" />
-							</SelectTrigger>
-							<SelectContent>
-								{SUPPORT_CAUSES.map((cause) => (
-									<SelectItem key={cause.value} value={cause.value}>
-										{cause.label}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
+			{/*
+			 * Reveal rather than a keyframe entrance. A toggle is a state change a
+			 * visitor can interrupt, so it takes a transition that retargets
+			 * mid-flight; animate-in/fade-in ran on a fixed timeline and could
+			 * only be replayed, not reversed. grid-template-rows collapses the
+			 * region without a measured height, and the exit is the same 150ms as
+			 * the enter, which reads as a reveal rather than a performance.
+			 *
+			 * The transition alone does not hide the picker. Collapsing to 0fr
+			 * clips the pixels, but the radios inside stay laid out and stay in
+			 * the tab order, so a keyboard user tabbed through the panel landed on
+			 * four invisible controls. `inert` on the fieldset is what actually
+			 * takes them out of the tab order and the accessibility tree while
+			 * they are collapsed.
+			 */}
+			<div
+				className={cn(
+					"grid transition-[grid-template-rows,opacity] duration-150 ease-[cubic-bezier(0.2,0,0,1)] motion-reduce:transition-none",
+					isEnabled
+						? "grid-rows-[1fr] opacity-100"
+						: "grid-rows-[0fr] opacity-0",
 				)}
+			>
+				<div className="overflow-hidden">
+					<fieldset inert={!isEnabled} className="pt-2 pb-1">
+						<legend className="sr-only">Choose a cause</legend>
+						{/*
+						 * Radios rather than buttons: the arrow keys move between
+						 * causes for free, and the group reports itself correctly to
+						 * assistive tech. Each one is picked by looking at it, since
+						 * the card carries the same swatch and icon the visitor will
+						 * actually see on their profile.
+						 */}
+						<div className="grid gap-2 sm:grid-cols-2">
+							{SUPPORT_CAUSE_IDS.map((id) => {
+								const cause = SUPPORT_CAUSES[id];
+								const Icon = cause.icon;
+								const isSelected = highlighted === id;
+
+								return (
+									<label
+										key={id}
+										className={cn(
+											"flex cursor-pointer items-start gap-3 rounded-2xl border p-3 transition-[background-color,border-color] duration-150 ease-out",
+											"has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/30",
+											isSelected
+												? "border-ring bg-accent"
+												: "hover:bg-muted/60",
+											isPending && "cursor-wait",
+										)}
+									>
+										<input
+											type="radio"
+											name="support-banner-cause"
+											value={id}
+											checked={isSelected}
+											onChange={() => selectCause(id)}
+											className="sr-only"
+										/>
+										<span
+											className={cn(
+												"flex size-8 shrink-0 items-center justify-center rounded-full text-white",
+												// The swatch has to show the banner's real colour, so
+												// it cannot be tinted for legibility. Black Lives
+												// Matter is near-black, which all but vanishes
+												// against the dark card, so it gets the neutral
+												// hairline that keeps a shape readable on any
+												// background. Pure black in light, pure white in
+												// dark, never a tinted neutral.
+												"ring-1 ring-black/10 dark:ring-white/10",
+												cause.color,
+											)}
+										>
+											{/*
+											 * Outline by default, fill when selected: the icon
+											 * variant carries the selection, so the state does
+											 * not depend on colour alone and survives motion
+											 * being switched off.
+											 */}
+											<Icon
+												weight={isSelected ? "fill" : "regular"}
+												className="size-4"
+											/>
+										</span>
+										<span className="min-w-0">
+											<span className="block font-medium text-sm">
+												{cause.title}
+											</span>
+											<span className="mt-0.5 block text-muted-foreground text-xs leading-relaxed">
+												{cause.description}
+											</span>
+										</span>
+									</label>
+								);
+							})}
+						</div>
+					</fieldset>
+				</div>
 			</div>
 		</div>
 	);
