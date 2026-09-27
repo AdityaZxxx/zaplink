@@ -48,7 +48,7 @@ export const links = pgTable("links", {
 
 export const linkPlatforms = pgTable("link_platforms", {
 	linkId: integer("link_id")
-		.notNull()
+		.primaryKey()
 		.references(() => links.id, { onDelete: "cascade" }),
 	name: text("name").notNull(),
 	category: platformCategoryEnum("category").default("social"),
@@ -57,7 +57,7 @@ export const linkPlatforms = pgTable("link_platforms", {
 
 export const linkCustoms = pgTable("link_customs", {
 	linkId: integer("link_id")
-		.notNull()
+		.primaryKey()
 		.references(() => links.id, { onDelete: "cascade" }),
 	displayMode: displayModeEnum("display_mode").default("standard"),
 	title: text("title"),
@@ -67,7 +67,7 @@ export const linkCustoms = pgTable("link_customs", {
 
 export const linkContacts = pgTable("link_contacts", {
 	linkId: integer("link_id")
-		.notNull()
+		.primaryKey()
 		.references(() => links.id, { onDelete: "cascade" }),
 	type: text("type").notNull(), // phone/email/website
 	value: text("value").notNull(),
