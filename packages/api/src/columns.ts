@@ -1,4 +1,4 @@
-import { profiles } from "@zaplink/db";
+import { profiles } from "@rinku/db";
 
 /*
  * Timestamps are left out on purpose. With no transformer configured, a server

@@ -1,5 +1,5 @@
-import { auth } from "@zaplink/auth";
-import { db } from "@zaplink/db";
+import { auth } from "@rinku/auth";
+import { db } from "@rinku/db";
 export type CreateContextOptions = {
 	headers: Headers;
 };

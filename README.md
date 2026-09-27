@@ -1,4 +1,4 @@
-# zaplink
+# rinku
 
 A link-in-bio style profile app: a public profile page per username, with a
 private dashboard for arranging links, analytics and settings.
@@ -52,7 +52,7 @@ The app is served at [http://localhost:3000](http://localhost:3000).
 ## Project Structure
 
 ```
-zaplink/
+rinku/
 ├── apps/
 │   └── web/           # Next.js app: UI, route handlers, tRPC endpoint
 └── packages/

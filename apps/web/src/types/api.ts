@@ -1,5 +1,5 @@
+import type { AppRouter } from "@rinku/api/routers/index";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "@zaplink/api/routers/index";
 
 type RouterInputs = inferRouterInputs<AppRouter>;
 type RouterOutputs = inferRouterOutputs<AppRouter>;

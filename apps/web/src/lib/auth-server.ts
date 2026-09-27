@@ -1,4 +1,4 @@
-import { auth } from "@zaplink/auth";
+import { auth } from "@rinku/auth";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 

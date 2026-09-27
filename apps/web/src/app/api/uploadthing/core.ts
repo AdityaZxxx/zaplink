@@ -1,4 +1,4 @@
-import { db, eq, linkCustoms, profiles } from "@zaplink/db";
+import { db, eq, linkCustoms, profiles } from "@rinku/db";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError, UTApi } from "uploadthing/server";
 import { z } from "zod";

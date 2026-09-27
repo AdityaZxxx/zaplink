@@ -1,5 +1,5 @@
 {
-	"name": "@zaplink/db",
+	"name": "@rinku/db",
 	"type": "module",
 	"exports": {
 		".": {

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 		default: APP_NAME,
 		template: `%s | ${APP_NAME}`,
 	},
-	description: "A profile on Zaplink.",
+	description: "A profile on Rinku.",
 };
 
 export default function RootLayout({

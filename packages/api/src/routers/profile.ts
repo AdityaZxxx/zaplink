@@ -1,5 +1,5 @@
+import { and, eq, ne, profiles } from "@rinku/db";
 import { TRPCError } from "@trpc/server";
-import { and, eq, ne, profiles } from "@zaplink/db";
 import { z } from "zod";
 import { profileSelect } from "../columns";
 import { protectedProcedure, publicProcedure, router } from "../index";

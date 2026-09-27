@@ -1,5 +1,5 @@
 {
-	"name": "@zaplink/auth",
+	"name": "@rinku/auth",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
@@ -25,6 +25,6 @@
 		"better-auth": "catalog:",
 		"dotenv": "catalog:",
 		"zod": "catalog:",
-		"@zaplink/db": "workspace:*"
+		"@rinku/db": "workspace:*"
 	}
 }

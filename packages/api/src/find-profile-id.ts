@@ -1,4 +1,4 @@
-import { eq, profiles } from "@zaplink/db";
+import { eq, profiles } from "@rinku/db";
 import type { Context } from "./context";
 
 /*

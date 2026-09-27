@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import {
 	and,
 	asc,
@@ -9,7 +8,8 @@ import {
 	linkPlatforms,
 	links,
 	sql,
-} from "@zaplink/db";
+} from "@rinku/db";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { linkColumns } from "../columns";
 import { findProfileId } from "../find-profile-id";

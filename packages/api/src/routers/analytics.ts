@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import {
 	analytics,
 	and,
@@ -10,7 +9,8 @@ import {
 	lte,
 	profiles,
 	sql,
-} from "@zaplink/db";
+} from "@rinku/db";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../index";
 

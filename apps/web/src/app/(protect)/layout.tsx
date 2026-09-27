@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 		default: APP_NAME,
 		template: `%s | ${APP_NAME}`,
 	},
-	description: "Your Zaplink dashboard.",
+	description: "Your Rinku dashboard.",
 	robots: { index: false, follow: false },
 };
 

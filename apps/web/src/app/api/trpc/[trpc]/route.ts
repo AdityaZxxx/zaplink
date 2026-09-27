@@ -1,6 +1,6 @@
+import { createContext } from "@rinku/api/context";
+import { appRouter } from "@rinku/api/routers/index";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { createContext } from "@zaplink/api/context";
-import { appRouter } from "@zaplink/api/routers/index";
 import type { NextRequest } from "next/server";
 
 const handler = (req: NextRequest) =>

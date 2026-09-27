@@ -86,7 +86,7 @@ function SidebarLogo() {
 					weight="fill"
 					className="h-5 w-5 text-primary-foreground"
 					// Decorative: the app name sits right next to it, so
-					// announcing the icon too would read "Zaplink Zaplink".
+					// announcing the icon too would read "Rinku Rinku".
 					aria-hidden
 					focusable={false}
 				/>

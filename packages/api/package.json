@@ -1,5 +1,5 @@
 {
-	"name": "@zaplink/api",
+	"name": "@rinku/api",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
@@ -26,7 +26,7 @@
 		"@trpc/client": "catalog:",
 		"dotenv": "catalog:",
 		"zod": "catalog:",
-		"@zaplink/auth": "workspace:*",
-		"@zaplink/db": "workspace:*"
+		"@rinku/auth": "workspace:*",
+		"@rinku/db": "workspace:*"
 	}
 }

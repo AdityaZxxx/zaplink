@@ -1,5 +1,5 @@
-import { db } from "@zaplink/db";
-import * as schema from "@zaplink/db/schema/auth";
+import { db } from "@rinku/db";
+import * as schema from "@rinku/db/schema/auth";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 

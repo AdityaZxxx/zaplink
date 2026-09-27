@@ -1,4 +1,4 @@
-# Zaplink
+# Rinku
 
 ## Tech Stack
 

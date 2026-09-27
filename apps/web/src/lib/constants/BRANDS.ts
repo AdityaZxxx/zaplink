@@ -1,2 +1,3 @@
-export const DOMAIN_NAME = "zaplink.com";
-export const APP_NAME = "Zaplink";
+/** Placeholder until the real domain is registered. Replace on purchase. */
+export const DOMAIN_NAME = "rinku.example";
+export const APP_NAME = "Rinku";

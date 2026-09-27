@@ -1,5 +1,5 @@
 {
-	"name": "zaplink",
+	"name": "rinku",
 	"private": true,
 	"type": "module",
 	"workspaces": {
@@ -24,10 +24,10 @@
 		"build": "turbo build",
 		"check-types": "turbo check-types",
 		"dev:web": "turbo -F web dev",
-		"db:push": "turbo -F @zaplink/db db:push",
-		"db:studio": "turbo -F @zaplink/db db:studio",
-		"db:generate": "turbo -F @zaplink/db db:generate",
-		"db:migrate": "turbo -F @zaplink/db db:migrate"
+		"db:push": "turbo -F @rinku/db db:push",
+		"db:studio": "turbo -F @rinku/db db:studio",
+		"db:generate": "turbo -F @rinku/db db:generate",
+		"db:migrate": "turbo -F @rinku/db db:migrate"
 	},
 	"dependencies": {
 		"dotenv": "catalog:",
