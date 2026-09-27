@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, Globe, MousePointerClick } from "lucide-react";
+import { ArrowSquareOut, CursorClick, Globe } from "@phosphor-icons/react";
 import {
 	Card,
 	CardContent,
@@ -64,7 +64,7 @@ export function TopLinksList({ links }: TopLinksListProps) {
 												rel="noreferrer"
 												className="flex items-center gap-1 truncate text-[10px] text-muted-foreground hover:underline"
 											>
-												{link.url} <ExternalLink className="h-2 w-2" />
+												{link.url} <ArrowSquareOut className="h-2 w-2" />
 											</a>
 										</div>
 									</div>
@@ -90,7 +90,7 @@ export function TopLinksList({ links }: TopLinksListProps) {
 
 					{links.length === 0 && (
 						<div className="flex h-full flex-col items-center justify-center rounded-xl border-2 border-muted/50 border-dashed p-8 text-center">
-							<MousePointerClick className="mb-2 h-8 w-8 text-muted-foreground/30" />
+							<CursorClick className="mb-2 h-8 w-8 text-muted-foreground/30" />
 							<p className="text-muted-foreground text-sm">
 								No clicks recorded yet.
 							</p>

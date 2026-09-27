@@ -2,6 +2,7 @@
 
 import type { DragEndEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import { Spinner } from "@phosphor-icons/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
 	linkContacts,
@@ -9,7 +10,6 @@ import type {
 	linkPlatforms,
 	links,
 } from "@zaplink/db";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -175,7 +175,7 @@ export default function LinksPage() {
 	if (isLoadingProfile || isLoadingLinks) {
 		return (
 			<div className="flex h-screen w-full items-center justify-center">
-				<Loader2 className="h-8 w-8 animate-spin text-primary" />
+				<Spinner className="h-8 w-8 animate-spin text-primary" />
 			</div>
 		);
 	}

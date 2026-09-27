@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, MousePointerClick, TrendingUp } from "lucide-react";
+import { CursorClick, Eye, TrendUp } from "@phosphor-icons/react";
 import { KPICard } from "./KPICard";
 
 interface StatsOverviewProps {
@@ -42,7 +42,7 @@ export function StatsOverview({
 				title="Total Clicks"
 				value={formatNumber(totalClicks)}
 				subtitle="vs last period"
-				icon={<MousePointerClick className="h-4 w-4" />}
+				icon={<CursorClick className="h-4 w-4" />}
 				change={clicksChange}
 				colorTheme="purple"
 			/>
@@ -50,7 +50,7 @@ export function StatsOverview({
 				title="CTR Rate"
 				value={`${ctr.toFixed(1)}%`}
 				subtitle="vs last period"
-				icon={<TrendingUp className="h-4 w-4" />}
+				icon={<TrendUp className="h-4 w-4" />}
 				change={ctrChange}
 				colorTheme="green"
 			/>

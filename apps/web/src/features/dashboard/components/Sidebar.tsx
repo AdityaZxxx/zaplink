@@ -2,13 +2,13 @@
 
 import {
 	Bell,
-	ChartAreaIcon,
-	HomeIcon,
-	LinkIcon,
-	MenuIcon,
-	Settings,
-	UserIcon,
-} from "lucide-react";
+	ChartLineUp,
+	Gear,
+	House,
+	Link as LinkIcon,
+	List,
+	User,
+} from "@phosphor-icons/react";
 import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -56,12 +56,12 @@ const menuItems: MenuItem[] = [
 	{
 		title: "Dashboard",
 		url: "/dashboard",
-		icon: HomeIcon,
+		icon: House,
 	},
 	{
 		title: "Profile",
 		url: "/dashboard/profile",
-		icon: UserIcon,
+		icon: User,
 	},
 	{
 		title: "Links",
@@ -71,7 +71,7 @@ const menuItems: MenuItem[] = [
 	{
 		title: "Analytics",
 		url: "/dashboard/analytics",
-		icon: ChartAreaIcon,
+		icon: ChartLineUp,
 	},
 ];
 
@@ -94,14 +94,18 @@ function SidebarMenuItemComponent({ item }: { item: MenuItem }) {
 
 	return (
 		<SidebarMenuItem>
-			<SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-				<Link href={item.url}>
-					<item.icon />
-					<span className="group-data-[collapsible=icon]:hidden">
-						{item.title}
-					</span>
-				</Link>
-			</SidebarMenuButton>
+			<SidebarMenuButton
+				render={
+					<Link href={item.url}>
+						<item.icon />
+						<span className="group-data-[collapsible=icon]:hidden">
+							{item.title}
+						</span>
+					</Link>
+				}
+				isActive={isActive}
+				tooltip={item.title}
+			/>
 		</SidebarMenuItem>
 	);
 }
@@ -118,7 +122,7 @@ function MobileMenu() {
 				className="md:hidden"
 				onClick={() => setOpen(true)}
 			>
-				<MenuIcon className="h-5 w-5" />
+				<List className="h-5 w-5" />
 				<span className="sr-only">Toggle Menu</span>
 			</Button>
 			<Drawer open={open} onOpenChange={setOpen}>
@@ -134,13 +138,13 @@ function MobileMenu() {
 									key={item.title}
 									variant={isActive ? "default" : "ghost"}
 									className="justify-start gap-2"
-									asChild
-								>
-									<Link href={item.url} onClick={() => setOpen(false)}>
-										<item.icon className="h-5 w-5" />
-										{item.title}
-									</Link>
-								</Button>
+									render={
+										<Link href={item.url} onClick={() => setOpen(false)}>
+											<item.icon className="h-5 w-5" />
+											{item.title}
+										</Link>
+									}
+								/>
 							);
 						})}
 					</div>
@@ -217,7 +221,7 @@ export function DashboardSidebar({
 							<Bell className="h-5 w-5" />
 						</Link>
 						<Link href="/dashboard/settings">
-							<Settings className="h-5 w-5" />
+							<Gear className="h-5 w-5" />
 						</Link>
 						<MobileMenu />
 						<UserMenu />

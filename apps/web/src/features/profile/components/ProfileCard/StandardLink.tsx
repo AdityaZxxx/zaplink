@@ -1,5 +1,5 @@
+import { LinkSimple } from "@phosphor-icons/react/ssr";
 import type { links } from "@zaplink/db";
-import { Link2 } from "lucide-react";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 
 type Link = typeof links.$inferSelect & {
@@ -23,7 +23,7 @@ interface StandardLinkProps {
 
 export function StandardLink({ link, onClick }: StandardLinkProps) {
 	// Determine Icon
-	let Icon: React.ElementType = Link2;
+	let Icon: React.ElementType = LinkSimple;
 	if (link.type === "platform" && link.platform?.name) {
 		const platform = Object.values(SUPPORT_PLATFORMS).find(
 			(p) => p.name === link.platform?.name,

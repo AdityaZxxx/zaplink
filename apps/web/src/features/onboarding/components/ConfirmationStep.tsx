@@ -1,11 +1,11 @@
+import {
+	ArrowSquareOut,
+	CheckCircle,
+	Copy,
+	Layout,
+} from "@phosphor-icons/react/ssr";
 import { useMutation } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
-import {
-	CheckCircle2,
-	Copy,
-	ExternalLink,
-	LayoutDashboard,
-} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -190,12 +190,11 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 			<Dialog open={showSuccessModal} onOpenChange={() => {}}>
 				<DialogContent
 					className="border-zinc-800 bg-zinc-900 text-center text-white sm:max-w-md"
-					onInteractOutside={(e) => e.preventDefault()}
 					showCloseButton={false}
 				>
 					<DialogHeader>
 						<div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-green-500/20 bg-green-500/10">
-							<CheckCircle2 className="h-10 w-10 text-green-500" />
+							<CheckCircle className="h-10 w-10 text-green-500" />
 						</div>
 						<DialogTitle className="text-center font-bold text-2xl">
 							Your Zaplink is Live!
@@ -220,14 +219,14 @@ export const ConfirmationStep = ({ onBack, data }: ConfirmationStepProps) => {
 							className="h-12 w-full gap-2 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
 							onClick={() => window.open(`/${data.username}`, "_blank")}
 						>
-							<ExternalLink className="h-4 w-4" />
+							<ArrowSquareOut className="h-4 w-4" />
 							Visit Page
 						</Button>
 						<Button
 							className="h-12 w-full gap-2 bg-white text-black hover:bg-zinc-200"
 							onClick={() => router.push("/dashboard")}
 						>
-							<LayoutDashboard className="h-4 w-4" />
+							<Layout className="h-4 w-4" />
 							Go to Editor
 						</Button>
 					</div>

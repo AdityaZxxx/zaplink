@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash } from "@phosphor-icons/react/ssr";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -250,7 +250,7 @@ export const LinkStep = ({
 													onClick={() => togglePlatform("custom")}
 													className="text-zinc-500 hover:text-red-400"
 												>
-													<Trash2 className="h-4 w-4" />
+													<Trash className="h-4 w-4" />
 												</button>
 											</div>
 											<div className="space-y-3">
@@ -291,7 +291,7 @@ export const LinkStep = ({
 												onClick={() => togglePlatform(key)}
 												className="text-zinc-500 hover:text-red-400"
 											>
-												<Trash2 className="h-4 w-4" />
+												<Trash className="h-4 w-4" />
 											</button>
 										</div>
 										<div className="relative">

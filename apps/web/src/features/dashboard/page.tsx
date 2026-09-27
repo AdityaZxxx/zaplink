@@ -1,14 +1,14 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import {
-	BarChart3,
+	ChartBar,
 	Copy,
 	Link as LinkIcon,
 	Palette,
 	Plus,
-	Share2,
-} from "lucide-react";
+	ShareNetwork,
+} from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -94,7 +94,7 @@ export default function DashboardPage() {
 							<CardTitle className="font-medium text-muted-foreground text-sm">
 								Total Views
 							</CardTitle>
-							<BarChart3 className="h-4 w-4 text-muted-foreground" />
+							<ChartBar className="h-4 w-4 text-muted-foreground" />
 						</CardHeader>
 						<CardContent className="p-4 pt-0 md:p-6 md:pt-0">
 							<div className="font-bold text-2xl text-foreground md:text-3xl">
@@ -174,13 +174,11 @@ export default function DashboardPage() {
 							Your Links
 						</h2>
 						<Button
+							render={<Link href="/dashboard/links">View All</Link>}
 							variant="ghost"
 							size="sm"
-							asChild
 							className="h-8 text-muted-foreground text-xs hover:text-foreground md:h-9 md:text-sm"
-						>
-							<Link href="/dashboard/links">View All</Link>
-						</Button>
+						/>
 					</div>
 
 					{links.length === 0 ? (
@@ -194,12 +192,15 @@ export default function DashboardPage() {
 							<p className="mb-4 text-muted-foreground text-xs md:text-sm">
 								Your profile is empty. Add your first link to get started.
 							</p>
-							<Button asChild size="sm">
-								<Link href="/dashboard/links">
-									<Plus className="mr-2 h-4 w-4" />
-									Add Link
-								</Link>
-							</Button>
+							<Button
+								render={
+									<Link href="/dashboard/links">
+										<Plus className="mr-2 h-4 w-4" />
+										Add Link
+									</Link>
+								}
+								size="sm"
+							/>
 						</div>
 					) : (
 						<div className="grid gap-3">
@@ -219,16 +220,6 @@ export default function DashboardPage() {
 											{link.url}
 										</p>
 									</div>
-									<Button
-										variant="ghost"
-										size="icon"
-										asChild
-										className="h-8 w-8 text-muted-foreground hover:text-foreground md:h-9 md:w-9"
-									>
-										{/* <Link href={link.url} target="_blank">
-											<ExternalLink className="h-4 w-4" />
-										</Link> */}
-									</Button>
 								</div>
 							))}
 						</div>
@@ -261,7 +252,7 @@ export default function DashboardPage() {
 								size="sm"
 								className="flex-1 sm:flex-none"
 							>
-								<Share2 className="mr-2 h-3.5 w-3.5 md:h-4 md:w-4" />
+								<ShareNetwork className="mr-2 h-3.5 w-3.5 md:h-4 md:w-4" />
 								Open
 							</Button>
 						</div>

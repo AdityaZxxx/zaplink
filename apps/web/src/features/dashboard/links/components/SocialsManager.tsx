@@ -16,9 +16,9 @@ import {
 	useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Plus } from "@phosphor-icons/react";
 import type { linkPlatforms, links } from "@zaplink/db";
 import { cn } from "cn";
-import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SUPPORT_PLATFORMS } from "@/lib/constants/SUPPORT_PLATFORMS";
 

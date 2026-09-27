@@ -1,15 +1,15 @@
 "use client";
 
-import { cn } from "cn";
 import {
-	ChevronDown,
-	ChevronUp,
+	CaretDown,
+	CaretUp,
 	Globe,
+	HandHeart,
 	Heart,
-	HeartHandshake,
 	Leaf,
 	Users,
-} from "lucide-react";
+} from "@phosphor-icons/react";
+import { cn } from "cn";
 import { useEffect, useState } from "react";
 
 export type SupportCause =
@@ -27,7 +27,7 @@ const CAUSE_CONTENT = {
 	stop_genocide: {
 		title: "Stop Genocide",
 		description: "Support humanitarian aid and global peace efforts.",
-		icon: HeartHandshake,
+		icon: HandHeart,
 		color: "bg-red-500",
 		textColor: "text-white",
 		link: "https://www.un.org/en/genocideprevention/",
@@ -98,9 +98,9 @@ export function SupportBanner({ cause }: SupportBannerProps) {
 					aria-label={isMinimized ? "Expand banner" : "Minimize banner"}
 				>
 					{isMinimized ? (
-						<ChevronUp className="h-4 w-4" />
+						<CaretUp className="h-4 w-4" />
 					) : (
-						<ChevronDown className="h-4 w-4" />
+						<CaretDown className="h-4 w-4" />
 					)}
 				</button>
 

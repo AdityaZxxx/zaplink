@@ -1,7 +1,7 @@
 "use client";
 
+import { TrendUp } from "@phosphor-icons/react";
 import { cn } from "cn";
-import { TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface KPICardProps {
@@ -63,9 +63,9 @@ export function KPICard({
 					{change !== undefined && change !== 0 && (
 						<>
 							{change > 0 ? (
-								<TrendingUp className="h-3 w-3 text-green-600" />
+								<TrendUp className="h-3 w-3 text-green-600" />
 							) : (
-								<TrendingUp className="h-3 w-3 rotate-180 text-red-600" />
+								<TrendUp className="h-3 w-3 rotate-180 text-red-600" />
 							)}
 							<span className={change > 0 ? "text-green-600" : "text-red-600"}>
 								{Math.abs(change).toFixed(1)}%

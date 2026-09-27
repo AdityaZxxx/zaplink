@@ -1,19 +1,18 @@
 "use client";
 
-import { cn } from "cn";
 import {
-	AlignJustify,
-	ChevronDown,
-	Contact,
+	AddressBook,
+	CaretDown,
+	Envelope,
 	Globe,
-	Grid,
-	LayoutGrid,
-	Link as LinkIcon,
-	Mail,
-	Phone,
-	Plus,
+	GridFour,
+	Link,
+	Spinner,
+	SquaresFour,
 	Star,
-} from "lucide-react";
+	TextAlignJustify,
+} from "@phosphor-icons/react";
+import { cn } from "cn";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,7 +45,6 @@ export interface AddLinkData {
 	contactValue?: string;
 }
 
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useUploadThing } from "@/utils/uploadthing";
 import { ScrollArea } from "../../../../components/ui/scroll-area";
@@ -185,11 +183,9 @@ export function AddLinkDialog({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
-			<DialogTrigger asChild>
-				<Button>
-					<Plus className="mr-2 h-4 w-4" />
-					Add Link
-				</Button>
+			<DialogTrigger render={<Button />}>
+				<SquaresFour className="mr-2 h-4 w-4" />
+				Add Link
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[600px]">
 				<DialogHeader>
@@ -198,15 +194,15 @@ export function AddLinkDialog({
 				<Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
 					<TabsList className="grid w-full grid-cols-3">
 						<TabsTrigger value="custom">
-							<LinkIcon className="mr-2 h-4 w-4" />
+							<Link className="mr-2 h-4 w-4" />
 							URL Link
 						</TabsTrigger>
 						<TabsTrigger value="contact">
-							<Contact className="mr-2 h-4 w-4" />
-							Contact
+							<AddressBook className="mr-2 h-4 w-4" />
+							AddressBook
 						</TabsTrigger>
 						<TabsTrigger value="platform">
-							<LayoutGrid className="mr-2 h-4 w-4" />
+							<GridFour className="mr-2 h-4 w-4" />
 							Platform
 						</TabsTrigger>
 					</TabsList>
@@ -248,7 +244,7 @@ export function AddLinkDialog({
 													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
-											<AlignJustify className="h-4 w-4" />
+											<TextAlignJustify className="h-4 w-4" />
 											Standard
 										</button>
 										<button
@@ -274,8 +270,8 @@ export function AddLinkDialog({
 													: "border-border bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
 											)}
 										>
-											<Grid className="h-4 w-4" />
-											Grid
+											<Globe className="h-4 w-4" />
+											Globe
 										</button>
 									</div>
 								</div>
@@ -295,37 +291,40 @@ export function AddLinkDialog({
 								disabled={isSubmitting || isUploading}
 							>
 								{(isSubmitting || isUploading) && (
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									<Spinner className="mr-2 h-4 w-4 animate-spin" />
 								)}
 								{isSubmitting || isUploading ? "Creating..." : "Add Link"}
 							</Button>
 						</form>
 					</TabsContent>
 
-					{/* Contact Link Form */}
+					{/* AddressBook Link Form */}
 					<TabsContent value="contact" className="space-y-4 pt-4">
 						<form onSubmit={handleSubmit} className="space-y-4">
 							<div className="grid grid-cols-3 gap-4">
 								<div className="space-y-2">
 									<Label>Type</Label>
-									<Select value={contactType} onValueChange={setContactType}>
+									<Select
+										value={contactType}
+										onValueChange={(value) => setContactType(value ?? "email")}
+									>
 										<SelectTrigger>
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
 											<SelectItem value="email">
 												<div className="flex items-center gap-2">
-													<Mail className="h-4 w-4" /> Email
+													<SquaresFour className="h-4 w-4" /> Email
 												</div>
 											</SelectItem>
 											<SelectItem value="phone">
 												<div className="flex items-center gap-2">
-													<Phone className="h-4 w-4" /> Phone
+													<SquaresFour className="h-4 w-4" /> SquaresFour
 												</div>
 											</SelectItem>
 											<SelectItem value="website">
 												<div className="flex items-center gap-2">
-													<Globe className="h-4 w-4" /> Website
+													<Envelope className="h-4 w-4" /> Website
 												</div>
 											</SelectItem>
 										</SelectContent>
@@ -354,14 +353,14 @@ export function AddLinkDialog({
 								<Label htmlFor="contactTitle">Title (Optional)</Label>
 								<Input
 									id="contactTitle"
-									placeholder="e.g. Contact Me"
+									placeholder="e.g. AddressBook Me"
 									value={title}
 									onChange={(e) => setTitle(e.target.value)}
 								/>
 							</div>
 
 							<Button type="submit" className="w-full" disabled={isSubmitting}>
-								{isSubmitting ? "Creating..." : "Add Contact Info"}
+								{isSubmitting ? "Creating..." : "Add AddressBook Info"}
 							</Button>
 						</form>
 					</TabsContent>
@@ -399,7 +398,7 @@ export function AddLinkDialog({
 													{expandedCategories[category]
 														? "Show less"
 														: `Show all (${platforms.length})`}
-													<ChevronDown
+													<CaretDown
 														className={cn(
 															"ml-1 h-3 w-3 transition-transform",
 															expandedCategories[category] && "rotate-180",

@@ -1,8 +1,8 @@
 "use client";
 
+import { CalendarBlank, Check } from "@phosphor-icons/react";
 import { cn } from "cn";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Check } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { DateRange as DayPickerDateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
@@ -98,7 +98,7 @@ export function DateRangePicker({
 			className="h-9 w-full justify-between sm:w-[260px]"
 		>
 			<div className="flex items-center gap-2 truncate">
-				<CalendarIcon className="h-4 w-4" />
+				<CalendarBlank className="h-4 w-4" />
 				<span className="truncate">{label}</span>
 			</div>
 		</Button>
@@ -124,7 +124,7 @@ export function DateRangePicker({
 	if (isMobile) {
 		return (
 			<Drawer open={open} onOpenChange={setOpen}>
-				<DrawerTrigger asChild>{trigger}</DrawerTrigger>
+				<DrawerTrigger render={trigger} />
 
 				<DrawerContent>
 					<DrawerHeader>
@@ -155,9 +155,7 @@ export function DateRangePicker({
 					)}
 
 					<DrawerFooter>
-						<DrawerClose asChild>
-							<Button variant="ghost">Cancel</Button>
-						</DrawerClose>
+						<DrawerClose render={<Button variant="ghost">Cancel</Button>} />
 						<Button disabled={!isCustomComplete} onClick={handleApply}>
 							Apply
 						</Button>
@@ -169,13 +167,9 @@ export function DateRangePicker({
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>{trigger}</PopoverTrigger>
+			<PopoverTrigger render={trigger} />
 
-			<PopoverContent
-				align={align}
-				className="w-auto p-0"
-				collisionPadding={16}
-			>
+			<PopoverContent align={align} className="w-auto p-0">
 				<div className="flex">
 					<div className="flex flex-col gap-1 border-r p-2">
 						<PresetList

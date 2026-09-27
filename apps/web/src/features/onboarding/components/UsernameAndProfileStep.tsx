@@ -1,5 +1,5 @@
+import { Spinner } from "@phosphor-icons/react/ssr";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -283,7 +283,7 @@ export const UsernameAndProfileStep = ({
 								>
 									{isCheckingUsername ? (
 										<>
-											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											<Spinner className="mr-2 h-4 w-4 animate-spin" />
 											Checking...
 										</>
 									) : (

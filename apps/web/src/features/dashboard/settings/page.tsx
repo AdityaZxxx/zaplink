@@ -1,8 +1,15 @@
 "use client";
 
+import {
+	CreditCard,
+	FileText,
+	Flag,
+	MagnifyingGlass,
+	Shield,
+	User,
+} from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "cn";
-import { CreditCard, FileText, Flag, Search, Shield, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +36,7 @@ const SETTINGS_NAV_ITEMS = [
 	},
 	{
 		title: "SEO",
-		icon: Search,
+		icon: MagnifyingGlass,
 		id: "seo",
 		description: "Manage your SEO settings.",
 	},
@@ -148,6 +155,9 @@ export default function SettingsPage() {
 							<Select
 								value={activeTab}
 								onValueChange={(value) => {
+									// A select can be cleared, but this one always drives an
+									// active section, so there is nothing to fall back to.
+									if (!value) return;
 									setActiveTab(value);
 									window.location.hash = value;
 								}}

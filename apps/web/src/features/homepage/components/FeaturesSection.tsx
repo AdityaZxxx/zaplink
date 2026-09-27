@@ -1,4 +1,9 @@
-import { ArrowUpRight, Github, Globe, Layers } from "lucide-react";
+import {
+	ArrowUpRight,
+	GithubLogo,
+	Globe,
+	Stack,
+} from "@phosphor-icons/react/ssr";
 import { Button } from "@/components/ui/button";
 
 export default function FeaturesSection() {
@@ -130,13 +135,13 @@ export default function FeaturesSection() {
 							<div className="flex-1">
 								<div className="mb-6 flex gap-3">
 									<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
-										<Github className="h-5 w-5 text-primary" />
+										<GithubLogo className="h-5 w-5 text-primary" />
 									</div>
 									<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
 										<Globe className="h-5 w-5 text-primary" />
 									</div>
 									<div className="rounded-lg border border-primary/5 bg-muted/50 p-2">
-										<Layers className="h-5 w-5 text-primary" />
+										<Stack className="h-5 w-5 text-primary" />
 									</div>
 								</div>
 								<h3 className="mb-3 font-semibold text-3xl text-primary">

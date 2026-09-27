@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import { Sparkle } from "@phosphor-icons/react/ssr";
 import { Badge } from "@/components/ui/badge";
 import { ClaimUsernameForm } from "./ClaimUsernameForm";
 
@@ -7,7 +7,7 @@ export default function HeroSection() {
 		<section className="relative flex min-h-screen w-full justify-center overflow-hidden bg-background px-4 py-0 pt-24 md:pt-48">
 			<div className="flex flex-col items-center space-y-8 text-center lg:items-start lg:text-left">
 				<Badge className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-3 py-1 backdrop-blur-sm">
-					<Sparkles className="h-4 w-4 text-primary" />
+					<Sparkle className="h-4 w-4 text-primary" />
 					<span className="font-medium text-foreground text-xs">
 						The new standard for creators
 					</span>

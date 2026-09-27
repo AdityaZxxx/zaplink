@@ -1,5 +1,5 @@
+import { Camera, User } from "@phosphor-icons/react/ssr";
 import { cn } from "cn";
-import { CameraIcon, User2Icon } from "lucide-react";
 import Image from "next/image";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -88,12 +88,12 @@ export const ProfileImageUploader = ({
 							aspectRatio,
 						)}
 					>
-						<User2Icon className="h-8 w-8 text-zinc-700" />
+						<User className="h-8 w-8 text-zinc-700" />
 					</div>
 				)}
 
 				<div className="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/50 text-white opacity-0 transition-all group-hover:opacity-100">
-					<CameraIcon className="h-6 w-6" />
+					<Camera className="h-6 w-6" />
 					<input
 						type="file"
 						ref={fileInputRef}

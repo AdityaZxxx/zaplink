@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@phosphor-icons/react/ssr";
 import { Button } from "@/components/ui/button";
 import { APP_NAME, DOMAIN_NAME } from "@/lib/constants/BRANDS";
 

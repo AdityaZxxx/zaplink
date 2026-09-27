@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, Circle } from "lucide-react";
+import { ChartBar, Circle } from "@phosphor-icons/react";
 import {
 	CartesianGrid,
 	Line,
@@ -173,7 +173,7 @@ export function EngagementChart({ data }: EngagementChartProps) {
 						</ResponsiveContainer>
 					) : (
 						<div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
-							<BarChart3 className="h-10 w-10 opacity-20" />
+							<ChartBar className="h-10 w-10 opacity-20" />
 							<p>No data recorded for this period</p>
 						</div>
 					)}

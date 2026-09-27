@@ -1,7 +1,7 @@
 "use client";
 
+import { Spinner } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import type { DateRange as DayPickerDateRange } from "react-day-picker";
 import { trpc } from "@/utils/trpc/client";
@@ -31,7 +31,7 @@ export default function AnalyticsPage() {
 	if (isLoading) {
 		return (
 			<div className="flex h-[80vh] w-full flex-col items-center justify-center gap-4">
-				<Loader2 className="h-10 w-10 animate-spin text-primary" />
+				<Spinner className="h-10 w-10 animate-spin text-primary" />
 				<p className="animate-pulse text-muted-foreground">
 					Gathering insights...
 				</p>

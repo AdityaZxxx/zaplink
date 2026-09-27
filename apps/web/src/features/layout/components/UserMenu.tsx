@@ -1,6 +1,6 @@
+import { Monitor, Moon, SignOut, Sun } from "@phosphor-icons/react/ssr";
 import { useQuery } from "@tanstack/react-query";
 import { cn } from "cn";
-import { LogOut, Monitor, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -31,9 +31,7 @@ export default function UserMenu() {
 
 	if (!session || !profile) {
 		return (
-			<Button variant="outline" asChild>
-				<Link href="/login">Sign In</Link>
-			</Button>
+			<Button render={<Link href="/login">Sign In</Link>} variant="outline" />
 		);
 	}
 
@@ -45,15 +43,20 @@ export default function UserMenu() {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" className="relative h-9 w-9 rounded-full">
-					<Avatar className="h-9 w-9 cursor-pointer">
-						{/* biome-ignore lint: lint/style/noNonNullAssertion */}
-						<AvatarImage src={profile.avatarUrl!} alt={profile.displayName!} />
-						<AvatarFallback>{profile.displayName?.charAt(0)}</AvatarFallback>
-					</Avatar>
-				</Button>
-			</DropdownMenuTrigger>
+			<DropdownMenuTrigger
+				render={
+					<Button variant="ghost" className="relative h-9 w-9 rounded-full">
+						<Avatar className="h-9 w-9 cursor-pointer">
+							{/* biome-ignore lint: lint/style/noNonNullAssertion */}
+							<AvatarImage
+								src={profile.avatarUrl!}
+								alt={profile.displayName!}
+							/>
+							<AvatarFallback>{profile.displayName?.charAt(0)}</AvatarFallback>
+						</Avatar>
+					</Button>
+				}
+			/>
 			<DropdownMenuContent className="w-64 bg-card" align="end">
 				<div className="flex items-center gap-3 p-2">
 					<Avatar className="h-12 w-12">
@@ -112,24 +115,26 @@ export default function UserMenu() {
 
 				<DropdownMenuSeparator />
 
-				<DropdownMenuItem asChild>
-					<Button
-						variant="secondary"
-						className="w-full"
-						onClick={() => {
-							authClient.signOut({
-								fetchOptions: {
-									onSuccess: () => {
-										router.push("/");
+				<DropdownMenuItem
+					render={
+						<Button
+							variant="secondary"
+							className="w-full"
+							onClick={() => {
+								authClient.signOut({
+									fetchOptions: {
+										onSuccess: () => {
+											router.push("/");
+										},
 									},
-								},
-							});
-						}}
-					>
-						<LogOut className="h-4 w-4" />
-						Logout
-					</Button>
-				</DropdownMenuItem>
+								});
+							}}
+						>
+							<SignOut className="h-4 w-4" />
+							Logout
+						</Button>
+					}
+				/>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
